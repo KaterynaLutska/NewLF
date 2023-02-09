@@ -1,0 +1,54 @@
+.\#search-template .\#collection-grid {
+    padding-top: 0;
+}
+
+.\#search-template-grid > .\#grid {
+    align-items: center;
+}
+
+.\#search-template-page-card {
+    position: relative;
+    padding: 2.5rem;
+    background: #ededed;
+}
+
+.\#search-template-page-card-title {
+    margin-bottom: 0.5rem;
+}
+
+.\#search-template-form {
+    width: min(90%, 600px);
+    margin: 0 auto;
+    margin-top: 3rem;
+    display: flex;
+    align-items: center;
+    border: 2px solid rgba(var(--color-text), 1);
+    border-radius: 5rem;
+}
+
+.\#search-template-form-wrapper {
+    margin-bottom: 3rem;
+}
+
+.\#search-template-form-input {
+    display: block;
+    flex: 1;
+    border: none;
+    background: none;
+    outline: none !important;
+    padding: 0.75rem 1rem;
+    font-size: 1.25rem;
+}
+
+.\#search-template-form-submit {
+    background: none;
+    border: none;
+    padding: 0 1rem;
+}
+
+.\#search-template-form-status {
+    margin-top: 1rem;
+    opacity: 0.8;
+    text-align: center;
+    padding: 0 1rem;
+}

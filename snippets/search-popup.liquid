@@ -1,0 +1,32 @@
+{%- assign _cn = '#search-popup' -%}
+
+{%- capture Search_form -%}
+    <div
+        class="{{ _cn }}"
+    >
+        <form class="{{ _cn }}-form" action="{{ routes.search_url }}">
+            <div class="{{ _cn }}-icon">
+                {% render 'icon', name: 'search' %}
+            </div>
+            <input
+                type="text"
+                class="{{ _cn }}-input"
+                name="q"
+                placeholder="{{ 'general.search.search' | t }}"
+            >
+            <modal-close class="{{ _cn }}-close">
+                {% render 'icon', name: 'x' %}    
+            </modal-close>
+        </form>
+    </div>
+{%- endcapture -%}
+
+{%- if settings.predictive_search_enable -%}
+    {% render 'predictive-search-input',
+        search_form: Search_form,
+        init_script: false
+    %}
+{%- else -%}
+    {{ Search_form }}
+{%- endif -%}
+

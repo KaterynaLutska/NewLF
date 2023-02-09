@@ -1,0 +1,50 @@
+<style>
+    .\#product-variant-swatch {
+        display: block;
+    }
+
+    .\#product-variant-swatch-header {
+        margin-bottom: 0.5rem;
+    }
+
+    .\#product-variant-swatch + .\#product-variant-swatch {
+        margin-top: 1rem;
+    }
+
+    .\#product-variant-swatch-value {
+        font-weight: bold;
+    }
+
+    .\#product-variant-swatch-name {
+        opacity: .64;
+    }
+</style>
+
+<product-variant-swatch class="#product-variant-swatch">
+    <div class="#product-variant-swatch-header">
+        <span class="#product-variant-swatch-name">{{ product_option.name }}:</span>
+        <span class="#product-variant-swatch-value" data-swatch-value>{{ product_option.selected_value }}</span>
+    </div>   
+    <div class="#form-inline-group" data-swatch-group>
+        {%- for value in product_option.values -%}
+            {%- liquid
+                assign swatch_id = section.id | append: product_option.name | append: '-swatch-' | append: forloop.index
+                if product_option.selected_value == value
+                    assign checked = true
+                else
+                    assign checked = false
+                endif
+            -%}
+            {%- render 'form-field',
+                position: product_option.position
+                type: field_type,
+                id: swatch_id,
+                name: product_option.name,
+                checked: checked,
+                value: value,
+                index: forloop.index0
+            -%}
+        {% endfor %}
+    </div>
+</product-variant-swatch>    
+

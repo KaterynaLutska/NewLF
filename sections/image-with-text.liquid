@@ -1,0 +1,384 @@
+{%- if section.settings.color_scheme == 'dark' or section.settings.color_scheme == 'primary' -%}
+  {%- assign hero_color = 'light' -%}
+{%- else -%}
+  {%- assign hero_color = 'dark' -%}
+{%- endif -%}
+
+{%- assign position = section.settings.text_position | split: '-' -%}
+{%- assign text_y = position[0] -%}
+{%- assign text_x = position[1] -%}
+
+{% capture Hero %}
+  {% render 'hero',
+    blocks: section.blocks,
+    align: text_x,
+    spaced: 'lg',
+    color_scheme: section.settings.color_scheme,
+    size: section.settings.text_size,
+    reveal_animation: true
+  %}
+{% endcapture %}
+
+
+{% capture Text %}
+  {% render 'floating-content',
+    content: Hero,
+    x: text_x,
+    y: text_y,
+    padded: true,
+  %}
+{% endcapture %}
+
+{%- capture Image -%}
+  {% render 'media',
+    image: section.settings.image,
+    mobile_image: section.settings.mobile_image,
+    image_resolution_div: 2,
+    size: section.settings.image_size,
+    color_scheme: section.settings.color_scheme,
+    reveal_zoom: true
+  %}
+{%- endcapture -%}
+
+{% capture Content %}
+  <div class="#grid @strict {% if section.settings.layout == 'text_first' %}@reverse:desktop{% endif %}" style="--grid-gap: 0">
+    <div class="#column @span:6 @span:mobile:12">
+      {{ Image }}
+    </div>
+    <div class="#column @span:6 @span:mobile:12">
+      {{ Text }}
+    </div>
+  </div>
+  
+{% endcapture %}
+
+
+{% render 'section-body',
+  container: false,
+  content: Content,
+  color_scheme: section.settings.color_scheme
+%}
+
+{% schema %}
+{
+  "name": "t:sections.image-with-text.name",
+  "class": "spaced-section spaced-section--full-width",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:sections.image-with-text.settings.image.label"
+    },
+    {
+      "type": "select",
+      "id": "image_size",
+      "options": [
+        {
+          "value": "original",
+          "label": "Original image size"
+        },
+        {
+          "value": "full",
+          "label": "Full height"
+        },
+        {
+          "value": "large",
+          "label": "Large (70%)"
+        },
+        {
+          "value": "medium",
+          "label": "Medium (60%)"
+        },
+        {
+          "value": "small",
+          "label": "Small (50%)"
+        }
+      ],
+      "default": "original",
+      "label": "Image size"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile image (optional)"
+    },
+    {
+      "type": "select",
+      "id": "mobile_image_size",
+      "options": [
+        {
+          "value": "original",
+          "label": "Original image size"
+        },
+        {
+          "value": "full",
+          "label": "Full height"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        }
+      ],
+      "default": "original",
+      "label": "Mobile image size"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "alt",
+          "label": "Alternate"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "invert",
+          "label": "Inverted"
+        }
+      ],
+      "default": "default",
+      "label": "Color scheme"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "options": [
+        {
+          "value": "image_first",
+          "label": "Image left"
+        },
+        {
+          "value": "text_first",
+          "label": "Image right"
+        }
+      ],
+      "default": "image_first",
+      "label": "Format"
+    },
+    {
+      "type": "select",
+      "id": "text_size",
+      "label": "Text size",
+      "options": [
+        {
+          "value": "sm",
+          "label": "Small"
+        },
+        {
+          "value": "md",
+          "label": "Medium"
+        },
+        {
+          "value": "lg",
+          "label": "Large"
+        },
+        {
+          "value": "xl",
+          "label": "Extra large"
+        }
+      ],
+      "default": "md"
+    },
+    {
+      "type": "select",
+      "id": "text_position",
+      "label": "Alignment",
+      "options": [
+        {
+          "value": "top-left",
+          "label": "Top left"
+        },
+        {
+          "value": "top-center",
+          "label": "Top center"
+        },
+        {
+          "value": "top-right",
+          "label": "Top right"
+        },
+        {
+          "value": "center-left",
+          "label": "Center left"
+        },
+        {
+          "value": "center-center",
+          "label": "Center"
+        },
+        {
+          "value": "center-right",
+          "label": "Center right"
+        },
+        {
+          "value": "bottom-left",
+          "label": "Bottom left"
+        },
+        {
+          "value": "bottom-center",
+          "label": "Bottom center"
+        },
+        {
+          "value": "bottom-right",
+          "label": "Bottom right"
+        }
+      ],
+      "default": "center-center"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "t:sections.image-with-text.blocks.heading.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Image with text",
+          "label": "t:sections.image-with-text.blocks.heading.settings.heading.label"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "t:sections.image-with-text.blocks.text.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>Pair text with an image to focus on your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+          "label": "t:sections.image-with-text.blocks.text.settings.text.label"
+        }
+      ]
+    },
+    {
+      "type": "buttons",
+      "name": "Buttons",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Primary button"
+        },
+        {
+          "type": "text",
+          "id": "button",
+          "label": "Primary button label"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Link"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Button style",
+          "options": [
+             {
+                "value": "default",
+                "label": "Default"
+             },
+             {
+                "value": "ghost",
+                "label": "Outline"
+             },
+             {
+                "value": "link",
+                "label": "Link"
+             }
+          ],
+          "default": "default"
+        },
+        {
+           "type": "checkbox",
+           "id": "button_show_arrow",
+           "label": "Show arrow",
+           "default": true
+        },
+        {
+          "type": "header",
+          "content": "Secondary button"
+        },
+        {
+          "type": "text",
+          "id": "secondary_button",
+          "label": "Secondary button label"
+        },
+        {
+          "type": "url",
+          "id": "secondary_button_link",
+          "label": "Link"
+        },
+        {
+          "type": "select",
+          "id": "secondary_button_style",
+          "label": "Button style",
+          "options": [
+             {
+                "value": "default",
+                "label": "Default"
+             },
+             {
+                "value": "ghost",
+                "label": "Outline"
+             },
+             {
+                "value": "link",
+                "label": "Link"
+             }
+          ],
+          "default": "default"
+        },
+        {
+          "type": "checkbox",
+          "id": "secondary_button_show_arrow",
+          "label": "Show arrow",
+          "default": true
+       }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.image-with-text.presets.name",
+      "settings": {
+        "color_scheme": "invert"
+      },
+      "blocks": [
+        {
+          "type": "heading"
+        },
+        {
+          "type": "text"
+        },
+        {
+          "type": "buttons",
+          "settings": {
+            "button": "Find More"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

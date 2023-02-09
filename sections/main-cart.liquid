@@ -1,0 +1,185 @@
+{% assign cart_empty = false %}
+{% if cart == empty %}
+    {% assign cart_empty = true %}
+{% endif %}
+
+{% capture Content %}
+
+    <main-cart class="#cart-wrapper" data-main-cart {% if cart_empty %}is-empty{% endif %} section-id="{{ section.id }}" cart-url="{{ routes.cart_url }}">
+        {{ 'cart.css' | asset_url | stylesheet_tag }}      
+        <form class="#cart-form" action="{{ routes.cart_url }}" method="post" id="cart-form">
+        <div class="#cart-empty" data-cart-empty>
+            <div class="#cart-empty-icon">
+                {% render 'icon', name: 'cart' %}
+            </div>
+            <h2 class="#cart-empty-title">{{ 'sections.cart.empty' | t }}</h2>
+            {% assign continue_shopping_text = 'general.continue_shopping' | t %}
+            {% render 'button',
+                link: routes.all_products_collection_url,
+                text: continue_shopping_text,
+                color: 'default'
+            %}
+        </div>
+        <div class="#cart">
+            <div class="#row @gutter:0 #cart-row">
+                <div class="#col @8 #cart-col">
+                    <cart-items>
+                        {% render 'cart-items' %}
+                    </cart-items>
+                </div>
+                <div class="#col @4 #cart-col">
+                    <div class="#cart-checkout">
+                        <div class="#cart-checkout-inner sticky-top">
+                        {% for block in section.blocks %}
+                            {% case block.type %}
+                                {% when 'heading' %}
+                                    <div class="#cart-checkout-heading" {{ block.shopify_attributes }}>
+                                        <h3 class="#cart-checkout-heading-title">{{ block.settings.text }}</h3>
+                                    </div>
+                                {% when 'subtotal' %}
+                                <subtotal-price class="#cart-checkout-subtotal-wrapper" section-id="{{ section.id }}" {{ block.shopify_attributes }}>
+                                    {%- if cart.total_price != cart.original_total_price -%}
+                                        {%- assign has_discount = true -%}
+                                    {%- else -%}
+                                        {%- assign has_discount = false -%}
+                                    {%- endif -%}
+                                    {% if has_discount %}
+                                        <div class="#cart-checkout-item">
+                                            <h5 class="#cart-checkout-item-title">{{ 'sections.cart.subtotal' | t }}</h5>
+                                            <span class="#cart-checkout-item-value">{{ cart.original_total_price | money }}</span>
+                                        </div>
+                                        <div class="#cart-checkout-item">
+                                            <h5 class="#cart-checkout-item-title">{{ 'customer.order.discount' | t }}</h5>
+                                            <span class="#cart-checkout-item-value">-{{ cart.total_discount | money }}</span>
+                                        </div>
+                                    {% endif %}
+                                    <div class="#cart-checkout-subtotal">
+                                        <h3 class="#cart-checkout-subtotal-title">{%- if has_discount -%}{{ 'sections.cart.new_subtotal' | t }}{%- else -%}{{ 'sections.cart.subtotal' | t }}{%- endif -%}</h3>
+                                        <span class="#cart-checkout-subtotal-value" data-subtotal>
+                                            <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_total" style="display:none !important;"></span>{{ cart.total_price | money }}
+                                        </span>
+                                    </div>
+                                </subtotal-price>
+                                {% when 'buttons' %}
+                                    <div class="#cart-checkout-buttons" {{ block.shopify_attributes }}>
+                                    {% render 'button',
+                                        attr_name: 'checkout',
+                                        attr_type: 'submit',
+                                        attr_form: 'cart-form',
+                                        t_text: 'sections.cart.checkout',
+                                        block: true,
+                                        color: 'accent-invert'
+                                    %}
+                                </div>
+                                {% when 'tax_shipping_note' %}
+                                    <div class="#cart-checkout-tax-note" {{ block.shopify_attributes }}>
+                                        <span>
+                                            {%- if cart.taxes_included and shop.shipping_policy.body != blank -%}
+                                                {{ 'sections.cart.taxes_included_and_shipping_policy_html' | t: link: shop.shipping_policy.url }}
+                                            {%- elsif cart.taxes_included -%}
+                                                {{ 'sections.cart.taxes_included_but_shipping_at_checkout' | t }}
+                                            {%- elsif shop.shipping_policy.body != blank -%}
+                                                {{ 'sections.cart.taxes_and_shipping_policy_at_checkout_html' | t: link: shop.shipping_policy.url }}
+                                            {%- else -%}
+                                                {{ 'sections.cart.taxes_and_shipping_at_checkout' | t }}
+                                            {%- endif -%}
+                                        </span>
+                                    </div>
+                                {% when 'notes' %}
+                                    <div class="#cart-checkout-order-notes" {{ block.shopify_attributes }}>
+                                        <label class="#cart-checkout-order-notes-label" for="CartOrderNote">{{ 'sections.cart.note' | t }}</label>
+                                        <textarea class="#cart-checkout-order-notes-input" name="note" id="CartOrderNote" cols="30" rows="4"></textarea>
+                                    </div>
+                                {% when 'accelerated_checkout' %}
+                                    {% if additional_checkout_buttons %}
+                                        <div class="#cart-checkout-accelerated no-js-hidden">
+                                            {% if block.settings.heading != blank %}
+                                                <p class="#cart-checkout-accelerated-title">{{ block.settings.heading }}</p>
+                                            {% endif %}
+                                            {{ content_for_additional_checkout_buttons }}
+                                        </div>
+                                    {% endif %}                     
+                            {% endcase %}
+                        {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </form>
+    </main-cart>
+    <script type="module" src="{{ 'cart.js' | asset_url }}"></script>
+{% endcapture %}
+
+{% render 'section-body',
+  content: Content
+%}
+
+{% schema %}
+{
+  "name": "Main cart",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": false,
+      "label": "t:sections.main-cart-items.settings.show_vendor.label"
+    }
+  ],
+  "blocks": [
+    {
+        "type": "heading",
+        "name": "Heading",
+        "limit": 1,
+        "settings": [
+            {
+                "type": "text",
+                "id": "text",
+                "label": "Heading text",
+                "default": "Summary"
+            }
+        ]
+    },
+    {
+      "type": "subtotal",
+      "name": "t:sections.main-cart-footer.blocks.subtotal.name",
+      "limit": 1
+    },
+    {
+      "type": "buttons",
+      "name": "t:sections.main-cart-footer.blocks.buttons.name",
+      "limit": 1
+    },
+    {
+        "type": "notes",
+        "name": "Order notes field",
+        "limit": 1
+    },
+    {
+        "type": "tax_shipping_note",
+        "name": "Taxes and shipping note",
+        "limit": 1
+    },
+    {
+        "type": "accelerated_checkout",
+        "name": "Accelerated checkout",
+        "limit": 1,
+        "settings": [
+            {
+                "type": "paragraph",
+                "content": "t:sections.main-product.blocks.buy_buttons.settings.show_dynamic_checkout.info"
+            },
+            {
+                "type": "text",
+                "id": "heading",
+                "label": "Heading",
+                "default": "Or pay with"
+            }
+        ]
+    },
+    {
+      "type": "@app"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,34 @@
+{% comment %}
+  Props:
+    remaining: amount of remainig items to display an alert
+    current_variant: {Object}
+    {{current_variant.inventory_quantity}}
+{% endcomment %}
+
+{{ 'product-stock-alert.css' | asset_url | stylesheet_tag }}
+
+{% liquid
+  if current_variant.available == false
+    assign status = 'out-of-stock'
+    assign text = out_of_stock_msg
+    assign icon = 'x'
+  elsif current_variant.inventory_quantity <= stock_threshold and product.selected_or_first_available_variant.inventory_management and product.selected_or_first_available_variant.inventory_policy == 'deny'
+    assign status = 'low-stock'
+    assign text = low_stock_msg | replace: '[[amount]]', current_variant.inventory_quantity
+    assign icon = 'alert'
+  else
+    assign status = 'in-stock'
+    assign text = in_stock_msg
+    assign icon = 'check'
+  endif
+  assign cn = '#product-stock-alert'
+%}
+
+<stock-alert class="{{ cn }} @align:{{ align }}" section-id="{{ section.id }}" {{ block.shopify_attributes }}>
+  <div class="{{ cn }}-inner @status:{{ status }}">
+    {% render 'icon', name: icon %}
+    <div class="{{ cn }}-text">{{ text }}</div>
+  </div>
+</stock-alert>
+
+<script type="module" src="{{ 'product-stock-alert.js' | asset_url }}"></script>

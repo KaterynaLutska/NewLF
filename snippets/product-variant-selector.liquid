@@ -1,0 +1,99 @@
+{% comment %}
+    Props
+        - type
+        - product
+        - color_swatches
+        - color_first
+{% endcomment %}
+{{ 'form.css' | asset_url | stylesheet_tag }}
+{{ 'product-option-picker.css' | asset_url | stylesheet_tag }}
+
+{%- assign settings_color_option_names = settings.color_swatches_options | split: ',' | handleize -%}
+
+<product-variant-selector
+    class="no-js-hidden"
+    product-url="{{ product.url }}"
+    section-id="{{ section.id }}"
+    current-variant-id="{{ product.selected_or_first_available_variant.id }}"
+    page-type="{{ request.page_type }}"
+    {% if request.page_type == 'product' %}product-page{% endif %}
+>
+    {%- capture options -%}
+        {%- for product_option in product.options_with_values -%}
+            {%- liquid
+                assign option_name_handle = product_option.name | handleize
+                if settings_color_option_names contains option_name_handle 
+                    assign match_color = true
+                else
+                    assign match_color = false
+                endif
+
+                if match_color and color_swatches
+                    assign option_type = 'color_swatch'
+                else
+                    assign option_type = type
+                endif
+            -%}
+
+            {%- if color_first and match_color -%}
+                {%- capture color_option -%}
+                    {{ color_option }}
+                    {%- render 'product-option-picker',
+                        name: product_option.name,
+                        values: product_option.values,
+                        selected_value: product_option.selected_value,
+                        type: option_type,
+                        align: align
+                    -%}    
+                {%- endcapture -%}
+            {%- else -%}            
+                {%- render 'product-option-picker',
+                    name: product_option.name,
+                    values: product_option.values,
+                    selected_value: product_option.selected_value,
+                    type: option_type,
+                    align: align
+                -%}
+            {%- endif -%}
+        {%- endfor -%}
+    {%- endcapture -%}
+
+    {{ color_option }}
+    {{ options }}
+
+    <script type="application/json" data-variants-json>
+        {{ product.variants | json }}
+    </script>
+    <script type="application/json" data-options-with-values>
+        {{ product.options_with_values | json }}
+    </script>
+</product-variant-selector>
+
+<noscript>
+    <div class="#form-field">
+        <label class="#form-label" for="product-variant-picker-{{ section.id }}">{{ 'products.product.product_variants' | t }}</label>
+        <div class="#form-select">
+            <select 
+                id="product-variant-picker-{{ section.id }}"
+                name="id"
+                form="{{ product_form_id }}"
+            >
+            {%- for variant in product.variants -%}
+            <option
+                {% if variant == product.selected_or_first_available_variant %}selected="selected"{% endif %}
+                {% if variant.available == false %}disabled{% endif %}
+                value="{{ variant.id }}"
+                >
+                {{ variant.title }}
+                {%- if variant.available == false %} - {{ 'products.product.sold_out' | t }}{% endif %}
+                - {{ variant.price | money | strip_html }}
+                </option>
+            {%- endfor -%}
+            </select>
+            {% render 'icon', name: 'chevron-down' %}
+        </div>  
+    </div> 
+</noscript>
+
+
+<script type="module" src="{{ 'product-variant-selector.js' | asset_url }}"></script>

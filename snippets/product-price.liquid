@@ -1,0 +1,21 @@
+<link rel="stylesheet" href="{{ 'product-price.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'product-price.css' | asset_url | stylesheet_tag }}</noscript>
+
+<product-price class="#product-price @size:{{ block.settings.size }} @align:{{ align }} @weight:{{ block.settings.font_weight }}" section-id="{{ section.id }}" id="price-{{ section.id }}">
+    {%- render 'price',
+        product: product,
+        variant: product.selected_or_first_available_variant,
+        show_titles: block.settings.show_heading,
+        show_compare_price: true,
+        show_save_price: block.settings.show_savings
+  -%}
+
+  {%- form 'product', product, id: 'product-form-installment', class: 'installment caption-large', class:'no_bold_options' -%}
+    <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id | escape }}">
+    {{ form | payment_terms }}
+    {%- endform -%}
+    
+</product-price>
+
+
+<script type="module" src="{{ 'product-price.js' | asset_url }}"></script>

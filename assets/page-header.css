@@ -1,0 +1,20 @@
+.\#page-header {
+    text-align: center;
+}
+
+.\#page-header.\@spaced {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.\#page-header.\@main-header-overlap .\#page-header-content {
+    top: calc(var(--spacer) * 3);
+}
+
+.\#page-header-content {
+    position: relative;
+}
+
+.\#page-header-content .\#hero {
+    width: min(960px, 100%);
+}

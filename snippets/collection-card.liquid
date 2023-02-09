@@ -1,0 +1,37 @@
+{% liquid
+    if collection.title != blank
+        assign collection_exists = true
+    else
+        assign collection_exists = false
+    endif
+
+    if custom_image != blank
+        assign image = custom_image
+    else
+        assign image = collection.featured_image
+    endif
+%}
+
+<div class="#collection-card {% if media_hover_zoom %}$hover:media-zoom{% endif %} hide-loading @align:{{ align | default: 'center' }}">
+    {% if collection_exists %}
+        <a class="stretched-link" href="{{ collection.url }}"></a>    
+    {% endif %}
+    {% render 'media',
+        image: image,
+        image_resolution: image_resolution, 
+        image_resolution_div: columns,
+        size: image_size,
+        resolution: 300,
+        placeholder: 'collection',
+        placeholder_index: placeholder_index
+    %}
+    <div class="#collection-card-body">
+        <h5 class="#collection-card-title">
+            {% if collection_exists %}
+                {{- collection.title -}}
+            {% else %}
+                {{ 'onboarding.collection_title' | t }}
+            {% endif %}
+        </h5>
+    </div>
+</div>

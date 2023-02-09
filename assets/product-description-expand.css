@@ -1,0 +1,59 @@
+.\#product-description-expand {
+    --height: var(--product-description-expand-height, auto);
+    position: relative;
+    display: block;
+}
+
+.\#product-description-expand.\@align\:center .\#product-description-expand-link {
+    justify-content: center;
+}
+
+.\#product-description-expand.\@color-scheme\:default .\#product-description-expand-link {
+    background: linear-gradient(0deg, rgba(var(--color-background), 1) 15%, rgba(var(--color-background), 0) 100%);
+}
+
+.\#product-description-expand.\@color-scheme\:alt .\#product-description-expand-link {
+    background: linear-gradient(0deg, rgba(var(--color-alt-background), 1) 15%, rgba(var(--color-alt-background), 0) 100%);
+}
+
+.\#product-description-expand[expanded] .\#product-description-expand-content {
+    height: auto;
+    padding-bottom: 30px;
+}
+
+.\#product-description-expand[expanded] .\#product-description-expand-link {
+    height: 20px;
+}
+
+.\#product-description-expand[expanded] .\#product-description-expand-link .\#icon {
+    transform: rotate(180deg);
+}
+
+.\#product-description-expand-content {
+    transition: 0.3s;
+    overflow: hidden;
+    height: var(--height);
+}
+
+.\#product-description-expand-link {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    display: flex;
+    padding: 0;
+    align-items: flex-end;
+    border: none;
+    font-weight: var(--font-body-weight-bold);
+    text-transform: uppercase;
+    cursor: pointer;
+    gap: 0.3rem;
+}
+
+.\#product-description-expand-link .\#icon {
+    transition: 0.3s;
+    width: 1rem;
+    height: 1rem;
+    stroke-width: 3;
+}

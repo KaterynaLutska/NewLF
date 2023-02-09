@@ -1,0 +1,196 @@
+<link rel="stylesheet" href="{{ 'logo-card.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'logo-card.css' | asset_url | stylesheet_tag }}</noscript>
+
+
+{% if section.settings.color_scheme == 'default' %}
+  {%- assign card_bordered = true -%}
+{% endif %}
+
+{%- capture Content -%}
+    <div class="#grid @gap:{{ section.settings.gutter }} %mobile:overlap @container @columns:{{ section.settings.columns }}">
+        {%- for block in section.blocks -%}
+            <div class="#column reveal-animate" style="--reveal-index: {{ forloop.index }}" {{ block.shopify_attributes }}>
+                {% render 'logo-card',
+                    image: block.settings.logo_image,
+                    url: block.settings.logo_link,
+                    bordered: card_bordered,
+                    image_height: section.settings.logo_max_height,
+                    grayscale_hover: section.settings.enable_grayscale_hover
+                %}
+            </div>
+        {%- endfor -%}
+    </div>
+{%- endcapture -%}
+
+{% if section.settings.section_button != blank and section.settings.section_button_link != blank %}
+  {%- assign section_button = section.settings.section_button -%}
+{% endif %}
+
+
+{% render 'section-body',
+    content: Content,
+    title: section.settings.title,
+    subtitle: section.settings.subtitle,
+    color_scheme: section.settings.color_scheme,
+    container: false,
+    spaced: true,
+    button: section_button,
+    button_link: section.settings.section_button_link
+%}
+
+{% schema %}
+{
+    "name": "Logo list",
+    "settings": [
+        {
+            "type": "text",
+            "id": "title",
+            "default": "Logo list",
+            "label": "Heading"
+        },
+        {
+            "type": "text",
+            "id": "subtitle",
+            "label": "Subheading"
+        },
+        {
+            "type": "select",
+            "id": "color_scheme",
+            "options": [
+                {
+                    "value": "default",
+                    "label": "Default"
+                },
+                {
+                    "value": "alt",
+                    "label": "Alternative"
+                },
+                {
+                    "value": "accent",
+                    "label": "Accent"
+                },
+                {
+                    "value": "invert",
+                    "label": "Inverted"
+                }
+            ],
+            "default": "default",
+            "label": "Color scheme"
+        },
+        {
+            "type": "range",
+            "id": "columns",
+            "label": "Columns",
+            "min": 3,
+            "max": 6,
+            "step": 1,
+            "default": 5
+        },
+        {
+            "type": "range",
+            "id": "logo_max_height",
+            "label": "Logo max height",
+            "min": 70,
+            "max": 200,
+            "step": 5,
+            "unit": "px",
+            "default": 120
+        },
+        {
+            "type": "select",
+            "id": "gutter",
+            "label": "Space between",
+            "options": [
+                {
+                    "value": "sm",
+                    "label": "Small"
+                },
+                {
+                    "value": "md",
+                    "label": "Medium"
+                },
+                {
+                    "value": "lg",
+                    "label": "Large"
+                }
+            ],
+            "default": "md"
+        },
+        {
+            "type": "checkbox",
+            "id": "enable_grayscale_hover",
+            "label": "Enable grayscale hover effect on desktop",
+            "default": true
+        },
+        {
+            "type": "header",
+            "content": "Button"
+        },
+        {
+            "type": "text",
+            "id": "section_button",
+            "label": "Text"
+        },
+        {
+            "type": "url",
+            "id": "section_button_link",
+            "label": "Link"
+        }
+    ],
+    "blocks": [
+        {
+            "type": "logo",
+            "name": "Logo",
+            "settings": [
+                {
+                    "type": "image_picker",
+                    "id": "logo_image",
+                    "label": "Image"
+                },
+                {
+                    "type": "url",
+                    "id": "logo_link",
+                    "label": "Link"
+                }
+            ]
+        }
+    ],
+    "presets": [
+        {
+            "name": "Logo list",
+            "blocks": [
+                {
+                    "type": "logo"
+                },
+                {
+                    "type": "logo"
+                },
+                {
+                    "type": "logo"
+                },
+                {
+                    "type": "logo"
+                },
+                {
+                    "type": "logo"
+                },
+                {
+                    "type": "logo"
+                },
+                {
+                    "type": "logo"
+                },
+                {
+                    "type": "logo"
+                },
+                {
+                    "type": "logo"
+                },
+                {
+                    "type": "logo"
+                }
+            ]
+        }
+    ]
+}
+{% endschema %}

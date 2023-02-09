@@ -1,0 +1,91 @@
+.\#announcement-bar {
+    display: block;
+    position: relative;
+    z-index: 5;
+    background-color: var(--announcement-bar-color-background);
+    color: var(--announcement-bar-color-text);
+    padding: 0.7rem 3rem;
+    text-align: center;
+}
+
+.\#announcement-bar-text {
+    margin-bottom: 0;
+    font-weight: var(--font-body-weight-bold);
+}
+
+.\#announcement-bar-dismiss {
+    background: none;
+    border: none;
+    padding: none;
+    color: inherit;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 1rem;
+    opacity: 0.64;
+    transition: 0.3s;
+    cursor: pointer;
+    z-index: 21;
+}
+
+.\#announcement-bar-dismiss:hover {
+    opacity: 1;
+}
+
+.\#announcement-bar-dismiss .\#icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    stroke-width: 3;
+}
+
+.announcement-bar-content-item {
+  position: relative;
+}
+
+.announcement-bar-content .swiper .swiper-wrapper {
+  display: flex;
+}
+
+.announcement-bar-content .swiper .swiper-wrapper .announcement-bar-content-item {
+  width: 100%;
+  min-width: 100%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

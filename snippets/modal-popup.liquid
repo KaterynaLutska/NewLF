@@ -1,0 +1,30 @@
+<link rel="stylesheet" href="{{ 'modal.css' | asset_url }}" media="print" onload="this.media='all'">
+
+{%- if settings.cart_type == 'drawer' -%}
+    {%- assign enable_cart = true -%}
+{%- else -%}
+    {%- assign enable_cart = false -%}
+{%- endif -%}
+
+<modal-popup class="#modal-popup no-js-hidden" {% if enable_cart %}enable-cart cart-target="[data-main-cart]" cart-url="{{ routes.cart_url }}"{% endif %}>
+    <div class="#modal-popup-overlay" data-overlay></div>
+    <button class="#modal-popup-close" data-close>
+        {% render 'icon' name: 'x' %}
+    </button>
+    <div class="#modal-popup-spinner">
+        {% render 'spinner',
+            color_scheme: 'light'
+        %}
+    </div>
+    <div class="#modal-popup-stage">
+        <div class="#modal-popup-layout" data-layout>
+            <div class="#modal-popup-content" data-content></div>
+        </div>
+    </div>
+</modal-popup>
+
+<script type="module" src="{{ 'modal.js' | asset_url }}"></script>
+
+{% if enable_cart %}
+    <script type="module" src="{{ 'cart.js' | asset_url }}"></script>
+{% endif %}

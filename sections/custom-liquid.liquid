@@ -1,0 +1,163 @@
+<link rel="stylesheet" href="{{ 'rte.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'rte.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- capture Content -%}
+  <div class="#rte @text-size:{{ section.settings.text_size }} @width:{{ section.settings.content_width }} {% unless section.settings.text_aling == 'default' %}text-{{ section.settings.text_align }}{% endunless %}">
+    {{ section.settings.liquid_content }}
+  </div>
+{%- endcapture -%}
+
+{% if section.settings.show_section_button %}
+  {%- assign section_button = section.settings.section_button -%}
+{% endif %}
+
+{% render 'section-body',
+  content: Content,
+  title: section.settings.title,
+  subtitle: section.settings.subtitle,
+  spaced: true,
+  container: true,
+  color_scheme: section.settings.color_scheme,
+  button: section_button,
+  button_link: section.settings.section_button_link
+%}
+
+{% schema %}
+{
+  "name": "Custom Liquid",
+  "tag": "section",
+  "class": "spaced-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Custom Liquid"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subheading"
+    },
+    {
+        "type": "liquid",
+        "id": "liquid_content",
+        "label": "Custom Liquid",
+        "default": "<p>Custom Liquid content.</p>"
+    },
+    {
+      "type": "select",
+      "id": "text_size",
+      "label": "Text size",
+      "options": [
+        {
+          "value": "sm",
+          "label": "Small"
+        },
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "lg",
+          "label": "Large"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+        "type": "select",
+        "id": "text_align",
+        "label": "Text align",
+        "options": [
+            {
+                "value": "left",
+                "label": "Left"
+            },
+            {
+                "value": "center",
+                "label": "Center"
+            },
+            {
+                "value": "right",
+                "label": "Right"
+            },
+            {
+                "value": "default",
+                "label": "Default"
+            }
+        ],
+        "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "content_width",
+      "label": "Content width",
+      "options": [
+        {
+          "value": "wide",
+          "label": "Wide"
+        },
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "alt",
+          "label": "Alternate"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "invert",
+          "label": "Inverted"
+        }
+      ],
+      "default": "default",
+      "label": "Color scheme"
+    },
+    {
+        "type": "header",
+        "content": "Button"
+    },
+    {
+        "type": "checkbox",
+        "id": "show_section_button",
+        "default": false,
+        "label": "Show button"
+    },
+    {
+        "type": "text",
+        "id": "section_button",
+        "label": "Button label" 
+    },
+    {
+        "type": "url",
+        "id": "section_button_link",
+        "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Liquid"
+    }
+  ]
+}
+{% endschema %}

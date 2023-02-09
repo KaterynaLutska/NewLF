@@ -1,0 +1,44 @@
+<noscript>
+    {%- form 'localization' -%}
+      <div class="#form-field">
+        <label class="#form-label" for="FooterCountryForm">{{ 'localization.country_label' | t }}</label>
+        <div class="#form-select">
+          <select name="locale_code" id="FooterCountryForm">
+            {% for country in localization.available_countries %}
+              <option value="{{ country.iso_code }}" {%- if country.iso_code==localization.country.iso_code -%}selected{%- endif -%}>{{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})</option>
+            {% endfor %}
+          </select>
+          {% render 'icon', name: 'chevron-down' %}
+        </div>
+      </div>
+      <button type="submit">{{ 'customer.login_page.submit' | t }}</button>
+    {%- endform -%}
+  </noscript>
+
+<div class="#form-field no-js-hidden">
+    <div class="#form-label">{{ 'localization.country_label' | t }}</div>
+    <localization-selector class="#form-custom-select">
+        <button data-trigger class="#form-custom-select-trigger">
+            <span data-trigger-text>{{ localization.country.name }} ({{ localization.country.currency.iso_code }} {{localization.country.currency.symbol }})</span>
+            {% render 'icon', name: 'chevron-down' %}
+        </button>
+        <div class="#form-custom-select-dropdown">
+            {%- form 'localization', id: 'FooterCountryForm', class: 'localization-form' -%}    
+                {% for country in localization.available_countries %}
+                    {%- assign id = 'FooterCountryForm-' | append: country.iso_code -%}
+                    <label class="#form-custom-select-item" for="{{ id }}">
+                        <input 
+                            class="#form-custom-select-item-input visually-hidden" 
+                            type="radio" 
+                            id="{{ id }}"
+                            name="country_code"
+                            value="{{ country.iso_code }}"
+                            {% if country.iso_code==localization.country.iso_code %}checked{% endif %}
+                        >
+                        <span class="#form-custom-select-item-inner">{{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})</span>    
+                    </label>
+                {% endfor %}
+            {%- endform -%}
+        </div>
+    </localization-selector>
+</div>

@@ -1,0 +1,19 @@
+<link rel="stylesheet" href="{{ 'image-card.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'image-card.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- capture Card_text -%}
+    <div class="#image-card-caption">
+        <h4 class="#image-card-heading">{{ heading }}</h4>
+        <p class="#image-card-subheading">{{ subheading }}</p>
+        {% render 'button',
+            text: button
+        %}
+    </div>
+{%- endcapture -%}
+
+<div class="#image-card">
+    {% render 'media',
+        image: image
+    %}
+    {{ Card_text }}
+</div>

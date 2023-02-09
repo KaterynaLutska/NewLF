@@ -1,0 +1,283 @@
+.\#hero {
+    font-size: calc(var(--font-size-base) * 1);
+    width: min(35em, 100%);
+    margin-left: auto;
+    margin-right: auto;
+    color: rgba(var(--color-text), 1);
+}
+
+.\#hero .\#button-group .\#button {
+    position: relative;
+    z-index: 22;
+}
+
+.\#hero-link {
+    position: absolute;
+    display: block;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+.\#hero.\@padded {
+    padding: 2rem;
+}
+
+.\#hero.\@color-scheme\:invert {
+    color: rgba(var(--color-background), 1);
+}
+
+.\#hero.\@color-scheme\:invert.\@background {
+    background-color: rgba(var(--color-text), 1);
+}
+
+.\#hero.\@color-scheme\:accent {
+    color: rgba(var(--color-accent-c), 1);
+}
+
+.\#hero.\@color-scheme\:accent.\@background {
+    background-color: rgba(var(--color-accent), 1);
+}
+
+.\#hero.\@color-scheme\:default {
+    color: rgba(var(--color-text), 1);
+}
+
+.\#hero.\@color-scheme\:default.\@background {
+    background: rgba(var(--color-background), 1);
+}
+
+.\#hero.\@color-scheme\:alt {
+    color: rgba(var(--color-text), 1);
+}
+
+.\#hero.\@color-scheme\:alt.\@background {
+    background: rgba(var(--color-alt-background), 1);
+}
+
+.\#hero.\@color-scheme\:inherit {
+    color: inherit;
+}
+
+.\#hero.\@color-scheme\:inherit.\@background {
+    background-color: inherit;
+}
+
+.\#hero.\@align\:left {
+    text-align: left;
+}
+
+.\#hero.\@align\:left .\#hero-newsletter {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+.\#hero.\@align\:center {
+    text-align: center;
+}
+
+.\#hero.\@align\:center .\#hero-newsletter {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.\#hero.\@align\:center .\#hero-newsletter-msg {
+    justify-content: center;
+}
+
+.\#hero.\@align\:center .\#hero-social .\#social-profiles {
+    justify-content: center;
+}
+
+.\#hero.\@align\:right {
+    text-align: right;
+}
+
+.\#hero.\@align\:right .\#hero-newsletter {
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.\#hero.\@align\:right .\#hero-newsletter-msg {
+    justify-content: flex-end;
+}
+
+.\#hero.\@align\:right .\#hero-social .\#social-profiles {
+    justify-content: flex-end;
+}
+
+.\#hero.\@spaced\:md > .\#hero-block + .\#hero-block {
+    margin-top: 0.5em;
+}
+
+.\#hero.\@spaced\:md :last-child.\#hero-block.\@spaced-block {
+    margin-top: 0.875em;
+}
+
+.\#hero.\@spaced\:lg > .\#hero-block + .\#hero-block {
+    margin-top: 1em;
+}
+
+.\#hero.\@spaced\:lg :last-child.\#hero-block.\@spaced-block {
+    margin-top: 1.75em;
+}
+
+.\#hero.\@spaced\:xl > .\#hero-block + .\#hero-block {
+    margin-top: 1.5em;
+}
+
+.\#hero.\@spaced\:xl :last-child.\#hero-block.\@spaced-block {
+    margin-top: 2.625em;
+}
+
+.\#hero.\@spaced\:sm > .\#hero-block + .\#hero-block {
+    margin-top: 0.165em;
+}
+
+.\#hero.\@spaced\:sm :last-child.\#hero-block.\@spaced-block {
+    margin-top: 0.28875em;
+}
+
+.\#hero.\@size\:xxs {
+    font-size: calc(var(--font-size-base) * 0.3);
+}
+
+.\#hero.\@size\:xs {
+    font-size: calc(var(--font-size-base) * 0.5);
+}
+
+.\#hero.\@size\:sm {
+    font-size: calc(var(--font-size-base) * 0.8);
+}
+
+.\#hero.\@size\:lg {
+    font-size: calc(var(--font-size-base) * 1.2);
+}
+
+.\#hero.\@size\:xl {
+    font-size: calc(var(--font-size-base) * 1.6);
+}
+
+.\#hero.\@size\:xxl {
+    font-size: calc(var(--font-size-base) * 2.2);
+}
+
+.\#hero-icon .\#icon {
+    cursor: pointer;
+    opacity: 0.64;
+    width: 5em;
+    height: 5em;
+}
+
+.\#hero-icon .\#icon:hover {
+    opacity: 1;
+}
+
+.\#hero-heading {
+    margin-bottom: 0;
+    font-size: 2.7em;
+}
+
+@media (max-width: 991px) {
+    .\#hero-heading {
+        font-size: 1.8em;
+    }
+}
+
+.\#hero-text {
+    opacity: 0.8;
+    font-size: clamp(0.85rem, 1.5em, 2rem);
+    line-height: 1.4;
+}
+
+@media (max-width: 991px) {
+    .\#hero-text {
+        font-size: clamp(0.85rem, 1.15em, 1.5rem);
+    }
+}
+
+.\#hero-text > p {
+    margin-bottom: 0.5em;
+}
+
+.\#hero-text > p:last-child {
+    margin-bottom: 0;
+}
+
+.\#hero-social .\#social-profiles {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.\#hero-social .\#social-profiles-item {
+    opacity: 0.64;
+    transition: 0.3s;
+}
+
+.\#hero-social .\#social-profiles-item:hover {
+    opacity: 1;
+}
+
+.\#hero-social .\#social-profiles-item .\#icon {
+    width: 1.5em;
+    height: 1.5em;
+}
+
+.\#hero-newsletter {
+    display: flex;
+    margin: 0 auto;
+    width: min(100%, 35rem);
+    border: 2px solid;
+    padding: calc(var(--spacer) * 0.5);
+    border-radius: calc(var(--spacer) * 2);
+}
+
+.\#hero-newsletter-msg {
+    gap: 0.5rem;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-weight: var(--font-body-weight-bold);
+    outline: none !important;
+}
+
+.\#hero-newsletter-msg .\#icon {
+    stroke-width: 3;
+}
+
+.\#hero-newsletter-msg.\@type\:success {
+    color: rgba(var(--color-success), 1);
+}
+
+.\#hero-newsletter-msg.\@type\:error {
+    color: rgba(var(--color-error), 1);
+}
+
+.\#hero-newsletter-input {
+    display: block;
+    flex-shrink: 0;
+    flex-grow: 1;
+    background: none;
+    border-radius: 3rem;
+    margin-right: calc(var(--spacer) * 0.5);
+    border: none;
+    outline: none !important;
+    color: inherit;
+    font-size: calc(var(--font-size-base) * 1.25);
+    padding-left: calc(var(--spacer) * 1);
+    padding-right: calc(var(--spacer) * 1);
+    padding-top: calc(var(--spacer) * 0.7);
+    padding-bottom: calc(var(--spacer) * 0.7);
+}
+
+.\#hero-newsletter-input::placeholder {
+    color: inherit;
+    opacity: 0.64;
+}
+
+.\#hero-newsletter-input:-webkit-autofill {
+    text-align: center;
+}

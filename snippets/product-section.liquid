@@ -1,0 +1,254 @@
+{{ 'product-gallery.css' | asset_url | stylesheet_tag }}
+
+{% liquid
+  assign product_slider_modal_id = 'productSliderModal-' | append: section.id
+  assign product_slider_id = 'productSlider-' | append: section.id
+  if product.selected_or_first_available_variant.featured_media.position != blank
+    assign initial_image_index = product.selected_or_first_available_variant.featured_media.position | minus: 1
+  endif
+  case section.settings.slideshow_size
+    when 'narrow'
+      assign slider_column = 6
+    when 'wide'
+      assign slider_column = 8
+    else
+      assign slider_column = 7
+  endcase
+  assign description_column = 12 | minus: slider_column
+%}
+
+{%- assign first_3d_model = product.media | where: "media_type", "model" | first -%}
+{%- if first_3d_model -%}
+  <link id="ModelViewerStyle" rel="stylesheet" href="https://cdn.shopify.com/shopifycloud/model-viewer-ui/assets/v1.0/model-viewer-ui.css" media="print" onload="this.media='all'">
+  <!-- <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script> -->
+{%- endif -%}
+
+{% if section.settings.slideshow_zoom %}
+  {%- capture Zoom_msg -%}
+    <div class="#product-gallery-zoom-msg">
+      {% render 'icon', name: 'zoom-in' %} <span>{{ 'products.product.media.click_to_expand' | t }}</span>
+    </div>
+  {%- endcapture -%}
+
+  {%- capture Modal_zoom_msg -%}
+    <div class="#product-gallery-zoom-msg">
+      {% render 'icon', name: 'zoom-in' %} <span>{{ 'products.product.media.double_click_zoom' | t }}</span>
+    </div>
+  {%- endcapture -%}
+
+  {% capture Model3d_zoom_msg %}
+    <div class="#product-gallery-zoom-msg">
+      <span>{{ 'products.product.media.scroll_zoom' | t }}</span>
+    </div>
+  {% endcapture %}
+
+  <template id="{{ product_slider_modal_id }}">
+    {% capture ModalSlides %}
+      {% for media in product.media %}
+        <div class="swiper-slide {% unless media.media_type == 'image' %}swiper-no-swiping{% endunless %}" data-media-type="{{ media.media_type }}">
+          {%- case media.media_type -%}
+            {%- when 'video' -%}
+              {%- capture video_tag -%}{{ media | video_tag }}{%- endcapture -%}
+              <div class="#product-gallery-item">
+                {% render 'video-player', video_tag: video_tag %}
+              </div>
+            {%- when 'external_video' -%}
+              {%- capture external_tag -%}{{ media | external_video_tag }}{%- endcapture -%}
+              <div class="#product-gallery-item">
+                {% render 'video-player', external_tag: external_tag %}
+              </div>
+            {%- when 'model' -%}
+              <div class="#product-gallery-item">
+                <div class="#product-gallery-item-3dmodel">
+                  {{ media | model_viewer_tag }}
+                  {{ Model3d_zoom_msg }}
+                </div>
+              </div>
+            {%- else -%}
+            <div class="swiper-zoom-container" data-zoom-slide>
+              <img src="{{ media | image_url }}" loading="lazy" alt="{{ media.alt }}">
+            </div>
+          {%- endcase -%}
+        </div>
+      {% endfor %} 
+    {% endcapture %}
+    <div class="#slideshow-product-popup" style="--swiper-navigation-size: 25px;">
+      <div class="#product-gallery">
+        {% render 'slider',
+          slides: ModalSlides,
+          sync: product_slider_id,
+          thumbs_class: 'hide-mobile',
+          navigation_type: 'buttons',
+          pagination_class: 'hide-desktop',
+          zoom: true,
+          after: Modal_zoom_msg,
+          observe_slide_type: true
+        %}
+      </div>
+    </div>
+  </template>
+{% endif %}
+
+{%- capture Gallery -%}
+<div class="#column @span:{{ slider_column }} @span:mobile:12">
+  <div class="#product-gallery {% if section.settings.gallery_padding %}@padded{% endif %} {% if section.settings.enable_sticky_info %}sticky-top{% endif %}">
+    {%- if product.media.size > 1 -%}
+      {% capture Slides %}
+        {% for media in product.media %}
+          <div class="swiper-slide {% unless media.media_type == 'image' %}swiper-no-swiping{% endunless %}" data-media-type="{{ media.media_type }}">
+            <div class="#product-gallery-item">
+              {%- case media.media_type -%}
+                {%- when 'video' -%}
+                  {%- capture video_tag -%}{{ media | video_tag }}{%- endcapture -%}
+                  {% render 'video-player', video_tag: video_tag %}
+                {%- when 'external_video' -%}
+                  {%- capture external_tag -%}{{ media | external_video_tag }}{%- endcapture -%}
+                  {% render 'video-player', external_tag: external_tag %}
+                {% when 'model' %}
+                  <div class="#product-gallery-item-3dmodel">
+                    {{ media | model_viewer_tag: ar-modes: "webxr scene-viewer quick-look", ar: 'true' }}
+                    {{ Model3d_zoom_msg }}
+                  </div>
+                {%- else -%}
+                  {% render 'media',
+                    image: media,
+                    image_resolution_div: 1.5,
+                    image_origin_res: true,
+                    size: section.settings.image_ratio
+                  %}
+                  {%- if section.settings.slideshow_zoom -%}
+                    <modal-trigger class="#product-gallery-item-modal-link" target="#{{ product_slider_modal_id }}" layout="full"></modal-trigger>    
+                  {%- endif -%}
+              {%- endcase -%}
+            </div>
+          </div>
+        {% endfor %}
+      {% endcapture %}
+      {% capture Thumbs %}
+        {%- if section.settings.slideshow_thumbs_position != 'none' -%}
+          {%- for media in product.media -%}
+            {% if media.media_type == 'image' %}
+              {%- assign image = media -%}  
+            {% else %}
+              {%- assign image = media.preview_image -%}
+            {% endif %}
+            <div class="#slideshow-thumbnails-item" data-item="{{ forloop.index0 }}">
+              {% render 'media',
+                image: image,
+                aspect_ratio: '1x1',
+                image_resolution: 50,
+                position: 'center'
+              %}
+              {% if media.media_type == 'video' or media.media_type == 'external_video' %}
+                <div class="#slideshow-thumbnails-item-icon">
+                  {% render 'icon', name: 'play' %}
+                </div>
+              {% endif %}
+              {% if media.media_type == 'model' %}
+                <div class="#slideshow-thumbnails-item-icon">
+                  {% render 'icon', name: 'cube' %}
+                </div>
+              {% endif %}
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      {% endcapture %}
+      {% unless section.settings.slideshow_thumbs_position == 'none' %}
+        {% assign pagination_class = 'hide-desktop' %}
+        {% assign navigation_class = 'hide-desktop' %}
+      {% endunless %}
+      {% if first_3d_model %}
+        {%- assign navigation_type = 'pagination_buttons' -%}
+      {% else %}
+        {%- assign navigation_type = 'pagination' -%}
+      {% endif %}
+      <slides-variant-changer section-id="{{ section.id }}">
+        {% render 'slider',
+          slides: Slides,
+          thumbs: Thumbs,
+          thumbs_position: section.settings.slideshow_thumbs_position,
+          id: product_slider_id,
+          initial_slide: initial_image_index,
+          thumbs_class: 'hide-mobile',
+          navigation_type: navigation_type,
+          pagination_class: pagination_class,
+          navigation_class: navigation_class,
+          after: Zoom_msg,
+          observe_slide_type: true
+        %}
+      </slides-variant-changer>
+      {%- unless product.has_only_default_variant -%}
+        <script type="module" src="{{ 'slides-variant-changer.js' | asset_url }}"></script>  
+      {%- endunless -%}
+    {%- else -%}
+      {%- render 'media',
+        image: product.featured_image
+      -%}
+    {%- endif -%} 
+  </div>
+</div>
+{%- endcapture -%}
+
+{%- capture Description -%}
+  <div class="#column @span:{{ description_column }} @span:mobile:12">
+    {% render 'product-meta',
+      align: section.settings.content_align,
+      color_scheme: section.settings.color_scheme,
+      product: product
+    %}
+  </div>
+{%- endcapture -%}
+
+<div class="#grid @strict {% if section.settings.slideshow_position == 'right' %}@reverse:desktop{% endif %}" style="--grid-gap: 0;">
+  {{ Gallery }}
+  {{ Description }}
+</div>
+
+{%- if first_3d_model -%}
+  <!-- <script type="module" src="{{ 'product-model.js' | asset_url }}"></script> -->
+{%- endif -%}
+
+{%- liquid
+  if product.selected_or_first_available_variant.featured_media
+    assign seo_media = product.selected_or_first_available_variant.featured_media
+  else
+    assign seo_media = product.featured_media
+  endif
+-%}
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org/",
+    "@type": "Product",
+    "name": {{ product.title | json }},
+    "url": {{ shop.url | append: product.url | json }},
+    {% if seo_media -%}
+      {%- assign media_size = seo_media.preview_image.width | append: 'x' -%}
+      "image": [
+        {{ seo_media | img_url: media_size | prepend: "https:" | json }}
+      ],
+    {%- endif %}
+    "description": {{ product.description | strip_html | json }},
+    {% if product.selected_or_first_available_variant.sku != blank -%}
+      "sku": {{ product.selected_or_first_available_variant.sku | json }},
+    {%- endif %}
+    "brand": {
+      "@type": "Thing",
+      "name": {{ product.vendor | json }}
+    },
+    "offers": [
+      {%- for variant in product.variants -%}
+        {
+          "@type" : "Offer",
+          {%- if variant.sku != blank -%}
+            "sku": {{ variant.sku | json }},
+          {%- endif -%}
+          "availability" : "http://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
+          "price" : {{ variant.price | divided_by: 100.00 | json }},
+          "priceCurrency" : {{ cart.currency.iso_code | json }},
+          "url" : {{ shop.url | append: variant.url | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  }
+</script>

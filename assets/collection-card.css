@@ -1,0 +1,28 @@
+.\#collection-card {
+    display: block;
+    position: relative;
+}
+
+.\#collection-card:hover .\#collection-card-title {
+    opacity: 1;
+}
+
+.\#collection-card.\@align\:left .\#collection-card-body {
+    text-align: left;
+}
+
+.\#collection-card.\@align\:center .\#collection-card-body {
+    text-align: center;
+}
+
+.\#collection-card.\@align\:right .\#collection-card-body {
+    text-align: right;
+}
+
+.\#collection-card-body {
+    margin-top: calc(var(--spacer) * 1.2);
+}
+
+.\#collection-card-title {
+    opacity: 0.8;
+}

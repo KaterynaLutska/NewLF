@@ -1,0 +1,28 @@
+.\#product-meta-reviews {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.\#product-meta-reviews-stars {
+    color: rgba(var(--color-star-rating), 1);
+    display: flex;
+    gap: 0.25rem;
+}
+
+.\#product-meta-reviews-stars .\#icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.\#product-meta-reviews-count {
+    line-height: 1;
+}
+
+.\#product-meta-reviews-count-value {
+    font-weight: var(--font-body-weight-bold);
+}
+
+.\#product-meta-reviews-count-title {
+    opacity: 0.64;
+}

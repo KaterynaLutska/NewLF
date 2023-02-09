@@ -1,0 +1,157 @@
+{{ 'form.css' | asset_url | stylesheet_tag }}
+{{ 'contact-form.css' | asset_url | stylesheet_tag }}
+
+
+{%- capture Content -%}
+  <div class="#contact-form"> 
+    {%- form 'contact', id: 'ContactForm' -%}
+      {%- if form.posted_successfully? -%}
+        <p class="form-status form-status-list form__message" tabindex="-1" autofocus>{{ 'templates.contact.form.post_success' | t }}</p>
+      {%- elsif form.errors -%}
+        <div class="#form-alert @error" tabindex="-1" autofocus>
+          {% render 'icon', name: 'alert' %}
+          <div class="#form-alert-body">
+            <h4 class="#form-alert-heading">
+              {{ 'templates.contact.form.error_heading' | t }}
+            </h4>
+            <div class="#form-alert-content">
+              <ul>
+                {% for field in form.errors %}
+                  <li>
+                    {% if field == 'form' %}
+                      {{ form.errors.messages[field] }}
+                    {% else %}
+                      <a href="#RegisterForm-{{ field }}">
+                        {{ form.errors.translated_fields[field] | capitalize }}
+                        {{ form.errors.messages[field] }}
+                      </a>
+                    {% endif %}
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div> 
+      {%- endif -%}
+      <div class="#grid @strict">
+        <div class="#column @span:6 @span:mobile:12">
+          <div class="#form-field @color-scheme:{{ section.settings.color_scheme }}">
+            <label class="#form-label" for="ContactForm-name">{{ 'templates.contact.form.name' | t }}</label>
+            <input class="#form-input" autocomplete="name" type="text" id="ContactForm-name" name="contact[{{ 'templates.contact.form.name' | t }}]" value="{% if form.name %}{{ form.name | escape }}{% elsif customer %}{{ customer.name | escape }}{% endif %}" placeholder="{{ 'templates.contact.form.name' | t }}">
+          </div>
+        </div>
+        <div class="#column @span:6 @span:mobile:12">
+          <div class="#form-field @color-scheme:{{ section.settings.color_scheme }}">
+            <label class="#form-label" for="ContactForm-email">{{ 'templates.contact.form.email' | t }} <span aria-hidden="true">*</span></label>
+            <input
+              autocomplete="email"
+              type="email"
+              id="ContactForm-email"
+              class="#form-input"
+              name="contact[email]"
+              spellcheck="false"
+              autocapitalize="off"
+              value="{% if form.email %}{{ form.email | escape }}{% elsif customer %}{{ customer.email | escape }}{% endif %}"
+              aria-required="true"
+              {% if form.errors contains 'email' %}
+                aria-invalid="true"
+                aria-describedby="ContactForm-email-error"
+              {% endif %}
+              placeholder="{{ 'templates.contact.form.email' | t }}"
+            >
+            {%- if form.errors contains 'email' -%}
+              <div class="#form-field-error" id="ContactForm-email-error">
+                {% render 'icon', name: 'alert' %}
+                <span class="#form-field-error-text">
+                  {{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}.
+                </span>
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+        <div class="#column @span:12">
+          <div class="#form-field @color-scheme:{{ section.settings.color_scheme }}">
+            <label class="#form-label" for="ContactForm-body">{{ 'templates.contact.form.comment' | t }}</label>
+            <textarea
+            rows="10"
+            id="ContactForm-body"
+            class="#form-input"
+            name="contact[{{ 'templates.contact.form.comment' | t }}]"
+            placeholder="{{ 'templates.contact.form.comment' | t }}"
+          >
+            {{- form.body -}}
+          </textarea>
+          </div>
+        </div>
+        <div class="#column @span:12">
+          <div class="flex-center">
+            {% render 'button',
+              type: 'submit',
+              t_text: 'templates.contact.form.send',
+              color: section.settings.color_scheme
+            %}
+          </div>
+        </div>
+      </div>
+    {%- endform -%}
+  </div>
+{%- endcapture -%}
+
+{% render 'section-body',
+  content: Content,
+  spaced: true,
+  container: true,
+  title: section.settings.heading,
+  subtitle: section.settings.subheading,
+  color_scheme: section.settings.color_scheme
+%}
+
+{% schema %}
+{
+  "name": "t:sections.contact-form.name",
+  "tag": "section",
+  "class": "spaced-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Contact form",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "alt",
+          "label": "Alternate"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "invert",
+          "label": "Inverted"
+        }
+      ],
+      "default": "default",
+      "label": "Color scheme"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.contact-form.presets.name"
+    }
+  ]
+}
+{% endschema %}

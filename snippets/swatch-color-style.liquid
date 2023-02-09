@@ -1,0 +1,13 @@
+{% comment %}
+    Props
+        - value
+{% endcomment %}
+{%- liquid
+    assign img_file_name = value | handleize | append: '.png'
+    assign swatch_image = img_file_name | file_img_url: '50x50'
+    if swatch_image contains '?v='
+        echo 'background-image:url(' | append: swatch_image | append: ');'
+    else
+        echo 'background-color:' | append: value | strip | split: ' ' | last | downcase  | append: ';'
+    endif
+-%}

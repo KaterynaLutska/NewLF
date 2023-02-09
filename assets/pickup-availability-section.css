@@ -1,0 +1,51 @@
+.\#pickup-availability-section-header {
+    border-bottom: 1px solid rgba(var(--color-border), 1);
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.3333333333rem;
+}
+
+.\#pickup-availability-section-header-image {
+    width: 75px;
+}
+
+.\#pickup-availability-section-heading {
+    font-size: 1.12rem;
+}
+
+.\#pickup-availability-section-subheading {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+    margin-top: 0.2rem;
+    opacity: 0.64;
+}
+
+.\#pickup-availability-section-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.\#pickup-availability-section-item {
+    padding: 2rem;
+}
+
+.\#pickup-availability-section-item:not(:last-child) {
+    border-bottom: 1px solid rgba(var(--color-border), 1);
+}
+
+.\#pickup-availability-section-item-status {
+    margin-bottom: 0;
+    margin-top: 0.7rem;
+}
+
+.\#pickup-availability-section-item-status .\#icon {
+    stroke-width: 2.5;
+    color: rgba(var(--color-success), 1);
+    margin-right: 0.3rem;
+}
+
+.\#pickup-availability-section-item-address {
+    margin-top: 0.7rem;
+}

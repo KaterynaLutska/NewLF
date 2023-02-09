@@ -1,0 +1,76 @@
+
+{{ 'product-variant-picker.css' | asset_url | stylesheet_tag }}
+
+{%- assign selector_id = section.id | append: 'variant-selector' -%}
+{%- assign color_option = settings.color_swatches_options | split: ',' | handleize -%}
+
+<product-option-picker 
+  url="{{ product.url }}" 
+  section-id="{{ section.id }}" 
+  current-variant="{{ product.selected_or_first_available_variant.id }}" 
+  page-type="{{ request.page_type }}"
+>
+  {%- for product_option in product.options_with_values -%}
+    {%- assign option_handle = product_option.name | handleize -%}
+    {%- case picker_type -%}
+      {%- when 'dropdown' -%}
+          {%- if color_option contains option_handle -%}
+            {%- capture color_picker -%}
+              {%- if color_as_swatches -%}
+                <div>
+                  {%- render 'product-variant-swatches'
+                    product_option: product_option
+                    field_type: 'color_swatch'
+                  -%}
+                </div>
+              {%- else -%}
+                {%- render 'product-option', product_option: product_option -%}
+              {%- endif -%}
+            {%- endcapture -%}
+          {%- else -%}
+            {%- capture options_pickers -%}
+              {{ captured_picker }}
+              {%- render 'product-option', product_option: product_option -%}
+            {%- endcapture -%}
+            
+            {%- capture captured_picker -%} 
+              {%- render 'product-option', product_option: product_option -%}
+            {%- endcapture -%}
+          {%- endif -%}
+      
+      {%- when 'swatches' -%}
+        {%- if color_option contains option_handle -%}
+          {%- capture color_picker -%}
+            <div class="#product-meta-variant-swatches">
+              {%- render 'product-variant-swatches'
+                product_option: product_option
+                field_type: 'color_swatch'
+              -%}
+            </div>
+          {%- endcapture -%}
+        {%- else -%}
+          {%- capture options_pickers -%}
+            {{ options_pickers }}
+            <div class="#product-meta-variant-swatches">
+              {% render 'product-variant-swatches'
+                product_option: product_option
+                field_type: 'swatch'
+              %}
+            </div>
+          {%- endcapture -%}
+        {%- endif -%}
+      {%- endcase -%}
+  {%- endfor -%}
+
+  {{ color_picker }}
+  {{ options_pickers }}
+
+  <script type="application/json" data-variants-json>
+    {{ product.variants | json }}
+  </script>
+  <script type="application/json" data-options-with-values>
+    {{ product.options_with_values | json }}
+  </script>
+</product-option-picker>
+
+<script type="module" src="{{ 'product-option-picker.js' | asset_url }}"></script>

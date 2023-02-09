@@ -1,0 +1,225 @@
+<link rel="stylesheet" href="{{ 'collection-card.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'collection-card.css' | asset_url | stylesheet_tag }}</noscript>
+
+{% capture Content %}
+  <div class="#grid @gap:{{ section.settings.gutter }} {% if section.settings.swipe_on_mobile %}@mobile-overlap{% else %}@mobile:columns:1{% endif %} @container @columns:{{ section.settings.columns }}">
+    {% assign placeholder_index = 1 %}
+    {% for block in section.blocks %}
+    {%- capture placeholder_index -%}{%- cycle 1, 2, 3, 4, 5, 6 -%}{%- endcapture -%}
+      <div class="#column reveal-animate" style="--reveal-index: {{ forloop.index }}">
+        {% render 'collection-card',
+          collection: block.settings.collection,
+          custom_image: block.settings.image,
+          placeholder_index: placeholder_index,
+          image_size: section.settings.image_size,
+          columns: section.settings.columns,
+          media_hover_zoom: section.settings.hover_zoom,
+          align: section.settings.text_align
+        %}
+      </div>
+    {% endfor %}
+  </div>
+{% endcapture %}
+
+{% if section.settings.show_section_button %}
+  {%- assign section_button = section.settings.section_button -%}
+{% endif %}
+
+{% render 'section-body',
+  content: Content,
+  container: false,
+  spaced: true,
+  title: section.settings.title,
+  subtitle: section.settings.subtitle,
+  button: section_button,
+  button_link: routes.collections_url,
+  color_scheme: section.settings.color_scheme
+%}
+
+{% schema %}
+{
+  "name": "t:sections.collection-list.name",
+  "tag": "section",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "default": "Collections",
+      "label": "t:sections.collection-list.settings.title.label"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subheading"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "alt",
+          "label": "Alternate"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "invert",
+          "label": "Inverted"
+        }
+      ],
+      "default": "alt",
+      "label": "Color scheme"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns",
+      "min": 3,
+      "max": 6,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "select",
+      "id": "gutter",
+      "label": "Space between",
+      "options": [
+      {
+         "value": "sm",
+         "label": "Small"
+      },
+      {
+         "value": "md",
+         "label": "Medium"
+      },
+      {
+         "value": "lg",
+         "label": "Large"
+      }
+      ],
+      "default": "md"
+   },
+   {
+    "type": "select",
+    "id": "text_align",
+    "label": "Text alignment",
+    "options": [
+      {
+        "value": "left",
+        "label": "Left"
+      },
+      {
+        "value": "center",
+        "label": "Center"
+      },
+      {
+        "value": "right",
+        "label": "Right"
+      }
+    ],
+    "default": "center"
+  },
+    {
+      "type": "select",
+      "id": "image_size",
+      "options": [
+        {
+          "value": "circle",
+          "label": "Circle"
+        },
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "landscape",
+          "label": "Landscape"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait"
+        }
+      ],
+      "default": "circle",
+      "label": "Image style",
+      "info": "t:sections.collection-list.settings.image_ratio.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "hover_zoom",
+      "default": true,
+      "label": "Enable image zoom on hover"
+    },
+    {
+      "type": "checkbox",
+      "id": "swipe_on_mobile",
+      "default": true,
+      "label": "Enable carousel on mobile",
+      "info": "Note: swipe functionality not active in theme editor"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_section_button",
+      "default": true,
+      "label": "Show button"
+    },
+    {
+      "type": "text",
+      "id": "section_button",
+      "label": "Button label",
+      "default": "All Collections"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "featured_collection",
+      "name": "t:sections.collection-list.blocks.featured_collection.name",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "t:sections.collection-list.blocks.featured_collection.settings.collection.label"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Custom image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.collection-list.presets.name",
+      "blocks": [
+        {
+          "type": "featured_collection"
+        },
+        {
+          "type": "featured_collection"
+        },
+        {
+          "type": "featured_collection"
+        },
+        {
+          "type": "featured_collection"
+        },
+        {
+          "type": "featured_collection"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

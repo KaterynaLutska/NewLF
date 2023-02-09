@@ -1,0 +1,9 @@
+.\#main-header-sticky {
+    display: block;
+    position: absolute;
+    top: 0;
+    height: 50vh;
+    left: 0;
+    width: 0;
+    pointer-events: none;
+}

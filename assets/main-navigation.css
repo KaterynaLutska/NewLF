@@ -1,0 +1,282 @@
+.\#main-nav-megamenu, .\#main-nav-submenu, .\#main-nav-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.\#main-nav-megamenu-heading-link, .\#main-nav-megamenu > li > a, .\#main-nav-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.\#main-nav-megamenu-heading-link:hover, .\#main-nav-megamenu > li > a:hover, .\#main-nav-link:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+.\#main-nav-wrapper .\#main-nav-dropdown:not(.\@mega) {
+    width: 12rem;
+}
+
+.\#main-nav-wrapper .\#main-nav-dropdown {
+    position: absolute;
+    z-index: 5;
+    background-color: var(--main-header-color-dropdown-background);
+    color: var(--main-header-color-dropdown-text);
+    transition: 0.3s;
+    opacity: 0;
+    pointer-events: none;
+    transition-property: opacity, transform;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.\#main-nav-wrapper .\#main-nav-dropdown.\@mega, .\#main-nav-wrapper .\#main-nav-dropdown.\@root {
+    top: calc(100% + 1px);
+    left: 0;
+}
+
+.\#main-nav-wrapper .\#main-nav-dropdown.\@sub {
+    top: -0.5rem;
+    left: calc(100% + 1px);
+}
+
+.\#main-nav-wrapper .\#main-nav-dropdown.\@mega {
+    width: 100%;
+    padding: calc(var(--spacer) * 3);
+}
+
+.\#main-nav-item:focus-within > .\#main-nav-dropdown, .\#main-nav-item:hover > .\#main-nav-dropdown {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) translateX(0);
+}
+
+.\#main-nav {
+    display: block;
+}
+
+.\#modal-popup .\#main-nav {
+    padding-left: calc(var(--spacer) * 2);
+    padding-right: calc(var(--spacer) * 2);
+}
+
+.\#main-nav.\@text-size\:sm {
+    font-size: 0.8rem;
+}
+
+.\#main-nav.\@text-size\:md {
+    font-size: 1rem;
+}
+
+.\#main-nav.\@text-size\:lg {
+    font-size: 1.2rem;
+}
+
+.\#main-nav-container {
+    margin-top: calc(var(--spacer) * 1.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 991px) {
+    .\#main-nav-container {
+        padding-top: calc(var(--spacer) * 1.7);
+        margin-top: 0;
+    }
+}
+
+.\#main-nav-toolbar {
+    display: none;
+}
+
+.\#main-nav-toolbar-link {
+    position: relative;
+}
+
+.\#main-nav-toolbar-link .\#icon {
+    stroke-width: 2;
+    flex-shrink: 0;
+    width: 1.5em;
+    height: 1.5em;
+}
+
+.\#main-nav-wrapper .\#main-nav-menu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.\#main-nav-item.\@dropdown {
+    position: relative;
+}
+
+.\#main-nav-item.\@dropdown-mega {
+    position: static;
+}
+
+.\#modal-popup .\#main-nav-item.\@root {
+    border-bottom: 1px solid #d9d9d9;
+}
+
+.\#main-nav-link {
+    display: block;
+    transition: 0.3s;
+    text-transform: uppercase;
+    font-weight: var(--font-body-weight-bold);
+    display: flex;
+    align-items: center;
+}
+
+.\#main-nav-link .\#icon {
+    flex-shrink: 0;
+    margin-left: 0.3em;
+    stroke-width: 3;
+    width: 1em;
+    height: 1em;
+}
+
+.\#modal-popup .\#main-nav-link {
+    justify-content: space-between;
+}
+
+.\#main-nav-wrapper .\#main-nav-link {
+    opacity: 0.8;
+}
+
+.\#main-nav-item:hover > .\#main-nav-link {
+    opacity: 1;
+}
+
+.\#main-nav-link.\@root {
+    font-size: 1.2em;
+    letter-spacing: 0.05em;
+}
+
+.\#main-nav-wrapper .\#main-nav-link.\@root {
+    justify-content: center;
+    padding: 1rem 1.2rem;
+}
+
+.\#modal-popup .\#main-nav-link.\@root {
+    padding: 1.3rem 0;
+}
+
+.\#main-nav-item.\@root:hover > .\#main-nav-link.\@root {
+    background-color: var(--main-header-color-dropdown-background);
+    color: var(--main-header-color-dropdown-text);
+}
+
+.\#main-nav-item.\@root:focus-within > .\#main-nav-link.\@root {
+    background-color: var(--main-header-color-dropdown-background);
+    color: var(--main-header-color-dropdown-text);
+}
+
+.\#main-nav-wrapper .\#main-nav-link.\@sub {
+    font-size: 0.9em;
+    padding: 0.5rem 1.2rem;
+    justify-content: space-between;
+}
+
+.\#main-nav-wrapper .\#main-nav-link.\@sub .\#icon {
+    transform: rotate(-90deg);
+}
+
+.\#modal-popup .\#main-nav-link.\@sub {
+    font-size: 1.1em;
+    padding: 0.7rem 0;
+}
+
+.\#main-nav-submenu {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.\#main-nav-megamenu > li + li {
+    margin-top: 0.35em;
+}
+
+.\#main-nav-megamenu > li > a {
+    opacity: 0.8;
+}
+
+.\#main-nav-megamenu > li > a:hover {
+    opacity: 1;
+}
+
+.\#modal-popup .\#main-nav-megamenu > li > a {
+    font-size: calc(var(--font-size-base) * 1.2);
+}
+
+.\#main-nav-wrapper .\#main-nav-megamenu-wrapper {
+    width: min(1200px, 100%);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.\#modal-popup .\#main-nav-megamenu-wrapper {
+    padding-top: calc(var(--spacer) * 0.5);
+}
+
+.\#main-nav-megamenu-heading {
+    margin-bottom: calc(var(--spacer) * 0.7);
+}
+
+.\#main-nav-megamenu-heading-link {
+    text-transform: uppercase;
+    font-weight: var(--font-body-weight-bold);
+}
+
+.\#main-nav-wrapper .\#main-nav-megamenu-heading {
+    font-size: calc(var(--font-size-base) * 1);
+}
+
+.\#modal-popup .\#main-nav-megamenu-heading {
+    font-size: calc(var(--font-size-base) * 1.1);
+}
+
+.\#modal-popup .\#main-nav-dropdown {
+    display: none;
+    padding-left: calc(var(--spacer) * 1.5);
+}
+
+.\#modal-popup .\#main-nav-dropdown:not(.\@sub) {
+    padding-top: calc(var(--spacer) * 1);
+    padding-bottom: calc(var(--spacer) * 1);
+    border-top: 1px solid #d9d9d9;
+}
+
+.\#modal-popup .\#main-nav-dropdown.\!active {
+    display: block;
+}
+
+.\#modal-popup .\#main-nav-dropdown.\@mega .\#row {
+    margin: 0;
+    flex-direction: column;
+}
+
+.\#modal-popup .\#main-nav-dropdown.\@mega .\#row .\#col {
+    width: 100%;
+    margin: 0;
+    padding: 0 0 calc(var(--spacer) * 1.5) 0;
+}
+
+.\#main-nav-wrapper .\#main-nav-link.\@drop-reverse + .\#main-nav-dropdown.\@root {
+    right: 0;
+    left: auto;
+}
+
+.\#main-nav-wrapper .\#main-nav-link.\@drop-reverse + .\#main-nav-dropdown.\@root .\#main-nav-link {
+    flex-direction: row-reverse;
+}
+
+.\#main-nav-wrapper .\#main-nav-link.\@drop-reverse + .\#main-nav-dropdown.\@root .\#main-nav-link .\#icon {
+    margin-left: 0;
+    margin-right: 0.3em;
+    transform: rotate(90deg);
+}
+
+.\#main-nav-wrapper .\#main-nav-link.\@drop-reverse + .\#main-nav-dropdown.\@root .\#main-nav-dropdown {
+    left: auto;
+    right: calc(100% + 1px);
+}

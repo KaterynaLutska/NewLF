@@ -1,0 +1,7 @@
+<product-price section-id="{{ section.id }}">
+    <p data-value>{{ variant.price | money }}</p>
+</product-price>
+
+<product-price-button section-id="{{ section.id }}">Click me</product-price-button>
+
+<script type="module" src="{{ 'product-price.js' | asset_url }}"></script>

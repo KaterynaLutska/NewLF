@@ -1,0 +1,20 @@
+<posted-popup section-id="{{ section.id }}">
+    <template id="postedPopup" section-id="{{ section.id }}">
+        <div class="#newsletter-success-popup">
+            <div class="#newsletter-success-popup-icon">
+                {% render 'icon', name: 'check' %}
+            </div>
+            <h3 class="#newsletter-success-popup-msg">
+                {{ 'newsletter.success' | t }}
+            </h3>
+            <modal-close class="#newsletter-success-popup-close">
+                {% render 'button',
+                    t_text: 'general.continue_shopping',
+                    color: 'default',
+                    show_arrow: true
+                %}
+            </modal-close>
+        </div>
+    </template>
+</posted-popup>
+<script type="module" src="{{ 'newsletter-customer-posted.js' | asset_url }}"></script>

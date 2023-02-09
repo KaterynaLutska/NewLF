@@ -1,0 +1,44 @@
+.spr-content .new-review-form {
+    width: min(600px, 100%);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.spr-content .spr-form-input-text,
+.spr-content .spr-form-input-email,
+.spr-content .spr-form-input-textarea {
+    padding: 0.5rem;
+    font-size: 1rem;
+}
+
+.spr-content .spr-form-label {
+    text-transform: uppercase;
+    opacity: 0.8;
+    margin-bottom: 0.3rem;
+    display: block;
+    font-size: 0.8rem;
+}
+
+.spr-content .spr-form-title {
+    margin-bottom: 1.5rem;
+}
+
+.spr-content .spr-form-contact-name, .spr-content .spr-form-contact-email, .spr-content .spr-form-contact-location, .spr-content .spr-form-review-rating, .spr-content .spr-form-review-title, .spr-content .spr-form-review-body {
+    margin-block-end: 1.5rem;
+}
+
+.spr-content .spr-form-input-textarea {
+    font-family: inherit;
+}
+
+.spr-content .spr-form-actions {
+    text-align: center;
+}
+
+.spr-content .spr-button-primary {
+    float: none;
+}
+
+.spr-review-content-body {
+    font-size: 1.15rem;
+}

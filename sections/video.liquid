@@ -1,0 +1,115 @@
+{%- if section.settings.mp4_video != blank -%}
+    {% capture video_tag %}
+    <video>
+        <source src="{{ section.settings.mp4_video }}" type="video/mp4" />
+    </video>
+    {% endcapture %}
+{% else %}
+    {% assign video_tag = false %}
+    {% assign external_video = section.settings.video %}   
+{%- endif -%}
+
+{% capture Content %}
+    {% render 'video-player', video: external_video, video_tag: video_tag %}
+{% endcapture %}
+
+{% if section.settings.show_section_button %}
+  {%- assign section_button = section.settings.section_button -%}
+{% endif %}
+
+
+{% render 'section-body',
+    title: section.settings.title,
+    subtitle: section.settings.subtitle,
+    content: Content,
+    spaced: true,
+    container: true,
+    color_scheme: section.settings.color_scheme,
+    button: section_button,
+    button_link: section.settings.section_button_link
+%}
+
+{% schema %}
+{
+  "name": "Video",
+  "tag": "section",
+  "class": "spaced-section spaced-section--full-width",
+  "settings": [
+    {
+        "type": "text",
+        "id": "title",
+        "default": "Video section",
+        "label": "t:sections.collection-list.settings.title.label"
+    },
+    {
+        "type": "text",
+        "id": "subtitle",
+        "label": "Subheading"
+    },
+    {
+        "type": "select",
+        "id": "color_scheme",
+        "options": [
+          {
+            "value": "default",
+            "label": "Default"
+          },
+          {
+            "value": "alt",
+            "label": "Alternate"
+          },
+          {
+            "value": "accent",
+            "label": "Accent"
+          },
+          {
+            "value": "invert",
+            "label": "Inverted"
+          }
+        ],
+        "default": "alt",
+        "label": "Color scheme"
+      },
+    {
+      "type": "video_url",
+      "id": "video",
+      "label": "Vimeo/Youtube link",
+      "accept": [
+        "youtube",
+        "vimeo"
+      ],
+      "default": "https://www.youtube.com/watch?v=_9VUPq3SxOc"
+    },
+    {
+      "type": "text",
+      "id": "mp4_video",
+      "label": "MP4 video link"
+    },
+    {
+        "type": "header",
+        "content": "Button"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_section_button",
+        "default": true,
+        "label": "Show button"
+      },
+      {
+        "type": "text",
+        "id": "section_button",
+        "label": "Button label"
+      },
+      {
+        "type": "url",
+        "id": "section_button_link",
+        "label": "Button link"
+      }
+  ],
+  "presets": [
+    {
+      "name": "Video"
+    }
+  ]
+}
+{% endschema %}

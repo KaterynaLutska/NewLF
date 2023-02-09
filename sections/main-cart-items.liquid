@@ -1,0 +1,40 @@
+{{ 'cart.css' | asset_url | stylesheet_tag }}
+
+{% capture Content %}
+  <div class="#cart-empty" {% if cart != empty %}hidden{% endif %}>
+      <div class="#cart-empty-icon">
+        {% render 'icon', name: 'cart' %}
+      </div>
+      <h2 class="#cart-empty-title">{{ 'sections.cart.empty' | t }}</h2>
+      {% assign continue_shopping_text = 'general.continue_shopping' | t %}
+      {% render 'button',
+         link: routes.all_products_collection_url,
+         text: continue_shopping_text,
+         color: 'dark'
+      %}
+  </div>
+  <div class="#cart-table-wrapper" {% if cart == empty %}hidden{% endif %}>
+    <form action="{{ routes.cart_url }}" method="post" id="cart-form">
+      {% render 'cart-table' %}
+    </form>
+  </div>
+{% endcapture %}
+
+
+{% render 'section-body',
+  content: Content
+%}
+
+{% schema %}
+{
+  "name": "t:sections.main-cart-items.name",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": false,
+      "label": "t:sections.main-cart-items.settings.show_vendor.label"
+    }
+  ]
+}
+{% endschema %}

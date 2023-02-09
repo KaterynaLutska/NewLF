@@ -1,0 +1,72 @@
+<noscript>
+  {%- form 'localization' -%}
+    <div class="#form-field">
+      <label class="#form-label" for="FooterLanguageForm">{{ 'localization.language_label' | t }}</label>
+      <div class="#form-select">
+        <select name="locale_code" id="FooterLanguageForm">
+          {% for language in localization.available_languages %}
+            <option value="{{ language.iso_code }}" {%- if language.iso_code==localization.language.iso_code -%}selected{%- endif -%}>{{ language.endonym_name | capitalize  }}</option>
+          {% endfor %}
+        </select>
+        {% render 'icon', name: 'chevron-down' %}
+      </div>
+    </div>
+    <button type="submit">{{ 'customer.login_page.submit' | t }}</button>
+  {%- endform -%}
+</noscript>
+
+<div class="#form-field no-js-hidden">
+  <div class="#form-label">{{ 'localization.language_label' | t }}</div>
+  <localization-selector class="#form-custom-select">
+      <button data-trigger class="#form-custom-select-trigger">
+          <span data-trigger-text>{{ localization.language.endonym_name | capitalize }}</span>
+          {% render 'icon', name: 'chevron-down' %}
+      </button>
+      <div class="#form-custom-select-dropdown">
+          {%- form 'localization', id: 'FooterLanguageForm', class: 'localization-form' -%}    
+              {% for language in localization.available_languages %}
+                  {%- assign id = 'FooterLanguageForm-' | append: language.iso_code -%}
+                  <label class="#form-custom-select-item" for="{{ id }}">
+                      <input 
+                          class="#form-custom-select-item-input visually-hidden" 
+                          type="radio" 
+                          id="{{ id }}"
+                          name="locale_code"
+                          value="{{ language.iso_code }}"
+                          {% if language.iso_code==localization.language.iso_code %}checked{% endif %}
+                      >
+                      <span class="#form-custom-select-item-inner">{{ language.endonym_name | capitalize }}</span>    
+                  </label>
+              {% endfor %}
+          {%- endform -%}
+      </div>
+  </localization-selector>
+</div>
+
+{% comment %}
+
+{{ 'form.css' | asset_url | stylesheet_tag }}
+
+{% assign select_id = section.id | append: 'LanguageSelector' %}
+
+<localization-form>
+  {%- form 'localization' -%}
+    <div class="#form-field">
+      <label class="#form-label" for="{{ select_id }}">{{ 'localization.language_label' | t }}</label>
+      <div class="#form-select">
+        <select name="locale_code" data-lang-selector id="{{ select_id }}">
+          {% for locale in shop.published_locales %}
+            <option value="{{ locale.iso_code }}" {%- if locale.iso_code == form.current_locale.iso_code -%}selected{%- endif -%}>{{ locale.endonym_name | capitalize  }}</option>
+          {% endfor %}
+        </select>
+        {% render 'icon', name: 'chevron-down' %}
+      </div>
+    </div>
+    <noscript>
+      <button type="submit">{{ 'customer.login_page.submit' | t }}</button>
+    </noscript>
+  {%- endform -%}
+</localization-form>
+<script type="module" src="{{ 'localization-form.js' | asset_url }}"></script> 
+
+{% endcomment %}

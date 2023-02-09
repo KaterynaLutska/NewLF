@@ -1,0 +1,35 @@
+.\#pagination {
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.\#pagination-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--spacer) * 2.5);
+    height: calc(var(--spacer) * 2.5);
+    color: inherit;
+    text-decoration: none;
+    border-radius: 50%;
+    margin-left: calc(var(--spacer) * 0.5);
+    margin-right: calc(var(--spacer) * 0.5);
+    font-weight: var(--font-body-weight-bold);
+}
+
+.\#pagination-item:not(.\@spacer) {
+    background-color: rgba(var(--color-alt-background), 1);
+}
+
+.\#pagination-item.\!active {
+    background-color: rgba(var(--color-accent), 1);
+    color: rgba(var(--color-accent-c), 1);
+}
+
+.\#pagination-item .\#icon {
+    width: calc(var(--spacer) * 1);
+    height: calc(var(--spacer) * 1);
+    stroke-width: 3;
+}

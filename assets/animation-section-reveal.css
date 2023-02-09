@@ -1,0 +1,52 @@
+.shopify-section:not(.shopify-section--no-animation) .\#section {
+    filter: grayscale(1);
+    transition: 2s;
+}
+
+.shopify-section:not(.shopify-section--no-animation) .\#section-body {
+    opacity: 0;
+    overflow: hidden;
+    transition: 0.5s;
+}
+
+.shopify-section:not(.shopify-section--no-animation) .\#section-header {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: 0.5s;
+    transition-delay: 0.3s;
+}
+
+.shopify-section:not(.shopify-section--no-animation) .reveal-animate {
+    opacity: 0;
+    transform: translate3d(0, -20px, 0) scale(1.05);
+    transition: 0.5s;
+    transition-delay: calc(var(--reveal-index, 1) * 0.15 * 1s);
+}
+
+.shopify-section:not(.shopify-section--no-animation) .reveal-animate-zoom {
+    transform: scale(1.1) translateZ(0);
+    transition: 8.5s linear;
+}
+
+.shopify-section:not(.shopify-section--no-animation).shopify-section--reveal .\#section {
+    filter: grayscale(0);
+}
+
+.shopify-section:not(.shopify-section--no-animation).shopify-section--reveal .\#section-body {
+    opacity: 1;
+    overflow: visible;
+}
+
+.shopify-section:not(.shopify-section--no-animation).shopify-section--reveal .\#section-header {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.shopify-section:not(.shopify-section--no-animation).shopify-section--reveal .reveal-animate {
+    opacity: 1;
+    transform: none;
+}
+
+.shopify-section:not(.shopify-section--no-animation).shopify-section--reveal .reveal-animate-zoom {
+    transform: none;
+}

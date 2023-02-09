@@ -1,0 +1,30 @@
+.\#pickup-availability {
+    display: flex;
+}
+
+.\#pickup-availability.\@align\:center {
+    flex-direction: column;
+}
+
+.\#pickup-availability.\@align\:center .\#pickup-availability-icon {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+}
+
+.\#pickup-availability-icon {
+    margin-right: 1rem;
+}
+
+.\#pickup-availability-icon .\#icon {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.\#pickup-availability-heading {
+    font-size: 1.15rem;
+}
+
+.\#pickup-availability-subheading {
+    margin-bottom: 0.3rem;
+    opacity: 0.8;
+}

@@ -1,0 +1,37 @@
+{%- assign sources = '' -%}
+{%- liquid
+    assign sources = ''
+    if settings.predictive_search_src_product
+        assign sources = sources | append: 'product,' 
+    endif
+    if settings.predictive_search_src_collection
+        assign sources = sources | append: 'collection,'
+    endif
+    if settings.predictive_search_src_page
+        assign sources = sources | append: 'page,'
+    endif
+    if settings.predictive_search_src_blog
+        assign sources = sources | append: 'article,'
+    endif
+
+    assign _cn = '#predictive-search-input'
+-%}
+
+<link rel="stylesheet" href="{{ 'predictive-search-input.css' | asset_url }}" media="print" onload="this.media='all'; this.onload = null">
+<noscript>{{ 'predictive-search-input.css' | asset_url | stylesheet_tag }}</noscript>
+
+<predictive-search-input 
+    class="{{ _cn }}" 
+    sources="{{ sources }}"
+    results-limit="{{ settings.predictive_search_results_limit }}"
+    {%- if settings.predictive_search_only_in_stock_products -%}only-stock-products{%- endif -%}
+    >
+    <div class="{{ _cn }}-form">
+        {{ search_form }}
+    </div>
+    <div class="{{ _cn }}-results" data-results></div>
+</predictive-search-input>
+
+{% if init_script %}
+    <script type="module" src="{{ 'predictive-search-input.js' | asset_url }}"></script> 
+{% endif %}

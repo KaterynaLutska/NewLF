@@ -1,0 +1,18 @@
+.\#gallery-card {
+    display: block;
+    position: relative;
+}
+
+.\#gallery-card-caption {
+    margin-top: 1.5rem;
+}
+
+.\#gallery-card-caption .\#hero {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    width: 100%;
+}
+
+.\#gallery-card-caption .\#hero-text {
+    line-height: 1.5;
+}

@@ -1,0 +1,26 @@
+.\#product-stock-alert.\@align\:center .\#product-stock-alert-inner {
+    justify-content: center;
+}
+
+.\#product-stock-alert-inner {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: var(--font-body-weight-bold);
+}
+
+.\#product-stock-alert-inner .\#icon {
+    stroke-width: 2.5;
+}
+
+.\#product-stock-alert-inner.\@status\:in-stock {
+    color: rgba(var(--color-success), 1);
+}
+
+.\#product-stock-alert-inner.\@status\:out-of-stock {
+    color: rgba(var(--color-error), 1);
+}
+
+.\#product-stock-alert-inner.\@status\:low-stock {
+    color: rgba(var(--color-warning), 1);
+}

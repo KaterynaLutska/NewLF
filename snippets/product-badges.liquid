@@ -1,0 +1,44 @@
+<link rel="stylesheet" href="{{ 'product-badges.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'product-badges.css' | asset_url | stylesheet_tag }}</noscript>
+
+<div class="#product-badges hide-loading">
+    {%- if settings.product_badge_sale_show and product.compare_at_price -%}
+        <div class="#product-badge" style="background-color: {{ settings.product_badge_sale_color }}">
+            {%- if settings.product_badge_sale_style == 'sign' or product.price_varies -%}
+                {{ 'products.product.on_sale' | t }}
+            {%- elsif settings.product_badge_sale_style == 'amount' -%}
+                {%- assign saved_value = product.compare_at_price | minus: product.price | money_without_trailing_zeros -%}
+                {{ 'products.product.saved_amount' | t: value: saved_value }}
+            {%- elsif settings.product_badge_sale_style == 'persentage' -%}
+                {%- assign pct = product.price | times: 100 | divided_by: product.compare_at_price  -%}
+                {%- assign saved_value = 100 | minus: pct | append: '%' -%}
+                {{ 'products.product.saved_amount' | t: value: saved_value }}
+            {%- endif -%}
+        </div>
+    {%- endif -%}
+    {%- if settings.product_badge_sold_out_show and product.available == false -%}
+        <div class="#product-badge" style="background-color: {{ settings.product_badge_sold_out_color }}">
+            {{ 'products.product.sold_out' | t }}
+        </div>
+    {%- endif -%}
+    {%- if settings.product_badge_new_show -%}
+        {%- liquid
+            assign target = settings.product_badge_new_expiration | times: 24 | times: 60 | times: 60
+            assign now = 'now' | date: '%s'
+            assign product_date = product.published_at | date: '%s'
+            assign diff = now | minus: product_date    
+        -%}
+        {%- if diff < target -%}
+            <div class="#product-badge" style="background-color: {{ settings.product_badge_new_color }}">
+                {{ settings.product_badge_new_label | default: 'New' }}
+            </div>
+        {%- endif -%}
+    {%- endif -%}
+    {%- if settings.product_badge_free_show -%}
+        {%- if product.price == 0 and product.price_varies == false -%}
+            <div class="#product-badge" style="background-color: {{ settings.product_badge_free_color }}">
+                {{ settings.product_badge_free_label | default: 'Free' }}
+            </div>
+        {%- endif -%}
+    {%- endif -%}
+</div>

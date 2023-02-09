@@ -1,0 +1,29 @@
+<div class="#form-field">
+    {%- if label != blank -%}
+        <div class="#form-label">{{ label }}</div>
+    {%- endif -%}
+    <form-custom-select class="#form-custom-select">
+        <button data-trigger class="#form-custom-select-trigger">
+            <span data-trigger-text>{{ selected_value }}</span>
+            {% render 'icon', name: 'chevron-down' %}
+        </button>
+        <div class="#form-custom-select-dropdown">    
+            {% for value in values %}
+                {%- assign id = name | handleize | append: value | handleize | append: section.id | append: forloop.index0 -%}
+                <label class="#form-custom-select-item" for="{{ id }}">
+                    <input 
+                        class="#form-custom-select-item-input visually-hidden" 
+                        type="radio" 
+                        id="{{ id }}"
+                        name="{{ name }}"
+                        value="{{ value | escape }}"
+                        {% if selected_value == value %}checked{% endif %}
+                    >
+                    <span class="#form-custom-select-item-inner">{% render 'icon', name: 'check' %} {{ value }}</span>    
+                </label>
+            {% endfor %}
+        </div>
+    </form-custom-select>
+</div>
+
+<script type="module" src="{{ 'form-custom-select.js' | asset_url }}"></script>

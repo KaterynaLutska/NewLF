@@ -1,0 +1,143 @@
+<link rel="stylesheet" href="{{ 'article-card.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'article-card.css' | asset_url | stylesheet_tag }}</noscript>
+{{ 'page-header.css' | asset_url | stylesheet_tag }}
+
+{%- assign article_limit = section.settings.columns | times: section.settings.rows -%}
+
+{% capture Content %}
+  {% comment %}
+  {% render 'page-header',
+      title: blog.title
+  %}
+  {% endcomment %}
+  {% paginate blog.articles by article_limit %}
+  
+  <div class="#grid @columns:{{ section.settings.columns }} @mobile:columns:1" style="--grid-gap: 2rem;">
+    {% for article in blog.articles limit: article_limit %}
+      <div class="#column">
+        {% render 'article-card',
+          article: article,
+          show_date: section.settings.show_date,
+          show_author: section.settings.show_author,
+          columns: section.settings.columns,
+          show_excerpt: section.settings.show_excerpt,
+          image_size: section.settings.image_size,
+          media_hover_zoom: section.settings.hover_zoom,
+          align: section.settings.text_align
+        %}
+      </div>
+    {% endfor %}
+  </div>
+
+  {%- if paginate.pages > 1 -%}
+    {%- render 'pagination', paginate: paginate -%}
+  {%- endif -%}
+
+  {% endpaginate %}
+{% endcapture %}
+
+{% render 'section-body',
+  content: Content,
+  container: true,
+  spaced: true
+%}
+
+{% schema %}
+{
+  "name": "t:sections.main-blog.name",
+  "tag": "section",
+  "class": "spaced-section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "image_size",
+      "options": [
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait"
+        },
+        {
+          "value": "landscape",
+          "label": "Landscape"
+        },
+        {
+          "value": "original",
+          "label": "Original image size"
+        }
+      ],
+      "default": "landscape",
+      "label": "Image style"
+    },
+    {
+      "type": "checkbox",
+      "id": "hover_zoom",
+      "default": true,
+      "label": "Enable image zoom on hover"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "default": true,
+      "label": "t:sections.main-blog.settings.show_date.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "default": false,
+      "label": "t:sections.main-blog.settings.show_author.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "default": false,
+      "label": "Show excerpt"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:sections.main-blog.settings.paragraph.content"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "rows",
+      "label": "Rows",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,76 @@
+
+<link rel="stylesheet" href="{{ 'product-meta.css' | asset_url }}" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="{{ 'product-price.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'product-meta.css' | asset_url | stylesheet_tag }}</noscript>
+<noscript>{{ 'product-price.css' | asset_url | stylesheet_tag }}</noscript>
+
+{% liquid
+    case section.settings.slideshow_size
+      when 'narrow'
+        assign slider_column = 6
+      when 'wide'
+        assign slider_column = 8
+      else
+        assign slider_column = 7
+    endcase
+    assign description_column = 12 | minus: slider_column
+  %}
+
+{%- capture Gallery -%}
+    <div class="#column @span:{{ slider_column }} @span:mobile:12">
+        {% render 'media',
+            aspect_ratio: '1x1',
+            placeholder: 'product'
+        %}
+    </div>
+{%- endcapture -%}
+
+{%- capture Description -%}
+    <div class="#column @span:{{ description_column }} @span:mobile:12">
+        <div class="
+            #product-meta
+            @align:{{ section.settings.content_align }}
+            @color-scheme:{{ section.settings.color_scheme }}
+        ">
+            <div class="#product-meta-inner">
+                {% for block in section.blocks %}
+                    <div class="#product-meta-block">
+                    {% case block.type %}
+                        {% when 'title' %}
+                            {% assign title = 'onboarding.product_title' | t %}
+                            {% render 'hero',
+                                heading: title,
+                                align: section.settings.content_align,
+                                size: block.settings.size
+                            %}
+                        {% when 'price' %}
+                            <div class="#product-price @size:{{ block.settings.size }} @align:{{ section.settings.content_align }} @weight:{{ block.settings.font_weight }}">
+                                {%- render 'price',
+                                    show_titles: block.settings.show_heading,
+                                    show_compare_price: true,
+                                    show_save_price: block.settings.show_savings
+                                -%}
+                            </div>
+                        {% when 'buy_buttons' %}
+                        {% render 'button',
+                            t_text: 'products.product.add_to_cart',
+                            attr_name: 'add',
+                            attr_type: 'submit',
+                            data_attr: 'data-add-button',
+                            color: 'default',
+                            block: true,
+                            with_loading: true,
+                            size: 'lg'
+                        %}
+                    {% endcase %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{%- endcapture -%}
+
+<div class="#grid @strict {% if section.settings.slideshow_position == 'right' %}@reverse:desktop{% endif %}" style="--grid-gap: 0;">
+    {{ Gallery }}
+    {{ Description }}
+</div>

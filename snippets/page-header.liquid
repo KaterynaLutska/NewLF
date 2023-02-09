@@ -1,0 +1,50 @@
+{{ 'page-header.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+    if bg_image != blank or force_bg == true
+        assign use_bg = true
+    endif
+    
+    assign text_size = text_size | default: 'xl'
+    assign image_size = image_size | default: 'medium'
+-%}
+
+{% if t_title != blank %}
+    {% assign title = t_title | t %}
+{% endif %}
+
+{%- capture text -%}
+    <div class="#page-header-content">
+        {% render 'hero',
+            heading: title,
+            heading_tag: 'h1',
+            text: subtitle,
+            align: 'center',
+            size: text_size,
+            color_scheme: color_scheme
+        %}
+    </div>
+{%- endcapture -%}
+
+<div class="#page-header {% if spaced == true %}@spaced{% endif %} {% if use_bg %}@bg-img{% endif %}" {% if use_bg %}data-main-header-overlap{% endif %} section-id="{{ section.id }}">
+    {%- if use_bg -%}
+        {%- capture caption -%}
+            {%- render 'floating-content',
+                content: text,
+                x: 'center',
+                y: 'center',
+                padded: true,
+                absolute: true
+            -%}
+        {%- endcapture -%}
+        {%- render 'media',
+            image: bg_image,
+            content: caption,
+            size: image_size,
+            overlay: bg_overlay,
+            color_scheme: color_scheme
+        -%}
+    {%- else -%}
+        {{ text }}
+    {%- endif -%}
+</div>

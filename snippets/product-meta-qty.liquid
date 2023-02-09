@@ -1,0 +1,39 @@
+{{ 'form.css' | asset_url | stylesheet_tag }}
+{{ 'product-qty.css' | asset_url | stylesheet_tag }}
+<product-qty class="#product-qty @align:{{ align }}" section-id="{{ section.id }}" variant-id="{{ product.selected_or_first_available_variant.id }}">
+    {%- if product.selected_or_first_available_variant.available or product.selected_or_first_available_variant.inventory_policy == 'continue' -%}
+        {% assign inventory_qty = product.selected_or_first_available_variant.inventory_quantity %}
+        {% assign available_qty = inventory_qty | minus: in_cart_qty %}
+        {%- unless product.selected_or_first_available_variant.inventory_management -%}
+            {% assign available_qty = 10 %}
+        {%- endunless -%}
+        {% if product.selected_or_first_available_variant.inventory_policy == 'continue' %}
+            {% assign available_qty = 10 %}
+        {% endif %}
+        {% assign input_range = 10 %}
+        {% capture options %}
+            {% for i in (1..input_range) %} 
+                <option value="{{forloop.index}}">
+                    {{forloop.index}}
+                </option>
+                {%- if forloop.index == available_qty -%}
+                    {%- break -%}
+                {%- endif -%}
+            {% endfor %}
+        {% endcapture %}  
+        <div class="#form-field" {% if available_qty < 1 %} hidden {% endif %}>
+            <label class="#form-label" for="qty-{{ section.id }}">{{ 'products.product.quantity.label' | t }}</label>
+            <div class="#form-select">
+                <select 
+                    id="qty-{{ section.id }}"
+                    name="quantity"
+                    form="{{ product_form_id }}"
+                >
+                    {{ options }}
+                </select>
+                {% render 'icon', name: 'chevron-down' %}
+            </div>  
+        </div> 
+    {%- endif -%}
+</product-qty>
+<script type="module" src="{{ 'product-qty.js' | asset_url }}"></script>

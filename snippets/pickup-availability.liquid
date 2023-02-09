@@ -1,0 +1,35 @@
+{{ 'pickup-availability.css' | asset_url | stylesheet_tag }}
+{% liquid
+  assign pick_up_availabilities = product.selected_or_first_available_variant.store_availabilities | where: 'pick_up_enabled', true
+  assign closest_location = pick_up_availabilities.first
+  assign cn = '#pickup-availability'
+%}
+
+<pickup-availability class="{{ cn }} @align:{{ align }}" section-id="{{ section.id }}" {{ block.shopify_attributes }}>
+  {%- if pick_up_availabilities.size > 0 -%}
+    <div class="{{ cn }}-icon">
+      {% render 'icon', name: 'package' %}
+    </div>
+    <div class="{{ cn }}-info">
+      {%- if closest_location.available -%}
+        <h5 class="{{ cn }}-heading">{{ 'products.product.pickup_availability.pick_up_available_at_html' | t: location_name: closest_location.location.name }}</h5>
+        <p class="{{ cn }}-subheading">{{ closest_location.pick_up_time }}</p> 
+        <modal-trigger class="link" target="#shopify-section-pickup-availability" url="{{ routes.root_url }}variants/{{ product.selected_or_first_available_variant.id }}/?section_id=pickup-availability" layout="sidebar" section-id="{{ section.id }}">
+          {%- if pick_up_availabilities.size == 1 -%}
+            {{ 'products.product.pickup_availability.view_store_info' | t }}
+          {%- else -%}
+            {{ 'products.product.pickup_availability.check_other_stores' | t }}
+          {%- endif -%}
+        </modal-trigger>
+      {%- else -%}
+        <h5 class="{{ cn }}-heading">{{ 'products.product.pickup_availability.pick_up_unavailable_at_html' | t: location_name: closest_location.location.name }}</h5>
+        {%- if pick_up_availabilities.size > 1 -%}
+          <modal-trigger class="link" target="#shopify-section-pickup-availability" url="{{ routes.root_url }}variants/{{ product.selected_or_first_available_variant.id }}/?section_id=pickup-availability" layout="sidebar" section-id="{{ section.id }}">
+            {{ 'products.product.pickup_availability.check_other_stores' | t }}
+          </modal-trigger>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+</pickup-availability>
+<script type="module" src="{{ 'pickup-availability.js' | asset_url }}"></script>

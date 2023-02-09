@@ -1,0 +1,15 @@
+{{ 'floating-content.css' | asset_url | stylesheet_tag }}
+
+<div class="#floating-content-wrapper {% if absolute %}@absolute{% endif %}">
+    <div class="
+        #floating-content
+        {% if x %}@x:{{ x }}{% endif %}
+        {% if y %}@y:{{ y }}{% endif %}
+        {% if padded %}@padded{% endif %}
+    ">
+        {{ content }}
+    </div>
+    {% if link != blank %}
+        <a href="{{ link }}" class="stretched-link"></a>
+    {% endif %}
+</div>

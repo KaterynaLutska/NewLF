@@ -1,0 +1,13 @@
+<div class="#logo-card {% if grayscale_hover %}@grayscale-hover{% endif %} {% if bordered %}@bordered{% endif %}" style="--logo-max-height: {{ image_height }}px;">
+    {%- if url != blank -%}
+        <a href="{{ url }}" class="stretched-link"></a>
+    {%- endif -%}
+    {%- assign image_resolution = image.aspect_ratio | times: image_height | ceil -%}
+    <div class="#logo-card-img">
+        {% render 'media',
+            image: image,
+            placeholder: 'logo',
+            image_resolution: image_resolution
+        %}
+    </div>
+</div>

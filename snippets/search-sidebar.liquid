@@ -1,0 +1,137 @@
+{{ 'collection-sidebar.css' | asset_url | stylesheet_tag }}
+
+{%- assign color_option = settings.color_swatches_options | split: ',' | handleize -%}
+
+{%- capture Storefront_filters -%}
+
+    {%- if section.settings.collapse_filters -%}
+        {% assign filter_status = '' %}
+    {%- else -%}
+        {% assign filter_status = 'open' %}
+    {%- endif -%}
+
+    <collection-filters-form section-id="{{ section.id }}">
+        <form id="{{ search_form_id }}">
+        <input type="hidden" name="q" value="{{ search.terms | escape }}">
+
+        {%- for filter in search.filters -%}
+            
+                <details class="#collection-filter" {{ filter_status }}>
+                    <summary class="#collection-filter-label">
+                        <span>
+                            {{ filter.label | escape }}
+                            {% render 'icon', name: 'chevron-down' %}
+                        </span>
+                </summary>
+                <div class="#collection-filter-contents" {% unless filter.type == 'price_range' %}data-contents="{{ forloop.index }}"{% endunless %}>
+                    {% case filter.type %}
+                        {% when 'list' %}
+                        {%- assign filter_label_handle = filter.label | handleize -%}
+                        {%- if color_option contains filter_label_handle and color_swatches -%}
+                            <div class="#form-inline-group">
+                                {%- for value in filter.values -%}
+                                    {%- assign input_id = 'Filter-' | append: filter.label | escape | append: forloop.index  -%}
+                                    {%- if value.count == 0 and value.active == false -%}
+                                        {%- assign disabled = true -%}
+                                    {%- else -%}
+                                        {%- assign disabled = false -%}
+                                    {%- endif -%}
+                                    {% render 'form-field',
+                                        type: 'color_swatch',
+                                        id: input_id,
+                                        name: value.param_name,
+                                        value: value.value,
+                                        as: 'checkbox',
+                                        checked: value.active,
+                                        disabled: disabled
+                                    %}
+                                {%- endfor -%}
+                            </div>
+                        {%- else -%}
+                            <ul class="#collection-filter-list" role="list">
+                                {%- for value in filter.values -%}
+                                    <li>
+                                        <label class="#form-checkbox" for="Filter-{{ filter.label | escape }}-{{ forloop.index }}">
+                                            <input 
+                                                type="checkbox"
+                                                class="visually-hidden"
+                                                name="{{ value.param_name }}"
+                                                value="{{ value.value | escape }}"
+                                                id="Filter-{{ filter.label | escape }}-{{ forloop.index }}"
+                                                {% if value.active %}checked{% endif %}
+                                                {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                                            >
+                                            <div class="#form-checkbox-icon">
+                                                {% render 'icon', name: 'check' %}
+                                            </div>
+                                            <span class="#form-checkbox-label">{{ value.label | escape }}</span> 
+                                            <span class="#collection-filter-counter">{{ value.count }}</span>
+                                        </label>
+                                    </li>
+                                {%- endfor -%}
+                            </ul>
+                        {%- endif -%}
+                            
+                        {% when 'price_range' %}
+                            {% render 'price-slider', filter: filter %}
+                            <noscript>
+                                <div class="#row">
+                                    <div class="#col">
+                                        <label class="#form-label" for="Filter-{{ filter.label | escape }}-GTE">{{ 'sections.collection_template.from' | t }}</label>
+                                        <div class="#form-input-group">
+                                            <span class="#form-input-group-text">{{ cart.currency.symbol }}</span>
+                                            <input
+                                                type="number"
+                                                class="#form-input"
+                                                name="{{ filter.min_value.param_name }}"
+                                                id="Filter-{{ filter.label | escape }}-GTE"
+                                                value="{%- if filter.min_value.value -%}{%- render 'money-to-number', value: filter.min_value.value | escape -%}{%- else -%}0{%- endif -%}"
+                                                min="0"
+                                                max="{%- render 'money-to-number', value: filter.range_max -%}"
+                                            >   
+                                        </div>
+                                    </div>
+                                    <div class="#col">
+                                        {%- if filter.max_value.value -%}
+                                            {%- assign max_value = filter.max_value.value -%}
+                                        {%- else -%}
+                                            {%- assign max_value = filter.range_max -%}
+                                        {%- endif -%}
+                                        <label class="#form-label" for="Filter-{{ filter.label | escape }}-LTE">{{ 'sections.collection_template.to' | t }}</label>
+                                        <div class="#form-input-group">
+                                            <span class="#form-input-group-text">{{ cart.currency.symbol }}</span>
+                                            <input
+                                                type="number"
+                                                class="#form-input"
+                                                name="{{ filter.max_value.param_name }}"
+                                                id="Filter-{{ filter.label | escape }}-LTE"
+                                                value="{%- render 'money-to-number', value: max_value | escape -%}"
+                                                min="0"
+                                                max="{%- render 'money-to-number', value: filter.range_max -%}"
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                            </noscript>
+                        {% endcase %}
+                    </div>
+                </details>
+            {%- endfor -%}
+            <noscript>
+                {% render 'button',
+                    text: 'submit'
+                %}
+            </noscript>
+        </form>
+    </collection-filters-form>
+    <script type="module" src="{{ 'collection-filters-form.js' | asset_url }}"></script>
+{%- endcapture -%}
+
+<div class="#collection-sidebar-wrapper hide-mobile" id="{{ id }}">
+    <div class="#collection-sidebar @color-scheme:{{ color_scheme }} {% if border %}@bordered{% endif %}">
+        <div class="{% if section.settings.enable_sticky %}sticky-top{% endif %}">
+           {{ Storefront_filters }}
+        </div>
+    </div>
+</div>
+

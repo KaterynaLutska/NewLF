@@ -1,0 +1,13 @@
+.\#predictive-search-input {
+    position: relative;
+    display: block;
+}
+
+.\#predictive-search-input-results {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: calc(100% + 1rem);
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}

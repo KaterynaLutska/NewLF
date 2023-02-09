@@ -1,0 +1,150 @@
+{{ 'announcement-bar.css' | asset_url | stylesheet_tag }}
+
+{%- if section.settings.display and section.blocks.size > 0 -%}
+  {%- assign dismissible = section.settings.dismissible -%}
+  {%- assign announcement_link = section.settings.url -%}
+  {%- capture dismiss_btn -%}
+      {%- if dismissible -%}
+        <button class="#announcement-bar-dismiss" data-dismiss>
+          {% render 'icon' name: 'x' %}
+        </button>
+      {%- endif -%}
+    {%- endcapture -%}
+  <announcement-bar   
+    {% if dismissible %}dismissible{% endif %}
+    class="#announcement-bar"
+    style="--announcement-bar-color-text: {{ section.settings.text_color }}; --announcement-bar-color-background: {{ section.settings.bg_color }};"
+  >
+    {% if section.settings.use_ticker_slider %}
+      <div class="announcement-bar-ticker-slideshow ticker-slideshow">
+        {% for block in section.blocks %}
+          <div class="announcement-bar-content-item">
+            <div class="announcement-bar-content-item-wrapper">
+              {%- if block.settings.url != blank -%}
+                <a href="{{ block.settings.url }}" class="stretched-link"></a>
+              {%- endif -%}
+              <p class="#announcement-bar-text">
+                {{ block.settings.text }}
+              </p>
+            </div>
+          </div>
+        {% endfor %}
+        {% if section.blocks.size == 1 %}
+          {% for block in section.blocks %}
+            <div class="announcement-bar-content-item">
+              <div class="announcement-bar-content-item-wrapper">
+                {%- if block.settings.url != blank -%}
+                  <a href="{{ block.settings.url }}" class="stretched-link"></a>
+                {%- endif -%}
+                <p class="#announcement-bar-text">
+                  {{ block.settings.text }}
+                </p>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    {% else %}
+      <slide-show {% if section.settings.is_autoplay %}autoplay-delay="{{ section.settings.autoplay_delay }}" use-autoplay{% endif %} class="announcement-bar-content">
+        <div data-slider-container class="swiper">
+          <div class="swiper-wrapper">
+            {% for block in section.blocks %}
+              <div class="swiper-slide announcement-bar-content-item">
+                {%- if block.settings.url != blank -%}
+                  <a href="{{ block.settings.url }}" class="stretched-link"></a>
+                {%- endif -%}
+                <p class="#announcement-bar-text">
+                  {{ block.settings.text }}
+                </p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </slide-show>
+    {% endif %}
+    {{ dismiss_btn }}
+  </announcement-bar>
+  {%- if dismissible -%}
+    <script type="module" src="{{ 'announcement-bar.js' | asset_url }}"></script> 
+  {%- endif -%}
+{%- endif -%}
+
+<script type="module" src="{{ 'slide-show.js' | asset_url }}"></script>
+
+{% if section.settings.use_ticker_slider %}
+  {{ 'flickity.min.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'flickity.pkgd.min.js' | asset_url }}"></script>
+  <script src="{{ 'ticker-slider.js' | asset_url }}"></script>
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Announcement bar",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "display",
+        "label": "Enable bar",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "dismissible",
+        "label": "Show close button",
+        "default": true
+      },
+      {
+         "type": "checkbox",
+         "id": "is_autoplay",
+         "default": true,
+         "label": "Enable autoplay"
+      },
+      {
+          "type":      "range",
+          "id":        "autoplay_delay",
+          "min":       3,
+          "max":        5,
+          "step":       1,
+          "label":     "Change slides every",
+          "default":   3,
+          "unit": "sec"
+      },
+      {
+         "type": "checkbox",
+         "id": "use_ticker_slider",
+         "label": "Use ticker slider"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text",
+        "default": "#fbcf00"
+      },
+      {
+        "type": "color",
+        "id": "bg_color",
+        "label": "Background",
+        "default": "#232734"
+      }
+    ],
+    "blocks": [
+            {
+                "type": "item",
+                "name": "Item",
+                "settings": [
+                    {
+                      "type": "text",
+                      "id": "text",
+                      "label": "Text",
+                      "default": "Free shipping over $50"
+                    },
+                    {
+                      "type": "url",
+                      "id": "url",
+                      "label": "Link"
+                    }
+                ]
+            }
+        ]
+  }
+{% endschema %}

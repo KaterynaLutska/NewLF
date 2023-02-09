@@ -1,0 +1,343 @@
+{% liquid
+  assign product_form_id = 'product-form-' | append: section.id
+  assign current_variant = product.selected_or_first_available_variant
+  
+  for item in cart.items
+    if product.id == item.product_id and item.variant_id == current_variant.id
+      assign in_cart_qty = item.quantity
+      break
+    endif
+  endfor
+
+  if section.settings.gallery_padding
+    
+  endif
+%}
+
+
+{{ 'product-meta.css' | asset_url | stylesheet_tag }}
+
+<div class="
+  #product-meta
+  @align:{{ align }}
+  @color-scheme:{{ color_scheme }}
+  {% if section.settings.gallery_padding %}@gallery-padded:{{ section.settings.slideshow_position }}{% endif %}
+">
+
+  <link rel="stylesheet" href="{{ 'product-meta-loading.css' | asset_url }}" media="print" onload="this.media='all'">
+  <noscript>{{ 'product-meta-loading.css' | asset_url | stylesheet_tag }}</noscript>
+  <product-meta-loading class="#product-meta-loading" section-id="{{ section.id }}">
+    {% render 'spinner' %}
+  </product-meta-loading>
+  <script type="module" src="{{ 'product-meta-loading.js' | asset_url }}"></script>
+
+  <div class="#product-meta-inner {% if section.settings.enable_sticky_info %}sticky-top{% endif %}">
+  {% for block in section.blocks %}
+    {%- capture Block_content -%}
+    {% case block.type %}
+      {% when 'title' %}
+        {% render 'hero',
+          heading: product.title,
+          heading_tag: 'h1',
+          align: align,
+          size: block.settings.size
+        %}
+      {% when 'price' %}
+        {%- if current_variant -%}
+          <div class="#product-meta-price" {{ block.shopify_attributes }}>
+            {% render 'product-price',
+              product: product,
+              variant: current_variant, 
+              block: block,
+              align: align
+            %}
+          </div>
+        {%- endif -%}
+      {% when 'description' %}
+        {% if product.description != blank %}
+        <link rel="stylesheet" href="{{ 'rte.css' | asset_url }}" media="print" onload="this.media='all'">
+        <noscript>{{ 'rte.css' | asset_url | stylesheet_tag }}</noscript>
+        {%- capture Product_description -%}
+          <div class="#rte @text-size:{{ block.settings.text_size }}" {{ block.shopify_attributes }}>
+            {{ product.description }}
+          </div>
+        {%- endcapture -%}
+        {%- if block.settings.use_expand -%}
+        <link rel="stylesheet" href="{{ 'product-description-expand.css' | asset_url }}" media="print" onload="this.media='all'">
+        <noscript>{{ 'product-description-expand.css' | asset_url | stylesheet_tag }}</noscript>
+          <product-description-expand class="#product-description-expand @color-scheme:{{ section.settings.color_scheme }} @align:{{ align }}">
+            <div class="#product-description-expand-content" data-content>
+              {{ Product_description }}
+            </div>
+            <button data-expand-link hidden class="#product-description-expand-link">
+              {{ 'products.product.description_read_mode' | t }} {% render 'icon', name: 'chevron-down' %}
+            </button>
+          </product-description-expand>
+          <script type="module" src="{{ 'product-description-expand.js' | asset_url }}"></script>
+        {%- else -%}
+          {{ Product_description }}
+        {%- endif -%}
+        {% endif %}
+      {% when 'quantity_selector' %}
+        {% render 'product-meta-qty',
+          product: product,
+          in_cart_qty: in_cart_qty,
+          product_form_id: product_form_id,
+          align: align
+        %}
+      {% when 'rating' %}
+          {%- if product.metafields.reviews.rating_count > 0 -%}
+            {% render 'product-meta-reviews',
+              product: product,
+              show_count: block.settings.show_count,
+              align: align
+            %}
+          {%- endif -%}
+      {% when 'variant_picker' %}
+        {%- if product != blank -%}
+          {%- unless product.has_only_default_variant -%}
+            {% render 'product-variant-selector',
+              product: product,
+              type: block.settings.picker_type,
+              color_swatches: block.settings.color_swatches,
+              color_first: block.settings.color_first,
+              align: align,
+              product_form_id: product_form_id
+            %} 
+          {%- endunless -%}
+        {%- endif -%}
+      {% when 'stock_alert' %}
+        {% render 'product-stock-alert',
+          product: product,
+          current_variant: current_variant, 
+          stock_threshold: block.settings.stock_threshold,
+          in_stock_msg: block.settings.in_stock_msg,
+          low_stock_msg: block.settings.low_stock_msg,
+          out_of_stock_msg: block.settings.out_of_stock_msg,
+          align: align
+        %} 
+      {% when 'buy_buttons' %}
+        {% render 'product-form',
+          product: product,
+          in_cart_qty: in_cart_qty,
+          current_variant: current_variant,
+          dynamic_checkout: block.settings.show_dynamic_checkout,
+          product_form_id: product_form_id
+        %} 
+      {% when 'separator' %}
+        <hr class="#product-meta-separator">
+      {% when 'spacer' %}
+        <div class="#product-meta-spacer" {{ block.shopify_attributes }}></div>
+      {% when 'text' %}
+        {% if block.settings.text != blank %}
+          <div class="
+              #product-meta-text
+              @style:{{ block.settings.text_style }}
+              @weight:{{ block.settings.text_weight }}
+              {% if block.settings.text_uppercase %}@uppercase{% endif %}
+            "
+            {{ block.shopify_attributes }}
+          >
+            {% if block.settings.text_url != blank %}
+              <a class="#product-meta-text-link" href="{{ block.settings.text_url }}">
+                {{ block.settings.text }}
+              </a>  
+            {% else %} 
+              {{ block.settings.text }}
+            {% endif %}
+          </div>
+        {% endif %}
+      {% when 'share' %}
+        {% if align == 'center' %}
+          {% assign centered = true %}
+        {% endif %}
+        {% render 'social-share',
+          centered: centered,
+          share_permalink: product.url,
+          share_title: product.title,
+          share_image: product.featured_image
+        %}
+      {% when 'collapsible_tab' %}
+        <div class="#product-meta-collapse @align:{{ align }}" {{ block.shopify_attributes }}>
+          <details class="#product-meta-collapse-item">
+            <summary class="#product-meta-collapse-heading">
+              <div class="#product-meta-collapse-heading-inner">
+                <span>{{ block.settings.heading }}</span>
+                <div class="#product-meta-collapse-heading-indicator">
+                  {% render 'icon', name: 'chevron-down' %}
+                </div>
+              </div>
+            </summary>
+            <div class="#product-meta-collapse-body">
+              {{ block.settings.content }}
+              {{ block.settings.page.content }}
+            </div>
+          </details>
+        </div>    
+      {% when 'pickup_availability' %}
+        {% render 'pickup-availability'
+          product: product,
+          align: align
+        %}
+      {% when 'popup' %}
+        {% if block.settings.page != blank and block.settings.text != blank %}
+          <link rel="stylesheet" href="{{ 'rte.css' | asset_url }}" media="print" onload="this.media='all'">
+          {%- assign target_id = 'popup-' | append: block.id -%}
+          <template id="{{ target_id }}">
+            <div class="#rte @text-size:{{ block.settings.text_size }} padded text-{{ block.settings.text_align }}">
+              {% if block.settings.show_page_title %}
+                <h1>{{ block.settings.page.title }}</h1>
+              {% endif %}
+              {{ block.settings.page.content }}
+            </div>
+          </template>    
+          <modal-trigger class="link" target="#{{ target_id }}">{{ block.settings.text }}</modal-trigger>
+        {% endif %}
+      {% when 'text_with_icon_or_image' %}
+        <div class="product_text_with_icon_or_image_block">
+          {% if block.settings.icon_image_1 != blank or block.settings.title_1 != blank %}
+            {% if block.settings.page_1 != blank %}
+              <link rel="stylesheet" href="{{ 'rte.css' | asset_url }}" media="print" onload="this.media='all'">
+              {%- assign target_id = 'popup-1-' | append: block.id -%}
+              <template id="{{ target_id }}">
+                <div class="#rte @text-size:md padded text-left">
+                  <h1>{{ block.settings.page_1.title }}</h1>
+                  {{ block.settings.page_1.content }}
+                </div>
+              </template> 
+              <modal-trigger class="product_text_with_icon_or_image_block_item" target="#{{ target_id }}">
+                {% if block.settings.icon_image_1 != blank %}
+                  <img src="{{ block.settings.icon_image_1 | img_url: '200x' }}">
+                {% elsif block.settings.icon_1 != blank %}
+                  {% render 'icon-custom',
+                      name: block.settings.icon_1
+                  %}
+                {% endif %}
+                {% if block.settings.title_1 != blank %}
+                  <div class="rte">{{ block.settings.title_1 }}</div>
+                {% endif %}
+              </modal-trigger>
+            {% else %}
+              <div class="product_text_with_icon_or_image_block_item">
+                {% if block.settings.icon_image_1 != blank %}
+                  <img src="{{ block.settings.icon_image_1 | img_url: '200x' }}">
+                {% elsif block.settings.icon_1 != blank %}
+                  {% render 'icon-custom',
+                      name: block.settings.icon_1
+                  %}
+                {% endif %}
+                {% if block.settings.title_1 != blank %}
+                  <div class="rte">{{ block.settings.title_1 }}</div>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endif %}
+
+          {% if block.settings.icon_image_2 != blank or block.settings.title_2 != blank %}
+            {% if block.settings.page_2 != blank %}
+              <link rel="stylesheet" href="{{ 'rte.css' | asset_url }}" media="print" onload="this.media='all'">
+              {%- assign target_id = 'popup-2-' | append: block.id -%}
+              <template id="{{ target_id }}">
+                <div class="#rte @text-size:md padded text-left">
+                  <h1>{{ block.settings.page_2.title }}</h1>
+                  {{ block.settings.page_2.content }}
+                </div>
+              </template> 
+              <modal-trigger class="product_text_with_icon_or_image_block_item" target="#{{ target_id }}">
+                {% if block.settings.icon_image_2 != blank %}
+                  <img src="{{ block.settings.icon_image_2 | img_url: '200x' }}">
+                  {% elsif block.settings.icon_2 != blank %}
+                  {% render 'icon-custom',
+                      name: block.settings.icon_2
+                  %}
+                {% endif %}
+                {% if block.settings.title_2 != blank %}
+                  <div class="rte">{{ block.settings.title_2 }}</div>
+                {% endif %}
+              </modal-trigger>
+            {% else %}
+              <div class="product_text_with_icon_or_image_block_item">
+                {% if block.settings.icon_image_2 != blank %}
+                  <img src="{{ block.settings.icon_image_2 | img_url: '200x' }}">
+                  {% elsif block.settings.icon_2 != blank %}
+                  {% render 'icon-custom',
+                      name: block.settings.icon_2
+                  %}
+                {% endif %}
+                {% if block.settings.title_2 != blank %}
+                  <div class="rte">{{ block.settings.title_2 }}</div>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endif %}
+
+          {% if block.settings.icon_image_3 != blank or block.settings.title_3 != blank %}
+            {% if block.settings.page_3 != blank %}
+              <link rel="stylesheet" href="{{ 'rte.css' | asset_url }}" media="print" onload="this.media='all'">
+              {%- assign target_id = 'popup-3-' | append: block.id -%}
+              <template id="{{ target_id }}">
+                <div class="#rte @text-size:md padded text-left">
+                  <h1>{{ block.settings.page_3.title }}</h1>
+                  {{ block.settings.page_3.content }}
+                </div>
+              </template> 
+              <modal-trigger class="product_text_with_icon_or_image_block_item" target="#{{ target_id }}">
+                {% if block.settings.icon_image_3 != blank %}
+                  <img src="{{ block.settings.icon_image_3 | img_url: '200x' }}">
+                  {% elsif block.settings.icon_3 != blank %}
+                  {% render 'icon-custom',
+                      name: block.settings.icon_3
+                  %}
+                {% endif %}
+                {% if block.settings.title_3 != blank %}
+                  <div class="rte">{{ block.settings.title_3 }}</div>
+                {% endif %}
+              </modal-trigger>
+            {% else %}
+              <div class="product_text_with_icon_or_image_block_item">
+                {% if block.settings.icon_image_3 != blank %}
+                  <img src="{{ block.settings.icon_image_3 | img_url: '200x' }}">
+                  {% elsif block.settings.icon_3 != blank %}
+                  {% render 'icon-custom',
+                      name: block.settings.icon_3
+                  %}
+                {% endif %}
+                {% if block.settings.title_3 != blank %}
+                  <div class="rte">{{ block.settings.title_3 }}</div>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endif %}
+        </div>        
+      {% when 'custom_html' %}
+          {% if block.settings.html != blank %}
+            {% if block.settings.heading != blank %}
+              <h5 class="#product-meta-block-heading">{{ block.settings.heading }}</h5>
+            {% endif %}
+            <div class="#product-meta-custom-html">{{ block.settings.html }}</div>
+          {% endif %}
+      {% when 'custom_image' %}
+          {% if block.settings.heading != blank %}
+            <h5 class="#product-meta-block-heading">{{ block.settings.heading }}</h5>
+          {% endif %}
+          <div class="#product-meta-custom-image">
+            {% render 'media',
+              image: block.settings.image
+            %}
+            {% if block.settings.link != blank %}
+              <a href="{{ block.settings.link }}" class="stretched-link"></a>
+            {% endif %}
+          </div>
+      {% when '@app' %}
+          {% render block %}
+    {% endcase %}
+    {%- endcapture -%}
+
+    {% unless Block_content == blank %}
+      <div class="#product-meta-block @type:{{ block.type }} {% if block.settings.prev_attach %}@attach{% endif %}" {{ block.shopify_attributes }}>
+        {{ Block_content }}
+      </div>
+    {% endunless %}
+  {% endfor %}
+  </div>
+</div>

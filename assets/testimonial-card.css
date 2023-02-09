@@ -1,0 +1,100 @@
+@charset "UTF-8";
+
+.\#testimonial-card {
+    padding-left: calc(var(--spacer) * 2);
+    padding-right: calc(var(--spacer) * 2);
+    padding-top: calc(var(--spacer) * 2);
+    padding-bottom: calc(var(--spacer) * 2);
+    text-align: center;
+    background: rgba(var(--color-background), 1);
+    color: rgba(var(--color-text), 1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+.\#testimonial-card.\@bordered {
+    border: 2px solid rgba(var(--color-alt-background), 1);
+}
+
+.\#testimonial-card-header {
+    margin-bottom: calc(var(--spacer) * 2);
+}
+
+.\#testimonial-card-author-image {
+    border-radius: 50%;
+    width: calc(var(--spacer) * 5);
+    margin: 0 auto;
+}
+
+.\#testimonial-card-author-image + .\#testimonial-card-author-name {
+    margin-top: calc(var(--spacer) * 0.75);
+}
+
+.\#testimonial-card-author-name {
+    margin-bottom: 0;
+    font-size: calc(var(--font-size-base) * 1.15);
+}
+
+.\#testimonial-card-author-subheading {
+    font-size: calc(var(--font-size-base) * 0.9);
+    margin-bottom: 0;
+    opacity: 0.6;
+}
+
+.\#testimonial-card-text {
+    font-size: calc(var(--font-size-base) * 1.15);
+    margin-bottom: 0;
+    position: relative;
+    z-index: 2;
+}
+
+.\#testimonial-card-text:before {
+    content: "”";
+    font-size: calc(var(--font-size-base) * 10);
+    font-family: sans-serif;
+    position: absolute;
+    top: -23px;
+    transform: translateX(-50%);
+    left: 50%;
+    line-height: 1;
+    color: rgba(var(--color-text), 0.064);
+    z-index: -1;
+}
+
+.\#testimonial-card-text + .\#testimonial-card-product {
+    margin-top: calc(var(--spacer) * 2);
+}
+
+.\#testimonial-card-product {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.\#testimonial-card-product-image {
+    width: 65px;
+    margin-left: -32.5px;
+}
+
+.\#testimonial-card-product-title {
+    text-align: left;
+    max-width: 50%;
+    margin-bottom: 0;
+    font-weight: normal;
+    font-size: calc(var(--font-size-base) * 0.95);
+}
+
+.\#testimonial-card-stars {
+    margin-bottom: calc(var(--spacer) * 0.7);
+    color: rgba(var(--color-star-rating), 1);
+}
+
+.\#testimonial-card-stars .\#icon {
+    width: calc(var(--spacer) * 1);
+    height: calc(var(--spacer) * 1);
+}

@@ -1,0 +1,51 @@
+.\#price-slider {
+    display: block;
+    position: relative;
+}
+
+.\#price-slider-values {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: var(--font-body-weight-bold);
+    font-size: calc(var(--font-size-base) * 0.9);
+}
+
+.\#price-slider-base {
+    margin: 0.8rem auto 0.5rem auto;
+    width: calc(100% - 1rem);
+}
+
+.\#price-slider .noUi-target {
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+}
+
+.\#price-slider .noUi-connects {
+    border-radius: 0;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.\#price-slider .noUi-horizontal {
+    height: 8px;
+}
+
+.\#price-slider .noUi-connect {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.\#price-slider .noUi-horizontal .noUi-handle {
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    background: black;
+    box-shadow: 0 0 0 2px white;
+    border: none;
+    top: -8px;
+    right: -12px;
+}
+
+.\#price-slider .noUi-horizontal .noUi-handle:before, .\#price-slider .noUi-horizontal .noUi-handle:after {
+    display: none;
+}

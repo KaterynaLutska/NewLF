@@ -1,0 +1,8 @@
+.\#map-side-wrapper {
+    display: flex;
+}
+
+.\#map-side-item {
+    flex: 1 1 0;
+    max-width: 100%;
+}

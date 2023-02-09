@@ -1,0 +1,58 @@
+{% capture Hero %}
+    {% render 'hero',
+        color_scheme: color_scheme,
+        size: text_size,
+        spaced: text_spaced,
+        heading: title,
+        text: subtitle,
+        align: text_align,
+        color_schema: text_color,
+        button: button,
+        button_style: button_style,
+        button_color: button_color,
+        button_link: button_link,
+        button_show_arrow: button_show_arrow,
+        secondary_button: secondary_button,
+        secondary_button_style: secondary_button_style,
+        secondary_button_color: secondary_button_color,
+        secondary_button_link: secondary_button_link,
+        secondary_button_show_arrow: secondary_button_show_arrow
+    %}
+{% endcapture %}
+
+{% if inner_caption %}
+    {% capture Caption %}
+        {% render 'floating-content',
+            content: Hero,
+            x: caption_x,
+            y: caption_y,
+            padded: true,
+            link: link,
+            absolute: true
+        %}
+    {% endcapture %}
+{% endif %}
+
+
+
+<div class="#gallery-card {% if media_hover_zoom %}$hover:media-zoom{% endif %} hide-loading">
+    {% render 'media',
+        image: image,
+        mobile_image: mobile_image,
+        image_resolution_div: image_resolution_div,
+        content: Caption,
+        size: image_size,
+        mobile_size: mobile_image_size,
+        overlay: image_overlay,
+        overlay_color_inverse: text_color,
+        color_scheme: color_scheme
+    %}
+    {%- unless inner_caption -%}
+        {% if link != blank %}
+            <a href="{{ link }}" class="stretched-link"></a>
+        {% endif %}
+        <div class="#gallery-card-caption">
+            {{ Hero }}
+        </div>
+    {%- endunless -%}
+</div>

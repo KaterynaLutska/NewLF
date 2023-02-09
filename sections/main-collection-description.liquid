@@ -1,0 +1,115 @@
+<link rel="stylesheet" href="{{ 'rte.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'rte.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- capture Content -%}
+  <div class="#rte @text-size:{{ section.settings.text_size }} @width:{{ section.settings.content_width }} {% unless section.settings.text_aling == 'default' %}text-{{ section.settings.text_align }}{% endunless %}">
+    {{ collection.description }}
+  </div>
+{%- endcapture -%}
+
+{% if collection.description != blank %}
+    {% render 'section-body',
+        content: Content,
+        spaced: true,
+        container: true,
+        color_scheme: section.settings.color_scheme
+    %}
+{% endif %}
+
+{% schema %}
+{
+  "name": "Collection description",
+  "tag": "section",
+  "class": "spaced-section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "text_size",
+      "label": "Text size",
+      "options": [
+        {
+          "value": "sm",
+          "label": "Small"
+        },
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "lg",
+          "label": "Large"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text align",
+      "options": [
+          {
+              "value": "left",
+              "label": "Left"
+          },
+          {
+              "value": "center",
+              "label": "Center"
+          },
+          {
+              "value": "right",
+              "label": "Right"
+          },
+          {
+              "value": "default",
+              "label": "Default"
+          }
+      ],
+      "default": "default"
+  },
+    {
+      "type": "select",
+      "id": "content_width",
+      "label": "Content width",
+      "options": [
+        {
+          "value": "wide",
+          "label": "Wide"
+        },
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "alt",
+          "label": "Alternate"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "invert",
+          "label": "Inverted"
+        }
+      ],
+      "default": "default",
+      "label": "Color scheme"
+    }
+  ]
+}
+{% endschema %}

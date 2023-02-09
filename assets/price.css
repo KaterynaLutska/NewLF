@@ -1,0 +1,36 @@
+.\#price {
+    display: flex;
+    gap: 0.5em;
+    margin-bottom: 0;
+}
+
+.\#price-item-heading {
+    font-weight: normal;
+    opacity: 0.64;
+    font-size: 13px;
+    margin-bottom: 2px;
+}
+
+.\#price-item-value {
+    margin-bottom: 0;
+    line-height: 1;
+}
+
+.\#price-item.\@compare .\#price-value {
+    opacity: 0.64;
+    text-decoration: line-through;
+}
+
+.\#price-item.\@on-sale .\#price-value {
+    color: rgba(var(--color-sale-price), 1);
+}
+
+.\#price-value-range {
+    margin: 0 0.35em;
+    opacity: 0.4;
+}
+
+.\#price-value-from {
+    opacity: 0.4;
+    margin-right: 0.5em;
+}

@@ -1,0 +1,573 @@
+{%- liquid
+  assign popupTargetId = section.id | append: 'videoModal'  
+  assign popupTargetSelector = '#' | append: popupTargetId
+  if section.settings.bg_type == 'video'
+    assign bg_video = section.settings.video
+  endif 
+-%}
+
+{%- assign position = section.settings.text_position | split: '-' -%}
+{%- assign text_y = position[0] -%}
+{%- assign text_x = position[1] -%}
+
+{% if section.settings.caption_outside %}
+  {% assign hide_heading = true %}
+  {% assign hide_text = true %}
+  {% assign hide_buttons = true %}
+{% else %}
+  {% assign hide_heading = false %}
+  {% assign hide_text = false %}
+  {% assign hide_buttons = false %}
+{% endif %}
+
+{% capture Hero_Text %}
+    {% render 'hero',
+        blocks: section.blocks,
+        color_scheme: section.settings.color_scheme,
+        align: text_x,
+        spaced: 'lg',
+        icon: 'play-circle',
+        icon_popup: popupTargetSelector,
+        size: section.settings.text_size,
+        hide_heading: hide_heading,
+        hide_text: hide_text,
+        hide_buttons: hide_buttons
+    %}
+{% endcapture %}
+
+{% capture Hero_Text_Outside %}
+    {% render 'hero',
+        blocks: section.blocks,
+        color_scheme: section.settings.color_scheme_outside,
+        align: text_x,
+        spaced: 'lg',
+        icon: 'play-circle',
+        icon_popup: popupTargetSelector,
+        size: section.settings.text_size,
+        hide_play_button: true
+    %}
+{% endcapture %}
+
+{% capture Caption %}
+    {% render 'floating-content',
+        content: Hero_Text,
+        x: text_x,
+        y: text_y,
+        padded: true,
+        absolute: true
+    %}
+{% endcapture %}
+
+{%- capture Content -%}
+  {% if section.settings.caption_outside %}
+    <div class="#grid @strict @container {% if section.settings.caption_position == 'left' %}@reverse:desktop{% endif %}" style="--grid-gap: 0">
+      <div class="#column @span:6 @span:mobile:12">
+        <hero-video section-id="{{ section.id }}" data-main-header-overlap>
+          {% render 'media',
+              image: section.settings.image,
+              mobile_image: section.settings.mobile_image, 
+              size: section.settings.size,
+              mobile_size: section.settings.mobile_size,
+              image_size: '1600x',
+              overlay: section.settings.overlay,
+              color_scheme: section.settings.color_scheme,
+              content: Caption,
+              video_bg: bg_video,
+              video_bg_link: section.settings.mp4_video,
+              resolution: 1400
+          %}
+      
+          <template id="{{ popupTargetId }}">
+            {% render 'video-player',
+              video: section.settings.video
+            %}
+          </template>
+      
+        </hero-video>
+      </div>
+      <div class="#column @span:6 @span:mobile:12">
+        {% render 'floating-content',
+            content: Hero_Text_Outside,
+            x: text_x,
+            y: text_y,
+            padded: true
+        %}
+      </div>
+    </div>
+  {% else %}
+    <hero-video section-id="{{ section.id }}" data-main-header-overlap>
+      {% render 'media',
+          image: section.settings.image,
+          mobile_image: section.settings.mobile_image, 
+          size: section.settings.size,
+          mobile_size: section.settings.mobile_size,
+          image_size: '1600x',
+          overlay: section.settings.overlay,
+          color_scheme: section.settings.color_scheme,
+          content: Caption,
+          video_bg: bg_video,
+          video_bg_link: section.settings.mp4_video,
+          resolution: 1400
+      %}
+  
+      <template id="{{ popupTargetId }}">
+        {% render 'video-player',
+          video: section.settings.video
+        %}
+      </template>
+  
+    </hero-video>
+  {% endif %}
+{%- endcapture -%}
+
+{% if request.design_mode %}
+      <script>
+          async function editorInitPlayer ({ detail: { sectionId }}) {
+            if(sectionId === "{{ section.id }}") {
+                  const bgVideo = document.querySelector(`video-bg[section-id="${sectionId}"]`);
+                  if(bgVideo && !bgVideo.playerInited) {
+                      await bgVideo.initPlayer();
+                  }
+              }
+          }
+
+          document.addEventListener("shopify:section:load", editorInitPlayer);
+      </script>
+  {% endif %}
+
+{% if section.settings.caption_outside %}
+  {% assign section_spaced = true %}
+{% else %}
+  {% assign section_spaced = false %}
+{% endif %}
+  
+{% render 'section-body',
+  content: Content,
+  spaced: section_spaced
+%}
+
+<script type="module" src="{{ 'hero-video.js' | asset_url }}"></script>
+
+
+<style>
+  #shopify-section-{{section.id}} {
+    background-color: {{section.settings.section_bg}};
+  }
+  #shopify-section-{{section.id}} .\#section {
+    background-color: transparent;
+  }
+  #shopify-section-{{section.id}} .\#section.\@spaced {
+    padding-top: 4.5rem;
+    padding-bottom: 4.5rem;
+    margin: 0;
+  }
+</style>
+
+
+
+{% schema %}
+{
+  "name": "Hero video",
+  "tag": "section",
+  "class": "spaced-section spaced-section--full-width",
+  "settings": [
+    {
+      "type": "select",
+      "id": "bg_type",
+      "label": "Play options",
+      "options": [
+        {
+          "value": "video",
+          "label": "Autoplay"
+        },
+        {
+          "value": "image",
+          "label": "Play on click"
+        }
+      ],
+      "default": "video"
+    },
+    {
+      "type": "video_url",
+      "id": "video",
+      "label": "Vimeo/Youtube link",
+      "accept": [
+        "youtube",
+        "vimeo"
+      ],
+      "default": "https://www.youtube.com/watch?v=_9VUPq3SxOc"
+    },
+    {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Placeholder image"
+    },
+    {
+      "type": "text",
+      "id": "mp4_video",
+      "label": "MP4 video link"
+    },
+    {
+      "type": "select",
+      "id": "size",
+      "options": [
+        {
+          "value": "full",
+          "label": "Full height"
+        },
+        {
+          "value": "large",
+          "label": "Large (70%)"
+        },
+        {
+          "value": "medium",
+          "label": "Medium (60%)"
+        },
+        {
+          "value": "small",
+          "label": "Small (50%)"
+        },
+        {
+          "value": "16x9",
+          "label": "Widescreen (16x9)"
+        },
+        {
+          "value": "21x9",
+          "label": "Ultrawide (21x9)"
+        }
+      ],
+      "default": "21x9",
+      "label": "Size"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile image (optional)"
+    },
+    {
+      "type": "range",
+      "id": "overlay",
+      "label": "Overlay opacity",
+      "unit": "%",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "default": 45
+    },
+    {
+      "type": "select",
+      "id": "mobile_size",
+      "options": [
+        {
+          "value": "full",
+          "label": "Full height"
+        },
+        {
+          "value": "large",
+          "label": "Large (70%)"
+        },
+        {
+          "value": "medium",
+          "label": "Medium (60%)"
+        },
+        {
+          "value": "small",
+          "label": "Small (50%)"
+        },
+        {
+          "value": "9x16",
+          "label": "Instgram story (9x16)"
+        },
+        {
+          "value": "4x5",
+          "label": "Facebook feed (4x5)"
+        }
+      ],
+      "default": "9x16",
+      "label": "Mobile size"
+    },
+    {
+      "type": "header",
+      "content": "Caption"
+    },
+    {
+      "type": "checkbox",
+      "id": "caption_outside",
+      "label": "Caption outside"
+    },
+    {
+      "type": "select",
+      "id": "caption_position",
+      "label": "Caption position",
+      "info": "If the caption outside setting is selected",
+      "options": [
+        {
+          "value": "right",
+          "label": "Right"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "select",
+      "id": "text_size",
+      "label": "Size",
+      "options": [
+        {
+          "value": "sm",
+          "label": "Small"
+        },
+        {
+          "value": "md",
+          "label": "Medium"
+        },
+        {
+          "value": "lg",
+          "label": "Large"
+        },
+        {
+          "value": "xl",
+          "label": "Extra large"
+        }
+      ],
+      "default": "md"
+    },
+    {
+      "type": "select",
+      "id": "text_position",
+      "label": "Alignment",
+      "options": [
+        {
+          "value": "top-left",
+          "label": "Top left"
+        },
+        {
+          "value": "top-center",
+          "label": "Top center"
+        },
+        {
+          "value": "top-right",
+          "label": "Top right"
+        },
+        {
+          "value": "center-left",
+          "label": "Center left"
+        },
+        {
+          "value": "center-center",
+          "label": "Center"
+        },
+        {
+          "value": "center-right",
+          "label": "Center right"
+        },
+        {
+          "value": "bottom-left",
+          "label": "Bottom left"
+        },
+        {
+          "value": "bottom-center",
+          "label": "Bottom center"
+        },
+        {
+          "value": "bottom-right",
+          "label": "Bottom right"
+        }
+      ],
+      "default": "center-center"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "invert",
+          "label": "Inverted"
+        }
+      ],
+      "default": "invert",
+      "label": "Color scheme"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme_outside",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "invert",
+          "label": "Inverted"
+        }
+      ],
+      "default": "invert",
+      "label": "Color scheme outside content"
+    },
+    {
+     "type": "color",
+     "id": "section_bg",
+     "label": "Section background"
+   }
+  ],
+  "blocks": [
+    {
+        "type": "icon",
+        "name": "Play button",
+        "limit": 1
+    },
+    {
+      "type": "heading",
+      "name": "t:sections.image-banner.blocks.heading.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Image banner",
+          "label": "t:sections.image-banner.blocks.heading.settings.heading.label"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "t:sections.image-banner.blocks.text.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>Give customers details about the banner image(s) or content on the template.</p>",
+          "label": "t:sections.image-banner.blocks.text.settings.text.label"
+        }
+      ]
+    },
+    {
+      "type": "buttons",
+      "name": "Buttons",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Primary button"
+        },
+        {
+          "type": "text",
+          "id": "button",
+          "label": "Text"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Link"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Style",
+          "options": [
+             {
+                "value": "default",
+                "label": "Default"
+             },
+             {
+                "value": "ghost",
+                "label": "Outline"
+             },
+             {
+                "value": "link",
+                "label": "Link"
+             }
+          ],
+          "default": "default"
+        },
+        {
+           "type": "checkbox",
+           "id": "button_show_arrow",
+           "label": "Show arrow",
+           "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "button_popup",
+          "label": "Trigger video popup",
+          "info": "Link setting will be ignored"
+        },
+        {
+          "type": "header",
+          "content": "Secondary button"
+        },
+        {
+          "type": "text",
+          "id": "secondary_button",
+          "label": "Text"
+        },
+        {
+          "type": "url",
+          "id": "secondary_button_link",
+          "label": "Link"
+        },
+        {
+          "type": "select",
+          "id": "secondary_button_style",
+          "label": "Style",
+          "options": [
+             {
+                "value": "default",
+                "label": "Default"
+             },
+             {
+                "value": "ghost",
+                "label": "Outline"
+             },
+             {
+                "value": "link",
+                "label": "Link"
+             }
+          ],
+          "default": "default"
+        },
+        {
+          "type": "checkbox",
+          "id": "secondary_button_show_arrow",
+          "label": "Show arrow",
+          "default": true
+       },
+       {
+         "type": "checkbox",
+         "id": "secondary_button_popup",
+         "label": "Trigger video popup",
+         "info": "Link setting will be ignored"
+       }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero video",
+      "blocks": [
+        {
+          "type": "heading"
+        },
+        {
+          "type": "text"
+        },
+        {
+          "type": "buttons",
+          "settings": {
+            "button": "Shop Now"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

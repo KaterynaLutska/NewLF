@@ -1,0 +1,370 @@
+{%- assign address_link = 'https://maps.google.com?daddr=' | append: section.settings.map_address | escape  -%}
+
+
+{%- capture Map -%}
+    {% render 'google-map',
+        map_key: section.settings.map_api_key,
+        map_address: section.settings.map_address,
+        map_style: section.settings.map_style,
+        map_url: address_link,
+        map_marker_color: section.settings.map_marker_color,
+    %}
+{%- endcapture -%}
+
+
+
+{% if section.settings.map_display == 'full_map' %}
+    {%- assign media_map = Map -%}
+    {%- assign caption_x = 'left' -%}
+{% else %}
+    {%- assign media_map = null -%}
+    {%- assign caption_x = 'center' -%}
+{% endif %}
+
+{%- capture Map_text -%}
+  {% render 'hero',
+    blocks: section.blocks,
+    color_scheme: section.settings.color_scheme,
+    align: 'center',
+    spaced: 'xl',
+    size: section.settings.text_size,
+    button_link: address_link,
+    button_atts: 'target="_blank"',
+    background: true,
+    padded: true
+  %}
+{%- endcapture -%}
+
+
+
+{% capture Caption %}
+    {% render 'floating-content',
+        content: Map_text,
+        x: caption_x,
+        y: 'center',
+        padded: true,
+        absolute: true
+    %}
+{% endcapture %}
+
+{% comment %}
+{% render 'media',
+    image: section.settings.image,
+    size: section.settings.image_size,
+    image_size: '1600x',
+    overlay: 0,
+    content: Caption,
+    map: true,
+    map_key: section.settings.map_api_key,
+    map_address: section.settings.map_address
+%}
+{% endcomment %}
+
+
+{%- comment -%}
+{% render 'media',
+    image: section.settings.image,
+    size: section.settings.image_size,
+    image_size: '1600x',
+    overlay: section.settings.overlay,
+    content: Caption,
+    map: display_map,
+    map_side: map_side,
+    map_key: section.settings.map_api_key,
+    map_address: section.settings.map_address,
+    map_style: section.settings.map_style,
+    map_url: address_link,
+    map_marker_color: section.settings.map_marker_color,
+    resolution: 1400
+%}
+{%- endcomment -%}
+
+
+
+
+
+{%- capture Media -%}
+    {% render 'media',
+        image: section.settings.image,
+        mobile_image: section.settings.mobile_image,
+        size: section.settings.image_size,
+        overlay: section.settings.overlay,
+        content: Caption,
+        map: media_map,
+        color_scheme: section.settings.color_scheme,
+        reveal_zoom: true,
+        placeholder: 'lifestyle'
+    %}
+{%- endcapture -%}
+
+{%- capture Content -%}
+  {%- if section.settings.map_display == 'full_map' -%}
+      {{ Media }}
+  {%- else -%}
+      <div class="#grid @mobile:columns:1" style="--grid-gap: 0;">
+          {% if section.settings.map_display == 'map_left' %}
+              {{ Map }}
+              {{ Media }}
+          {% else %}
+              {{ Media }}
+              {{ Map }}
+          {% endif %}
+      </div>
+  {%- endif -%}
+{%- endcapture -%}
+
+{% render 'section-body',
+    content: Content
+%}
+
+
+
+
+{% schema %}
+{
+  "name": "Map",
+  "tag": "section",
+  "class": "spaced-section",
+  "settings": [
+  {
+    "type": "select",
+    "id": "map_display",
+    "label": "Layout",
+    "options": [
+        {
+            "value": "full_map",
+            "label": "Full-width"
+        },
+        {
+          "value": "map_left",
+          "label": "Map left"
+        },
+        {
+          "value": "map_right",
+          "label": "Map right"
+        }
+    ],
+    "default": "map_right"
+},
+{
+  "type": "select",
+  "id": "image_size",
+  "label": "Hight",
+  "options": [
+    {
+      "value": "large",
+      "label": "Large (70%)"
+    },
+    {
+      "value": "medium",
+      "label": "Medium (60%)"
+    },
+    {
+      "value": "small",
+      "label": "Small (50%)"
+    }
+  ],
+  "default": "large"
+},
+{
+  "type": "select",
+  "id": "text_size",
+  "label": "Text size",
+  "options": [
+    {
+      "value": "xs",
+      "label": "Small"
+    },
+    {
+      "value": "sm",
+      "label": "Medium"
+    },
+    {
+      "value": "md",
+      "label": "Large"
+    }
+  ],
+  "default": "sm"
+},
+{
+  "type": "select",
+  "id": "color_scheme",
+  "options": [
+    {
+      "value": "default",
+      "label": "Default"
+    },
+    {
+      "value": "alt",
+      "label": "Alternate"
+    },
+    {
+      "value": "accent",
+      "label": "Accent"
+    },
+    {
+      "value": "invert",
+      "label": "Inverted"
+    }
+  ],
+  "default": "default",
+  "label": "Color scheme"
+},
+    {
+        "type": "header",
+        "content": "Google map settings"
+    },
+    {
+        "type": "text",
+        "id": "map_api_key",
+        "label": "API key"
+    },
+    {
+        "type": "text",
+        "id": "map_address",
+        "label": "Address"
+    },
+    {
+        "type": "select",
+        "id": "map_style",
+        "label": "Style",
+        "options": [
+            {
+                "value": "light",
+                "label": "Light"
+            },
+            {
+                "value": "dark",
+                "label": "Dark"
+            },
+            {
+                "value": "retro",
+                "label": "Retro"
+            },
+            {
+                "value": "night",
+                "label": "Night"
+            },
+            {
+                "value": "monochrome",
+                "label": "Monochrome"
+            },
+            {
+                "value": "modest",
+                "label": "Modest"
+            },
+            {
+                "value": "default",
+                "label": "Default"
+            }
+        ],
+        "default": "default"
+    },
+    {
+        "type": "color",
+        "id": "map_marker_color",
+        "label": "Marker color",
+        "default": "#FF0000"
+    },
+    {
+        "type": "header",
+        "content": "Placeholder image"
+    },
+    {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image",
+        "info": "Displays if Google map is undefined or unavailable"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile image (optional)",
+      "info": "Displays if Google map is undefined or unavailable"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "t:sections.image-banner.blocks.heading.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Image banner",
+          "label": "t:sections.image-banner.blocks.heading.settings.heading.label"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Address",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>Give customers details about the banner image(s) or content on the template.</p>",
+          "label": "Address"
+        }
+      ]
+    },
+    {
+      "type": "buttons",
+      "name": "Directions button",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "button",
+          "label": "Button label",
+          "default": "Get directions"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Button style",
+          "options": [
+             {
+                "value": "default",
+                "label": "Default"
+             },
+             {
+                "value": "ghost",
+                "label": "Outline"
+             },
+             {
+                "value": "link",
+                "label": "Link"
+             }
+          ],
+          "default": "default"
+        },
+        {
+           "type": "checkbox",
+           "id": "button_show_arrow",
+           "label": "Show arrow",
+           "default": true
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Map",
+      "blocks": [
+        {
+          "type": "heading"
+        },
+        {
+          "type": "text"
+        },
+        {
+          "type": "buttons"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

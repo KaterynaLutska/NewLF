@@ -1,0 +1,614 @@
+.\#col.\@12, .\#col.\@11, .\#col.\@10, .\#col.\@9, .\#col.\@8, .\#col.\@7, .\#col.\@6, .\#col.\@5, .\#col.\@4, .\#col.\@3, .\#col.\@2, .\#col.\@1, .\#row.\@cols\:6 > .\#col, .\#row.\@cols\:5 > .\#col, .\#row.\@cols\:4 > .\#col, .\#row.\@cols\:3 > .\#col, .\#row.\@cols\:2 > .\#col {
+    flex: 0 0 auto;
+}
+
+.\#container {
+    padding-left: calc(var(--spacer) * 3);
+    padding-right: calc(var(--spacer) * 3);
+}
+
+.\#row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.\#row:not(.\@spaced) {
+    margin-top: calc(calc(var(--spacer) * 1) * -1);
+    margin-left: calc(calc(var(--spacer) * 0.5) * -1);
+    margin-right: calc(calc(var(--spacer) * 0.5) * -1);
+}
+
+.\#row.\@justify\:between {
+    justify-content: space-between;
+}
+
+.\#row.\@justify\:end {
+    justify-content: flex-end;
+}
+
+.\#row.\@justify\:center {
+    justify-content: center;
+}
+
+.\#row.\@gutter\:0 {
+    margin-top: 0;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.\#row.\@gutter\:0 > .\#col {
+    margin-top: 0;
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.\#row.\@gutter\:50 > .\#col {
+    margin-top: calc(var(--spacer) * 0.5);
+    padding-left: calc(var(--spacer) * 0.25);
+    padding-right: calc(var(--spacer) * 0.25);
+}
+
+.\#row.\@gutter\:50:not(.\@spaced) {
+    margin-top: calc(calc(var(--spacer) * 0.5) * -1);
+    margin-left: calc(calc(var(--spacer) * 0.25) * -1);
+    margin-right: calc(calc(var(--spacer) * 0.25) * -1);
+}
+
+.\#row.\@gutter\:50.\@spaced {
+    padding-bottom: calc(var(--spacer) * 0.5);
+    padding-left: calc(var(--spacer) * 0.25);
+    padding-right: calc(var(--spacer) * 0.25);
+}
+
+.\#row.\@gutter\:100 > .\#col {
+    margin-top: calc(var(--spacer) * 1);
+    padding-left: calc(var(--spacer) * 0.5);
+    padding-right: calc(var(--spacer) * 0.5);
+}
+
+.\#row.\@gutter\:100:not(.\@spaced) {
+    margin-top: calc(calc(var(--spacer) * 1) * -1);
+    margin-left: calc(calc(var(--spacer) * 0.5) * -1);
+    margin-right: calc(calc(var(--spacer) * 0.5) * -1);
+}
+
+.\#row.\@gutter\:100.\@spaced {
+    padding-bottom: calc(var(--spacer) * 1);
+    padding-left: calc(var(--spacer) * 0.5);
+    padding-right: calc(var(--spacer) * 0.5);
+}
+
+.\#row.\@gutter\:150 > .\#col {
+    margin-top: calc(var(--spacer) * 1.5);
+    padding-left: calc(var(--spacer) * 0.75);
+    padding-right: calc(var(--spacer) * 0.75);
+}
+
+.\#row.\@gutter\:150:not(.\@spaced) {
+    margin-top: calc(calc(var(--spacer) * 1.5) * -1);
+    margin-left: calc(calc(var(--spacer) * 0.75) * -1);
+    margin-right: calc(calc(var(--spacer) * 0.75) * -1);
+}
+
+.\#row.\@gutter\:150.\@spaced {
+    padding-bottom: calc(var(--spacer) * 1.5);
+    padding-left: calc(var(--spacer) * 0.75);
+    padding-right: calc(var(--spacer) * 0.75);
+}
+
+.\#row.\@gutter\:200 > .\#col {
+    margin-top: calc(var(--spacer) * 2);
+    padding-left: calc(var(--spacer) * 1);
+    padding-right: calc(var(--spacer) * 1);
+}
+
+.\#row.\@gutter\:200:not(.\@spaced) {
+    margin-top: calc(calc(var(--spacer) * 2) * -1);
+    margin-left: calc(calc(var(--spacer) * 1) * -1);
+    margin-right: calc(calc(var(--spacer) * 1) * -1);
+}
+
+.\#row.\@gutter\:200.\@spaced {
+    padding-bottom: calc(var(--spacer) * 2);
+    padding-left: calc(var(--spacer) * 1);
+    padding-right: calc(var(--spacer) * 1);
+}
+
+.\#row.\@gutter\:300 > .\#col {
+    margin-top: calc(var(--spacer) * 3);
+    padding-left: calc(var(--spacer) * 1.5);
+    padding-right: calc(var(--spacer) * 1.5);
+}
+
+.\#row.\@gutter\:300:not(.\@spaced) {
+    margin-top: calc(calc(var(--spacer) * 3) * -1);
+    margin-left: calc(calc(var(--spacer) * 1.5) * -1);
+    margin-right: calc(calc(var(--spacer) * 1.5) * -1);
+}
+
+.\#row.\@gutter\:300.\@spaced {
+    padding-bottom: calc(var(--spacer) * 3);
+    padding-left: calc(var(--spacer) * 1.5);
+    padding-right: calc(var(--spacer) * 1.5);
+}
+
+.\#row.\@gutter\:500 > .\#col {
+    margin-top: calc(var(--spacer) * 5);
+    padding-left: calc(var(--spacer) * 2.5);
+    padding-right: calc(var(--spacer) * 2.5);
+}
+
+.\#row.\@gutter\:500:not(.\@spaced) {
+    margin-top: calc(calc(var(--spacer) * 5) * -1);
+    margin-left: calc(calc(var(--spacer) * 2.5) * -1);
+    margin-right: calc(calc(var(--spacer) * 2.5) * -1);
+}
+
+.\#row.\@gutter\:500.\@spaced {
+    padding-bottom: calc(var(--spacer) * 5);
+    padding-left: calc(var(--spacer) * 2.5);
+    padding-right: calc(var(--spacer) * 2.5);
+}
+
+.\#row.\@cols\:2 > .\#col {
+    width: 50%;
+}
+
+.\#row.\@cols\:3 > .\#col {
+    width: 33.3333333333%;
+}
+
+.\#row.\@cols\:4 > .\#col {
+    width: 25%;
+}
+
+.\#row.\@cols\:5 > .\#col {
+    width: 20%;
+}
+
+.\#row.\@cols\:6 > .\#col {
+    width: 16.6666666667%;
+}
+
+.\#col {
+    position: relative;
+    margin-top: calc(var(--spacer) * 0.5);
+    padding-left: calc(var(--spacer) * 0.5);
+    padding-right: calc(var(--spacer) * 0.5);
+    flex: 1 1 0;
+    max-width: 100%;
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+}
+
+.\#col.\@1 {
+    width: 8.3333333333%;
+}
+
+.\#col.\@2 {
+    width: 16.6666666667%;
+}
+
+.\#col.\@3 {
+    width: 25%;
+}
+
+.\#col.\@4 {
+    width: 33.3333333333%;
+}
+
+.\#col.\@5 {
+    width: 41.6666666667%;
+}
+
+.\#col.\@6 {
+    width: 50%;
+}
+
+.\#col.\@7 {
+    width: 58.3333333333%;
+}
+
+.\#col.\@8 {
+    width: 66.6666666667%;
+}
+
+.\#col.\@9 {
+    width: 75%;
+}
+
+.\#col.\@10 {
+    width: 83.3333333333%;
+}
+
+.\#col.\@11 {
+    width: 91.6666666667%;
+}
+
+.\#col.\@12 {
+    width: 100%;
+}
+
+.\#grid {
+    display: grid;
+    --gap: var(--grid-gap, 1rem);
+    --row-gap: var(--grid-row-gap, var(--gap));
+    gap: var(--gap);
+    row-gap: var(--row-gap);
+}
+
+.\#grid:not(.\@strict) {
+    grid-auto-flow: column;
+}
+
+.\#grid.\@gap\:none {
+    --grid-gap: 0;
+}
+
+.\#grid.\@gap\:sm {
+    --grid-gap: 0.5rem;
+}
+
+.\#grid.\@gap\:md {
+    --grid-gap: 1rem;
+}
+
+.\#grid.\@gap\:lg {
+    --grid-gap: 2rem;
+}
+
+.\#grid.\@gap\:xl {
+    --grid-gap: 3rem;
+}
+
+.\#grid.\@strict {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+.\#grid.\@strict .\#column.\@span\:1 {
+    grid-column: span 1;
+}
+
+.\#grid.\@strict .\#column.\@span\:2 {
+    grid-column: span 2;
+}
+
+.\#grid.\@strict .\#column.\@span\:3 {
+    grid-column: span 3;
+}
+
+.\#grid.\@strict .\#column.\@span\:4 {
+    grid-column: span 4;
+}
+
+.\#grid.\@strict .\#column.\@span\:5 {
+    grid-column: span 5;
+}
+
+.\#grid.\@strict .\#column.\@span\:6 {
+    grid-column: span 6;
+}
+
+.\#grid.\@strict .\#column.\@span\:7 {
+    grid-column: span 7;
+}
+
+.\#grid.\@strict .\#column.\@span\:8 {
+    grid-column: span 8;
+}
+
+.\#grid.\@strict .\#column.\@span\:9 {
+    grid-column: span 9;
+}
+
+.\#grid.\@strict .\#column.\@span\:10 {
+    grid-column: span 10;
+}
+
+.\#grid.\@strict .\#column.\@span\:11 {
+    grid-column: span 11;
+}
+
+.\#grid.\@strict .\#column.\@span\:12 {
+    grid-column: span 12;
+}
+
+@media (max-width: 991px) {
+    .\#grid.\@strict .\#column.\@span\:mobile\:1 {
+        grid-column: span 1;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:mobile\:2 {
+        grid-column: span 2;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:mobile\:3 {
+        grid-column: span 3;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:mobile\:4 {
+        grid-column: span 4;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:mobile\:5 {
+        grid-column: span 5;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:mobile\:6 {
+        grid-column: span 6;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:mobile\:7 {
+        grid-column: span 7;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:mobile\:8 {
+        grid-column: span 8;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:mobile\:9 {
+        grid-column: span 9;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:mobile\:10 {
+        grid-column: span 10;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:mobile\:11 {
+        grid-column: span 11;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:mobile\:12 {
+        grid-column: span 12;
+    }
+}
+
+@media (min-width: 992px) {
+    .\#grid.\@strict .\#column.\@span\:desktop\:1 {
+        grid-column: span 1;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:desktop\:2 {
+        grid-column: span 2;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:desktop\:3 {
+        grid-column: span 3;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:desktop\:4 {
+        grid-column: span 4;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:desktop\:5 {
+        grid-column: span 5;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:desktop\:6 {
+        grid-column: span 6;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:desktop\:7 {
+        grid-column: span 7;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:desktop\:8 {
+        grid-column: span 8;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:desktop\:9 {
+        grid-column: span 9;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:desktop\:10 {
+        grid-column: span 10;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:desktop\:11 {
+        grid-column: span 11;
+    }
+
+    .\#grid.\@strict .\#column.\@span\:desktop\:12 {
+        grid-column: span 12;
+    }
+}
+
+.\#grid.\@reverse {
+    direction: rtl;
+}
+
+.\#grid.\@reverse > * {
+    direction: ltr;
+}
+
+@media (max-width: 991px) {
+    .\#grid.\@reverse\:mobile {
+        direction: rtl;
+    }
+
+    .\#grid.\@reverse\:mobile > * {
+        direction: ltr;
+    }
+}
+
+@media (min-width: 992px) {
+    .\#grid.\@reverse\:desktop {
+        direction: rtl;
+    }
+
+    .\#grid.\@reverse\:desktop > * {
+        direction: ltr;
+    }
+}
+
+.\#grid.\@container {
+    padding-left: min(3rem, 5%);
+    padding-right: min(3rem, 5%);
+}
+
+.\#grid.\@outer-gap {
+    padding: var(--gap);
+}
+
+.\#grid.\@auto-columns {
+    grid-auto-columns: max-content;
+    grid-auto-flow: column;
+}
+
+.\#grid.\@columns\:1 {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.\#grid.\@columns\:2 {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.\#grid.\@columns\:3 {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.\#grid.\@columns\:4 {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.\#grid.\@columns\:5 {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.\#grid.\@columns\:6 {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+@media (max-width: 991px) {
+    .\#grid.\@mobile\:columns\:1 {
+        grid-auto-flow: row;
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+
+    .\#grid.\@mobile\:columns\:2 {
+        grid-auto-flow: row;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .\#grid.\@mobile\:columns\:3 {
+        grid-auto-flow: row;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .\#grid.\@mobile\:columns\:4 {
+        grid-auto-flow: row;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .\#grid.\@mobile\:columns\:5 {
+        grid-auto-flow: row;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .\#grid.\@mobile\:columns\:6 {
+        grid-auto-flow: row;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 991px) {
+    .\#grid {
+        --gap: var(--grid-mobile-gap, var(--grid-gap, 1rem));
+    }
+}
+
+@media (max-width: 991px) {
+    .\#grid.\@mobile-overlap {
+        grid-template-columns: none;
+        grid-auto-columns: 64%;
+        grid-auto-flow: column;
+        gap: 1rem;
+        overflow-x: auto;
+        padding-bottom: 15px;
+        scroll-snap-type: x mandatory;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .\#grid.\@mobile-overlap::-webkit-scrollbar {
+        -webkit-appearance: none;
+        height: 6px;
+    }
+
+    .\#grid.\@mobile-overlap::-webkit-scrollbar-thumb {
+        border-radius: 6px;
+        background: currentColor;
+    }
+
+    .\#grid.\@mobile-overlap:before, .\#grid.\@mobile-overlap:after {
+        content: "";
+        width: 1px;
+        justify-self: end;
+    }
+
+    .\#grid.\@mobile-overlap > .\#column {
+        scroll-snap-align: center;
+    }
+}
+
+@media (max-width: 991px) {
+    .\#grid.\@mobile-full-overlap {
+        grid-template-columns: none;
+        grid-auto-columns: 88%;
+        grid-auto-flow: column;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+    }
+
+    .\#grid.\@mobile-full-overlap > .\#column {
+        scroll-snap-align: center;
+    }
+}
+
+@media (max-width: 991px) {
+    .\#grid.\%mobile\:overlap {
+        grid-template-columns: none;
+        grid-auto-columns: 64%;
+        grid-auto-flow: column;
+        gap: 1rem;
+        overflow-x: auto;
+        padding-bottom: 15px;
+        scroll-snap-type: x mandatory;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .\#grid.\%mobile\:overlap::-webkit-scrollbar {
+        -webkit-appearance: none;
+        height: 6px;
+    }
+
+    .\#grid.\%mobile\:overlap::-webkit-scrollbar-thumb {
+        border-radius: 6px;
+        background: currentColor;
+    }
+
+    .\#grid.\%mobile\:overlap:before, .\#grid.\%mobile\:overlap:after {
+        content: "";
+        width: 1px;
+        justify-self: end;
+    }
+
+    .\#grid.\%mobile\:overlap > .\#column {
+        scroll-snap-align: center;
+    }
+}
+
+.\#inline-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--grid-gap, 1rem);
+}

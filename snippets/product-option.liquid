@@ -1,0 +1,19 @@
+<div>
+  <label for="Option{{ option.position }}">
+    {{ product_option.name }}
+  </label>
+  <select
+    data-options-position="{{ product_option.position }}"
+    id="option{{ product_option.position }}"
+    class="form-select"
+    name="options[{{ product_option.name | escape }}]">
+    {%- for value in product_option.values -%}
+      <option
+        data-option-name="{{ product_option.name | capitalize | append: value }}"
+        value="{{ value | escape }}"
+        {%- if product_option.selected_value == value -%}selected="selected"{%- endif -%}>
+          {{ value }}
+      </option>
+    {%- endfor -%}
+  </select>
+</div>

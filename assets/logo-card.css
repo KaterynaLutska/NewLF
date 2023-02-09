@@ -1,0 +1,33 @@
+.\#logo-card {
+    --logo-max-height: 120px;
+    position: relative;
+    padding: 1.5rem;
+    background: rgba(var(--color-background), 1);
+    overflow: hidden;
+}
+
+.\#logo-card.\@bordered {
+    border: 2px solid rgba(var(--color-alt-background), 1);
+}
+
+@media (min-width: 992px) {
+    .\#logo-card.\@grayscale-hover {
+        transition: 0.3s;
+        filter: grayscale(1);
+    }
+
+    .\#logo-card.\@grayscale-hover:hover {
+        filter: grayscale(0);
+    }
+}
+
+.\#logo-card-img {
+    display: flex;
+    height: var(--logo-max-height);
+    align-items: center;
+}
+
+.\#logo-card-img .\#media-image {
+    max-height: var(--logo-max-height);
+    object-fit: contain;
+}

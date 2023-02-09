@@ -1,0 +1,24 @@
+{{ 'page-header.css' | asset_url | stylesheet_tag }}
+
+{% render 'page-header',
+  t_title: 'customer.account.title',
+  spaced: true
+%}
+
+<nav class="#customer-nav">
+    <a class="
+        #customer-nav-item
+        {% if request.page_type == 'customers/account' or request.page_type == 'customers/order' %}!active{% endif %}
+    " href="{{ routes.account_url }}">
+        {{ 'customer.orders.title' | t }}
+    </a>
+    <a class="
+        #customer-nav-item
+        {% if request.page_type == 'customers/addresses' %}!active{% endif %}
+    " href="{{ routes.account_addresses_url }}">
+        {{ 'customer.addresses.title' | t }}
+    </a>
+    <a class="#customer-nav-item" href="{{ routes.account_logout_url }}">
+        {{ 'customer.log_out' | t }}
+    </a>
+</nav>

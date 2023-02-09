@@ -1,0 +1,280 @@
+{{ 'form.css' | asset_url | stylesheet_tag }}
+{{ 'newsletter.css' | asset_url | stylesheet_tag }}
+
+{% capture Newsletter %}
+  {% render 'hero',
+    blocks: section.blocks,
+    align: 'center',
+    color_scheme: section.settings.color_scheme,
+    spaced: 'lg',
+    size: section.settings.text_size
+  %}
+{% endcapture %}
+
+{% capture Caption %}
+  {% render 'floating-content',
+    padded: true,
+    x: 'center',
+    y: 'center',
+    content: Newsletter,
+    absolute: true
+  %}
+{% endcapture %}
+
+{% capture Content %}
+  {% render 'media',
+    image: section.settings.image,
+    size: section.settings.image_size,
+    mobile_size: section.settings.image_mobile_size,
+    content: Caption,
+    overlay: section.settings.overlay,
+    color_scheme: section.settings.color_scheme
+  %}
+{% endcapture %}
+
+
+{% if section.settings.is_enabled %}
+    {% if request.design_mode and section.settings.enable_testing_mode %}
+    <script>
+      document.querySelector('html').classList.add('overflow-hidden');
+      setTimeout(() => {
+        const popupNewsletterForm = document.getElementById('NewsletterForm-{{ section.id }}');
+        popupNewsletterForm.addEventListener('submit', (e) => e.preventDefault());
+      }, 500);
+    </script>
+    <div class="#modal-popup @layout:default" opened>
+      <div class="#modal-popup-overlay" data-overlay></div>
+      <button class="#modal-popup-close" data-close>
+          {% render 'icon' name: 'x' %}
+      </button>
+      <div class="#modal-popup-stage">
+          <div class="#modal-popup-layout" data-layout>
+              <div class="#modal-popup-content" data-content>{{ Content }}</div>
+          </div>
+      </div>
+    </div>
+    {% else %}
+      <main-newsletter-popup
+        section-id="{{ section.id }}"
+        display-delay="{{ section.settings.display_delay }}"
+        days-to-re-appear="{{ section.settings.days_to_re_appear }}"
+      >
+        <template id="newsletterPopup" section-id="{{ section.id }}">
+          {{ Content }}
+        </template>
+      </main-newsletter-popup>
+      <script type="module" src="{{ 'newsletter-popup.js' | asset_url }}"></script>
+      {% endif %}
+{% endif %}
+
+{% schema %}
+{
+  "name": "Entry popup",
+  "tag": "section",
+  "class": "spaced-section spaced-section--full-width",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "is_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_testing_mode",
+      "label": "Enable test mode",
+      "default": false,
+      "info": "Form submission disabled for test mode"
+    },
+    {
+      "type": "range",
+      "id": "display_delay",
+      "label": "Delay untill popup appears",
+      "unit": "s",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "days_to_re_appear",
+      "label": "Time before the popup reappears for user",
+      "unit": "day",
+      "min": 1,
+      "max": 90,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    },
+    {
+      "type": "range",
+      "id": "overlay",
+      "label": "Overlay opacity",
+      "unit": "%",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "image_size",
+      "label": "Image size",
+      "options": [
+        {
+          "value": "16x9",
+          "label": "Widescreen (16x9)"
+        },
+        {
+          "value": "21x9",
+          "label": "Ultrawide (21x9)"
+        },
+        {
+          "value": "original",
+          "label": "Original image size"
+        }
+      ],
+      "default": "16x9"
+    },
+    {
+      "type": "select",
+      "id": "image_mobile_size",
+      "label": "Image mobile size",
+      "options": [
+        {
+          "value": "9x16",
+          "label": "Instgram story (9x16)"
+        },
+        {
+          "value": "4x5",
+          "label": "Facebook feed (4x5)"
+        },
+        {
+          "value": "original",
+          "label": "Original image size"
+        }
+      ],
+      "default": "9x16"
+    },
+    {
+      "type": "select",
+      "id": "text_size",
+      "label": "Text size",
+      "options": [
+        {
+          "value": "sm",
+          "label": "Small"
+        },
+        {
+          "value": "md",
+          "label": "Medium"
+        },
+        {
+          "value": "lg",
+          "label": "Large"
+        },
+        {
+          "value": "xl",
+          "label": "Extra large"
+        }
+      ],
+      "default": "md"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "invert",
+          "label": "Inverted"
+        }
+      ],
+      "default": "invert",
+      "label": "Color scheme"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:sections.newsletter.settings.paragraph.content"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "t:sections.newsletter.blocks.heading.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Subscribe to our emails",
+          "label": "t:sections.newsletter.blocks.heading.settings.heading.label"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "t:sections.image-banner.blocks.text.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "text",
+          "default": "Be the first to know about new collections and exclusive offers.",
+          "label": "t:sections.newsletter.blocks.paragraph.settings.paragraph.label"
+        }
+      ]
+    },
+    {
+      "type": "newsletter_form",
+      "name": "Newsletter form",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "button_show_arrow",
+          "label": "Show button arrow",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "button_custom_text",
+          "label": "Custom button label text",
+          "info": "Leave it blank for default label"
+        },
+        {
+          "type": "text",
+          "id": "custom_placeholder_text",
+          "label": "Custom input text",
+          "info": "Leave it blank for default text"
+        }
+      ]
+    },
+    {
+      "type": "@app"
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "heading"
+      },
+      {
+        "type": "text"
+      },
+      {
+        "type": "newsletter_form"
+      }
+    ]
+  }
+  
+}
+{% endschema %}

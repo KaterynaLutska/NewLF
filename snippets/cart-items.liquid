@@ -1,0 +1,124 @@
+<div class="#cart-items">
+    <div class="#cart-items-header">
+        <h3 class="#cart-items-title">{{ 'sections.cart.title' | t }}</h3>
+        <a class="#cart-items-shopping-link" href="{{ routes.all_products_collection_url }}">{{ 'general.continue_shopping' | t }}</a>
+    </div>
+    <div class="#cart-items-body">
+        {% for item in cart.items %}
+          {%- comment -%}Bold:PO 2.0 - Hybrid Input{%- endcomment -%}
+{%- if item.properties._boldBuilderId  and item.properties._boldVariantIds == null -%}
+  <input type="hidden" name="updates[]" id="updates_{{- item.key -}}" class="bold_hidden_input cart__product-qty" value="{{- item.quantity -}}" min="0" data-id="{{- item.key -}}">
+{%- continue -%}
+{%- endif -%}
+            <cart-item 
+                class="#cart-item" 
+                cart-item-variant-id="{{ item.variant.id }}" 
+                section-id="{{ section.id }}"
+            >
+                <div class="#cart-item-spinner">
+                    {% render 'spinner', size: 'xs' %}
+                </div>
+                <div class="#cart-item-card">
+                    <a href="{{ item.variant.url }}" class="stretched-link"></a>
+                    <div class="#cart-item-image">
+                        {% render 'media',
+                            image: item.image,
+                            aspect_ratio: '1x1',
+                            position: 'center'
+                        %}
+                    </div>
+                    <div class="#cart-item-meta">
+                        <h5 class="#cart-item-title">{{ item.product.title }}</h5>
+                        {% unless item.product.has_only_default_variant %}
+                            <p class="#cart-item-subtitle">{{ item.variant.title }}</p>
+                        {% endunless %}
+                      <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_properties" style="display:none !important;"></span>
+                        {% if item.properties %}
+                            {% capture props %}
+                            {% for prop in item.properties %}
+                                {%- assign prop_first_char = prop.first | slice: 0 -%}
+                                {%- if prop.last != blank and prop_first_char != '_' -%}
+                                    {% capture prop_content %}
+                                        {%- if prop.last contains '/uploads/' -%}
+                                            <a href="{{ prop.last }}" class="link" target="_blank">
+                                                {{ prop.last | split: '/' | last }}
+                                            </a>
+                                        {%- else -%}
+                                            {{ prop.last }}
+                                        {%- endif -%}
+                                    {% endcapture %}
+                                    <li>{{ prop.first }}: {{ prop_content }}</li>
+                                {%- endif -%}
+                            {% endfor %}
+                            {% endcapture %}    
+                        {% endif %}
+
+                        {% if props != blank %}
+                            <ul class="#cart-item-props">{{ props }}</ul>
+                        {% endif %}
+                        
+                        <div class="#cart-item-price">
+                            {% if item.original_price != item.final_price %}
+                                <span class="#cart-item-price-original">{{ item.original_price | money }}</span>
+                            {% endif %}
+                            <span class="#cart-item-price-final">{{ item.final_price | money }}</span>
+                        </div>
+                        {% render 'unit-price', variant: item.variant %}
+                        {% unless item.selling_plan_allocation == nil %}
+                          <span>{{ item.selling_plan_allocation.selling_plan.name }}</span>
+                        {% endunless %}
+                        {% if item.discounts.size > 0 %}
+                            <ul class="#cart-item-discounts">
+                                {% for discount in item.discounts %}
+                                    <li>{% render 'icon', name: 'tag' %} {{ discount.title }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="#cart-item-side">
+                    <div class="#cart-item-qty">
+                        <div class="#cart-item-qty-controls">
+                            <button type="button" class="#cart-item-qty-btn" {% if item.quantity == 1 %}disabled{% endif %} data-dec>
+                                {% render 'icon', name: 'minus' %}
+                            </button>
+                            <input class="#cart-item-qty-input"
+                                type="number"
+                                name="updates[]"
+                                value="{{ item.quantity | escape }}"
+                                min="0"
+                                {% if item.variant.inventory_management and item.variant.inventory_policy == 'deny' %}
+                                    max="{{ item.variant.inventory_quantity }}" 
+                                {% endif %} 
+                                step="1"
+                                aria-label="{{ 'products.product.quantity.input_label' | t: product: item.product.title | escape }}"
+                                id="Quantity-{{ item.variant.id }}"
+                                data-input="{{ item.variant.id }}"
+                            >
+                            <button 
+                                type="button" 
+                                class="#cart-item-qty-btn" 
+                                {% if item.quantity >= item.variant.inventory_quantity and item.variant.inventory_management and item.variant.inventory_policy == 'deny' %}disabled{% endif %}
+                                data-inc
+                            >
+                                {% render 'icon', name: 'plus' %}
+                            </button>
+                        </div>
+                    </div>
+                    <div class="#cart-item-total" data-total="{{ item.variant.id }}">
+          <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_total" data-item-key="{{item.key}}" style="display:none !important;"></span>
+                        {% if item.final_line_price  != item.original_line_price  %}
+                            <span class="#cart-item-total-original">{{ item.original_line_price | money }}</span>
+                        {% endif %}
+                        {{ item.final_line_price | money }}
+                    </div>
+                </div>
+                <a class="#cart-item-remove" href="{{ item.url_to_remove }}" data-remove aria-label="{{ 'sections.cart.remove_title' | t: title: item.title }}">
+                    {% render 'icon', name: 'x' %}
+                </a>
+            </cart-item>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- <script type="module" src="{{ 'cart-item.js' | asset_url }}"></script> -->

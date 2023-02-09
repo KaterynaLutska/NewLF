@@ -1,0 +1,83 @@
+<link rel="stylesheet" href="{{ 'cart-footer.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'cart-footer.css' | asset_url | stylesheet_tag }}</noscript>
+
+{% capture Content %}
+  {% if cart == empty %}
+    {% assign hidden = true %}
+  {% else %}
+    <div class="#cart-footer">
+      <div class="#row @justify:between">
+        {% if section.settings.show_cart_note %}
+          <div class="#col @6">
+            <div class="#cart-footer-note">
+              <label for="cart-notes">{{ 'sections.cart.note' | t }}</label>
+              <textarea name="note" id="cart-notes" cols="30" rows="10" form="cart-form">{{ cart.note }}</textarea>
+            </div>
+          </div>  
+        {% endif %}
+        
+        <div class="#col @3">
+          {% for block in section.blocks %}
+            {% case block.type %}
+              {% when '@app' %}
+                {% render block %}
+              {% when 'subtotal' %}
+                <div class="#cart-footer-subtotal" {{ block.shopify_attributes }}>
+                  <h3 class="#cart-footer-subtotal-title">{{ 'sections.cart.subtotal' | t }}</h3>
+                  <p class="#cart-footer-subtotal-value">{{ cart.total_price | money_with_currency  }}</p>
+                </div>
+              {% when 'buttons' %}
+                <div class="#cart-footer-buttons" {{ block.shopify_attributes }}>
+                  {% assign button_text = 'sections.cart.checkout' | t %}
+                  {% render 'button',
+                    attr_name: 'checkout',
+                    attr_type: 'submit',
+                    attr_form: 'cart-form',
+                    text: button_text
+                  %}
+                </div>
+            {% endcase %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endcapture %}
+
+{% render 'section-body',
+  content: Content,
+  container: true,
+  spaced: true,
+  hidden: hidden
+%}
+
+
+{% schema %}
+{
+  "name": "t:sections.main-cart-footer.name",
+  "class": "cart__footer-wrapper",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_cart_note",
+      "default": false,
+      "label": "t:sections.main-cart-footer.settings.show_cart_note.label"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "subtotal",
+      "name": "t:sections.main-cart-footer.blocks.subtotal.name",
+      "limit": 1
+    },
+    {
+      "type": "buttons",
+      "name": "t:sections.main-cart-footer.blocks.buttons.name",
+      "limit": 1
+    },
+    {
+      "type": "@app"
+    }
+  ]
+}
+{% endschema %}

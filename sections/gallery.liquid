@@ -1,0 +1,390 @@
+<link rel="stylesheet" href="{{ 'gallery-card.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'gallery-card.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- capture Content -%}
+   <div class="#grid @outer-gap @strict @gap:{{ section.settings.gutter }}">
+      {% for block in section.blocks %}
+         {%- assign position = block.settings.text_position | split: '-' -%}
+         {%- assign text_y = position[0] -%}
+         {%- assign text_x = position[1] -%}
+         {%- assign image_resolution_div = 12 | divided_by: block.settings.span | ceil -%}
+         <div class="#column @span:{{ block.settings.span }} @span:mobile:12 reveal-animate" style="--reveal-index: {{ forloop.index }}" {{ block.shopify_attributes }}>
+            {% render 'gallery-card',
+               text_spaced: 'md',
+               inner_caption: true,
+               link: block.settings.button_link,
+               image: block.settings.image,
+               mobile_image: block.settings.mobile_image,
+               image_resolution_div: image_resolution_div,
+               image_overlay: block.settings.overlay,
+               image_size: block.settings.image_size,
+               mobile_image_size: block.settings.mobile_image_size,
+               title: block.settings.title,
+               subtitle: block.settings.subtitle,
+               caption_x: text_x,
+               caption_y: text_y,
+               text_align: text_x,
+               color_scheme: block.settings.color_scheme,
+               text_color: block.settings.text_color,
+               button: block.settings.button,
+               button_style: block.settings.button_style,
+               button_link: block.settings.button_link,
+               button_show_arrow: block.settings.button_show_arrow,
+               secondary_button: block.settings.secondary_button,
+               secondary_button_style: block.settings.secondary_button_style,
+               secondary_button_link: block.settings.secondary_button_link,
+               secondary_button_show_arrow: block.settings.secondary_button_show_arrow,
+               media_hover_zoom: section.settings.hover_zoom
+            %}
+         </div>
+      {% endfor %}
+   </div>
+{%- endcapture -%}
+
+{% render 'section-body',
+  content: Content
+%}
+
+
+{% schema %}
+{
+   "name":"Gallery",
+   "tag":"section",
+   "max_blocks":12,
+   "settings":[
+      {
+         "type": "select",
+         "id": "gutter",
+         "label": "Spacing between images",
+         "options": [
+         {
+            "value": "none",
+            "label": "None"
+         },
+         {
+            "value": "sm",
+            "label": "Small"
+         },
+         {
+            "value": "md",
+            "label": "Medium"
+         },
+         {
+            "value": "lg",
+            "label": "Large"
+         }
+         ],
+         "default": "md"
+      },
+      {
+         "type": "checkbox",
+         "id": "hover_zoom",
+         "default": true,
+         "label": "Enable image zoom on hover"
+      }
+   ],
+   "blocks":[
+      {
+         "type":"gallery_image",
+         "name":"Image",
+         "settings":[
+            {
+               "type": "select",
+               "id": "span",
+               "label": "Width",
+               "options": [
+                  {
+                     "value": "3",
+                     "label": "25%"
+                  },
+                  {
+                     "value": "4",
+                     "label": "33.3%"
+                  },
+                  {
+                     "value": "5",
+                     "label": "40%"
+                  },
+                  {
+                     "value": "6",
+                     "label": "50%"
+                  },
+                  {
+                     "value": "7",
+                     "label": "60%"
+                  },
+                  {
+                     "value": "8",
+                     "label": "66.6%"
+                  },
+                  {
+                     "value": "9",
+                     "label": "75%"
+                  },
+                  {
+                     "value": "12",
+                     "label": "100%"
+                  }
+               ],
+               "default": "6"
+            },
+            {
+               "type":"image_picker",
+               "id":"image",
+               "label":"Image"
+            },
+            {
+               "type": "select",
+               "id": "image_size",
+               "options": [
+                 {
+                   "value": "original",
+                   "label": "Original image size"
+                 },
+                 {
+                   "value": "full",
+                   "label": "Full height"
+                 },
+                 {
+                   "value": "large",
+                   "label": "Large (70%)"
+                 },
+                 {
+                   "value": "medium",
+                   "label": "Medium (60%)"
+                 },
+                 {
+                   "value": "small",
+                   "label": "Small (50%)"
+                 }
+               ],
+               "default": "large",
+               "label": "Image size"
+             },
+             {
+               "type":"image_picker",
+               "id":"mobile_image",
+               "label":"Mobile image (optional)"
+            },
+             {
+               "type": "select",
+               "id": "mobile_image_size",
+               "options": [
+                 {
+                   "value": "original",
+                   "label": "Original image size"
+                 },
+                 {
+                   "value": "full",
+                   "label": "Full height"
+                 },
+                 {
+                   "value": "large",
+                   "label": "Large (70%)"
+                 },
+                 {
+                   "value": "medium",
+                   "label": "Medium (60%)"
+                 },
+                 {
+                   "value": "small",
+                   "label": "Small (50%)"
+                 }
+               ],
+               "default": "large",
+               "label": "Mobile image size"
+             },
+             
+            {
+               "type": "range",
+               "id": "overlay",
+               "label": "Overlay opacity",
+               "unit": "%",
+               "min": 0,
+               "max": 90,
+               "step": 5,
+               "default": 0
+            },
+            {
+               "type": "header",
+               "content": "Contents"
+            },
+            {
+               "type": "text",
+               "id": "title",
+               "label": "Heading",
+               "default": "Gallery Title"
+            },
+            {
+               "type": "richtext",
+               "id": "subtitle",
+               "label": "Subheading",
+               "default": "<p>Gallery Subtitle</p>"
+            },
+            {
+               "type": "select",
+               "id": "color_scheme",
+               "label": "Color scheme",
+               "options": [
+                  {
+                     "value": "default",
+                     "label": "Default"
+                  },
+                  {
+                     "value": "invert",
+                     "label": "Inverted"
+                  }
+               ],
+               "default": "invert"
+            },
+            {
+               "type": "select",
+               "id": "text_position",
+               "label": "Text position",
+               "options": [
+                  {
+                     "value": "top-left",
+                     "label": "Top left"
+                  },
+                  {
+                     "value": "top-center",
+                     "label": "Top center"
+                  },
+                  {
+                     "value": "top-right",
+                     "label": "Top right"
+                  },
+                  {
+                     "value": "center-left",
+                     "label": "Center left"
+                  },
+                  {
+                     "value": "center-center",
+                     "label": "Center"
+                  },
+                  {
+                     "value": "center-right",
+                     "label": "Center right"
+                  },
+                  {
+                     "value": "bottom-left",
+                     "label": "Bottom left"
+                  },
+                  {
+                     "value": "bottom-center",
+                     "label": "Bottom center"
+                  },
+                  {
+                     "value": "bottom-right",
+                     "label": "Bottom right"
+                  }
+               ],
+               "default": "center-center"
+            }, 
+            {
+               "type": "header",
+               "content": "Primary button"
+            },
+            {
+               "type": "text",
+               "id": "button",
+               "label": "Primary button label",
+               "default": "Shop Now"
+            },
+            {
+               "type": "url",
+               "id": "button_link",
+               "label": "Link",
+               "info": "Link usage is possible without a button label"
+            },
+            {
+               "type": "select",
+               "id": "button_style",
+               "label": "Button style",
+               "options": [
+                  {
+                     "value": "default",
+                     "label": "Default"
+                  },
+                  {
+                     "value": "ghost",
+                     "label": "Outline"
+                  },
+                  {
+                     "value": "link",
+                     "label": "Link"
+                  }
+               ],
+               "default": "default"
+            },
+            {
+               "type": "checkbox",
+               "id": "button_show_arrow",
+               "label": "Show arrow",
+               "default": true
+            },
+            {
+               "type": "header",
+               "content": "Secondary button"
+            },
+            {
+               "type": "text",
+               "id": "secondary_button",
+               "label": "Secondary button label"
+            },
+            {
+               "type": "url",
+               "id": "secondary_button_link",
+               "label": "Link"
+            },
+            {
+               "type": "select",
+               "id": "secondary_button_style",
+               "label": "Button style",
+               "options": [
+                  {
+                     "value": "default",
+                     "label": "Default"
+                  },
+                  {
+                     "value": "ghost",
+                     "label": "Outline"
+                  },
+                  {
+                     "value": "link",
+                     "label": "Link"
+                  }
+               ],
+               "default": "default"
+            },
+            {
+               "type": "checkbox",
+               "id": "secondary_button_show_arrow",
+               "label": "Show arrow",
+               "default": true
+            }
+         ]
+      }
+   ],
+   "presets":[
+      {
+         "name":"Gallery",
+         "blocks":[
+            {
+               "type":"gallery_image"
+            },
+            {
+               "type":"gallery_image"
+            },
+            {
+               "type":"gallery_image"
+            },
+            {
+               "type":"gallery_image"
+            }
+         ]
+      }
+   ]
+}
+{% endschema %}
+

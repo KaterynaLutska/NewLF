@@ -1,0 +1,11 @@
+{% comment %}
+    Props
+        - size
+        - color_scheme
+{% endcomment %}
+
+<div class="#spinner @color-scheme:{{ color_scheme | default: 'dark' }} @size:{{ size | default: 'md' }} hide-loading">
+    <div></div>
+    <div></div>
+    <div></div>
+</div>

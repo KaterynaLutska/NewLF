@@ -1,0 +1,345 @@
+{% comment %}
+    Props
+        - image
+        - mobile_image
+        - image_size
+        - image_class
+        - image_loading
+        - height
+        - aspect_ratio
+        - overlay
+        - caption
+        - caption_x
+        - caption_y
+        - class
+        - rounded
+        - size
+        - resolution (in dev)
+        - after
+        - before
+        - placeholder
+        - placeholder_index
+        - placeholder_color_scheme
+        - placeholder_color_scheme_inverse
+        - color_scheme
+        - reveal_zoom
+{% endcomment %}
+
+{% liquid
+    assign image_size = image_size | default: '800x'
+    assign image_scale = image_scale | default: 1
+    assign size = size | default: 'original'
+
+    case size
+        when 'full'
+            assign height = '100vh'
+        when 'large'
+            assign height = '70vh'
+        when 'half'
+            assign height = '50vh'
+        when 'medium'
+            assign height = '60vh'
+        when 'small'
+            assign height = '50vh'
+        when 'square'
+            assign aspect_ratio = '1x1'
+        when 'circle'
+            assign aspect_ratio = '1x1'
+            assign rounded = true
+        when 'portrait'
+            assign aspect_ratio = '4x5'
+        when 'landscape'
+            assign aspect_ratio = '3x2'
+        when '16x9'
+            assign aspect_ratio = '16x9'
+        when '21x9'
+            assign aspect_ratio = '21x9'
+        when '2x3'
+            assign aspect_ratio = '2x3'
+    endcase
+    case mobile_size
+        when 'full'
+            assign height_mobile = '100vh'
+        when 'large'
+            assign height_mobile = '70vh'
+        when 'medium'
+            assign height = '60vh'
+        when 'small'
+            assign height = '50vh'
+        when 'half'
+            assign height_mobile = '50vh'
+        when '9x16'
+            assign aspect_ratio_mobile = '9x16'
+        when '4x5'
+            assign aspect_ratio_mobile = '4x5'
+    endcase
+    if aspect_ratio
+        assign height = null
+    endif
+    if height or aspect_ratio
+        assign abs_image = true
+    else
+        assign abs_image = false
+    endif
+
+    if mobile_size == 'original'
+        assign mobile_origin = true
+        assign height_mobile = 'auto'
+    endif
+
+    if aspect_ratio_mobile
+        assign height_mobile = null
+    endif
+
+    if height_mobile or mobile_origin
+        assign aspect_ratio_mobile = 'none'
+    endif
+
+    if height_mobile or aspect_ratio_mobile
+        unless abs_image
+            assign abs_image_mobile = true
+        endunless
+    endif
+
+    if abs_image and mobile_origin != true
+        assign abs_image_mobile = true
+    endif
+
+    if overlay_color_inverse == 'dark'
+        assign overlay_color = 'light'
+    endif
+    if overlay_color_inverse == 'light'
+        assign overlay_color = 'dark'
+    endif
+
+    if image == blank and image != false
+        assign use_placeholder = true
+    endif
+
+    if use_placeholder
+        assign placeholder = placeholder | default: 'image'
+        assign placeholder_color_scheme = placeholder_color_scheme | default: 'light'
+        unless placeholder == 'image' or placeholder == 'logo'
+            assign placeholder_index = placeholder_index | default: 1
+        endunless
+
+        if placeholder_index
+            assign placeholder = placeholder | append: '-' | append: placeholder_index
+        endif
+
+        if placeholder_color_scheme_inverse != blank
+            if placeholder_color_scheme_inverse == 'light'
+                assign placeholder_color_scheme =  'dark'
+            else
+                assign placeholder_color_scheme = 'light' 
+            endif
+        endif
+        unless abs_image
+            assign abs_image = true
+            assign aspect_ratio = '16x9'
+        endunless
+
+        if mobile_origin
+            assign abs_image_mobile = true
+            assign aspect_ratio_mobile = '9x16'
+        endif
+    endif
+
+    if height_mobile == '100vh'
+        assign mobile_full = true
+    endif
+
+    if height == '100vh'
+        unless aspect_ratio_mobile or mobile_origin
+            assign mobile_full = true
+        endunless
+    endif
+%}
+
+
+
+{% capture _image_class %}
+    #media-image
+    {% if image_origin_res == true %}
+        @origin-res
+    {% endif %}
+    {% if abs_image and abs_image_mobile %}
+        {% if position %}
+            @position:{{ position }}
+        {% else %}
+            @cover   
+        {% endif %}
+    {% endif %}
+    {% if abs_image and abs_image_mobile != true %}
+        {% if position %}
+            @position:desktop:{{ position }}
+        {% else %}
+            @cover:desktop  
+        {% endif %}
+    {% endif %}
+    {% if abs_image_mobile and abs_image != true %}
+        {% if position %}
+            @position:mobile:{{ position }}
+        {% else %}
+            @cover:mobile  
+        {% endif %}
+    {% endif %}
+    {{ image_class }}
+{% endcapture %}
+
+{% capture _image_wrapper_class %}
+    #media-image-wrapper
+    {% if abs_image and abs_image_mobile %}
+        @abs-image
+    {% endif %}
+    {% if abs_image and abs_image_mobile != true %}
+        @abs-image:desktop
+    {% endif %}
+    {% if abs_image_mobile and abs_image != true %}
+        @abs-image:mobile        
+    {% endif %} 
+{% endcapture %}
+
+<figure
+    class="
+        #media
+        {% if aspect_ratio %}@aspect-ratio:{{ aspect_ratio }}{% endif %}
+        {% if aspect_ratio_mobile %}@aspect-ratio:mobile:{{ aspect_ratio_mobile }}{% endif %}
+        {% if rounded %}@rounded{% endif %}
+        {% if mobile_full %}@mobile-full{% endif %}
+        {{ class }}
+    " 
+    style="
+        {%- if height -%}--media-height: {{ height }};{%- endif -%}
+        {%- if height_mobile -%}--media-height-mobile: {{ height_mobile }};{%- endif -%}
+        {%- if width -%}--media-width: {{ width }};{%- endif -%}
+        {%- if overlay -%}--media-overlay: {{ overlay | times: 0.01 }};{%- endif -%}
+    "
+>
+    {% if before %}
+        {{ before }}
+    {% endif %}
+
+    {% if map %}
+        <div class="#media-map">{{ map }}</div>
+    {% endif %}
+
+
+    {% if video_bg or video_bg_link != blank %}
+    <video-bg class="#media-video-bg" section-id="{{ section.id }}">
+        {% render 'spinner', color_scheme: 'light' %}
+        <div class="#media-video-bg-player">
+        {% if video_bg_link != blank %}
+        <video data-player>
+            <source src="{{ video_bg_link }}" type="video/mp4" />
+        </video>
+        {% else %}
+            <div class="plyr__video-embed" data-player>
+                {%- if video_bg.type == 'youtube' -%}
+                <iframe
+                        src="https://www.youtube.com/embed/{{ video_bg.id }}?origin={{ shop.url }}&amp;iv_load_policy=3&amp;modestbranding=1&amp;playsinline=1&amp;showinfo=0&amp;rel=0&amp;enablejsapi=1"
+                        allowfullscreen
+                        allowtransparency
+                        allow="autoplay"
+                        loading="lazy"
+                ></iframe>
+                {%- endif -%}
+                {%- if video_bg.type == 'vimeo' -%}
+                    <iframe
+                        src="https://player.vimeo.com/video/{{ video_bg.id }}?loop=false&amp;byline=false&amp;portrait=false&amp;title=false&amp;speed=true&amp;transparent=0&amp;gesture=media"
+                        allowfullscreen
+                        allowtransparency
+                        allow="autoplay"
+                        loading="lazy"
+                    ></iframe>
+                {%- endif -%}
+            </div>
+        {% endif %}
+        </div>
+        </video-bg>
+        <script type="module" src="{{ 'video-bg.js' | asset_url }}"></script>
+    {% endif %}  
+    
+    {% if image %}
+        <div class="{{ _image_wrapper_class }} {% if reveal_zoom %}{% if size != 'original' and mobile_size != 'original' %}reveal-animate-zoom{% endif %}{% endif %} {% if mobile_image %}hide-mobile{% endif %}">
+            <img 
+                class="{{ _image_class | strip }}" 
+                alt="{{ image.alt | escape }}"
+                loading="{{ image_loading | default: "lazy" }}"
+                width="{{ image.width }}"
+                height="{{ image.height }}"
+                style="--object-position: {{ image.presentation.focal_point }};"
+                {% if image_resolution %}
+                    {%- assign image_resolution = image_resolution | append: 'x' -%}
+                    src="{{ image | img_url: image_resolution, scale: 2 }}"
+                {% else %}
+                    src="{{ image | img_url: '600x' }}"
+                    srcset="{%- if image.width >= 165 -%}{{ image | img_url: '165x' }} 165w,{%- endif -%}
+                    {%- if image.width >= 360 -%}{{ image | img_url: '360x' }} 360w,{%- endif -%}
+                    {%- if image.width >= 533 -%}{{ image | img_url: '533x' }} 533w,{%- endif -%}
+                    {%- if image.width >= 720 -%}{{ image | img_url: '720x' }} 720w,{%- endif -%}
+                    {%- if image.width >= 940 -%}{{ image | img_url: '940x' }} 940w,{%- endif -%}
+                    {%- if image.width >= 1066 -%}{{ image | img_url: '1066x' }} 1066w,{%- endif -%}
+                    {%- if image.width >= 1200 -%}{{ image | img_url: '1200x' }} 1200w,{%- endif -%}
+                    {%- if image.width >= 1400 -%}{{ image | img_url: '1400x' }} 1400w,{%- endif -%}
+                    {{ image | img_url: 'master' }} {{ image.width }}w"
+                    {% if image_resolution_div or image_resolution_mobile_div %}                        
+                        sizes="(min-width: 992px) calc(100vw/{{ image_resolution_div | default: 1 }}), (max-width: 991px) calc(100vw/{{ image_resolution_mobile_div | default: 1 }})"
+                    {% endif %}    
+                {% endif %}
+            >
+        </div>
+        {% if mobile_image %}
+            <div class="{{ _image_wrapper_class }} {% if reveal_zoom %}{% if size != 'original' and mobile_size != 'original' %}reveal-animate-zoom{% endif %}{% endif %} hide-desktop">
+                <img 
+                    class="{{ _image_class | strip }}" 
+                    alt="{{ mobile_image.alt | escape }}"
+                    loading="{{ image_loading | default: "lazy" }}"
+                    style="--object-position: {{ mobile_image.presentation.focal_point }};"
+                    {% if image_resolution %}
+                        {%- assign image_resolution = image_resolution | append: 'x' -%}
+                        src="{{ mobile_image | img_url: image_resolution, scale: 2 }}"
+                    {% else %}
+                        src="{{ mobile_image | img_url: '600x' }}"
+                        srcset="{%- if mobile_image.width >= 165 -%}{{ mobile_image | img_url: '165x' }} 165w,{%- endif -%}
+                        {%- if mobile_image.width >= 360 -%}{{ mobile_image | img_url: '360x' }} 360w,{%- endif -%}
+                        {%- if mobile_image.width >= 533 -%}{{ mobile_image | img_url: '533x' }} 533w,{%- endif -%}
+                        {%- if mobile_image.width >= 720 -%}{{ mobile_image | img_url: '720x' }} 720w,{%- endif -%}
+                        {%- if mobile_image.width >= 940 -%}{{ mobile_image | img_url: '940x' }} 940w,{%- endif -%}
+                        {%- if mobile_image.width >= 1066 -%}{{ mobile_image | img_url: '1066x' }} 1066w,{%- endif -%}
+                        {%- if mobile_image.width >= 1200 -%}{{ mobile_image | img_url: '1200x' }} 1200w,{%- endif -%}
+                        {%- if mobile_image.width >= 1400 -%}{{ mobile_image | img_url: '1400x' }} 1400w,{%- endif -%}
+                        {{ mobile_image | img_url: 'master' }} {{ mobile_image.width }}w"
+                        {% if image_resolution_div or image_resolution_mobile_div %}                        
+                            sizes="(min-width: 992px) calc(100vw/{{ image_resolution_div | default: 1 }}), (max-width: 991px) calc(100vw/{{ image_resolution_mobile_div | default: 1 }})"
+                        {% endif %}    
+                    {% endif %}
+                >
+            </div>
+        {% endif %}
+    {% endif %}
+    
+
+    {% if use_placeholder %}
+        <div class="#media-placeholder @color-scheme:{{ color_scheme | default: 'default' }}">
+            {{ placeholder | placeholder_svg_tag }}
+        </div>
+    {% endif %}
+
+    {% if overlay %}
+        <div class="#media-overlay @color-scheme:{{ color_scheme | default: 'default' }}"></div>
+    {% endif %}
+    {% if caption %}
+        <figcaption class="#media-caption">
+            <div class="#media-caption-container @x:{{ caption_x }} @y:{{ caption_y }}">
+                {{ caption }}
+            </div>
+        </figcaption>
+    {% endif %}
+    {% if content %}
+        {{ content }}
+    {% endif %}
+    {% if after %}
+        {{ after }}
+    {% endif %}   
+</figure>

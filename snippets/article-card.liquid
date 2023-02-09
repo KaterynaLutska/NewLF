@@ -1,0 +1,26 @@
+<div class="#article-card {% if media_hover_zoom %}$hover:media-zoom{% endif %} hide-loading @align:{{ align | default: 'center' }}">
+  <a class="stretched-link" href="{{ article.url }}"></a>
+  <div class="#article-card-image">
+    {% render 'media',
+      image: article.image,
+      size: image_size,
+      image_resolution_div: columns
+    %}
+  </div>
+  <div class="#article-card-caption">
+    {% if show_date or show_author %}
+      <ul class="#article-card-meta">
+        {% if show_date %}
+          <li>{{ article.published_at | date: format: 'abbreviated_date' }}</li> 
+        {% endif %}
+        {% if show_author %}
+          <li>{{ article.author }}</li> 
+        {% endif %} 
+      </ul>  
+    {% endif %}
+    <h5 class="#article-card-title">{{ article.title }}</h5>
+    {% if show_excerpt and article.excerpt %}
+      <p class="#article-card-exerpt">{{ article.excerpt | strip_html }}</p>
+    {% endif %}
+  </div>
+</div>

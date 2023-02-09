@@ -1,0 +1,287 @@
+@keyframes sticky-header {
+    from {
+        transform: translateY(-100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+.\#main-header {
+    position: relative;
+}
+
+.\#main-header.\@text-size\:sm {
+    font-size: 0.8rem;
+}
+
+.\#main-header.\@text-size\:md {
+    font-size: 1rem;
+}
+
+.\#main-header.\@text-size\:lg {
+    font-size: 1.2rem;
+}
+
+.\#main-header-logo.\@img {
+    max-width: var(--logo-width);
+}
+
+.\#main-header-logo.\@switch-overlap .\#main-header-logo-image-overlap {
+    display: none;
+}
+
+.\#main-header.\@overlap .\#main-header-logo.\@switch-overlap .\#main-header-logo-image-overlap {
+    display: block;
+}
+
+.\#main-header.\@overlap .\#main-header-logo.\@switch-overlap .\#main-header-logo-image {
+    display: none;
+}
+
+.\#main-header-logo-text {
+    text-align: center;
+    word-break: break-word;
+}
+
+.\#main-header.\@overlap\:dark:after {
+    box-shadow: 0 70px 150px rgba(0, 0, 0, 0.75);
+}
+
+.\#main-header.\@overlap\:light:after {
+    box-shadow: 0 70px 150px rgba(255, 255, 255, 0.75);
+}
+
+.\#main-header.\@overlap:not(.\@sticky) {
+    color: var(--main-header-color-text-overlap);
+}
+
+.\#main-header.\@overlap:after {
+    content: "";
+    position: absolute;
+    top: -300px;
+    width: 100%;
+    height: 300px;
+    z-index: 2;
+}
+
+.\#main-header.\@overlap .\#main-header-inner {
+    position: absolute;
+    z-index: 50;
+    width: 100%;
+}
+
+.\#main-header.\@sticky {
+    gap: 10px;
+}
+
+.\#main-header.\@sticky:not(.\@overlap) {
+    padding-bottom: var(--nav-height);
+}
+
+@media (max-width: 991px) {
+    .\#main-header.\@sticky .\#main-header-inner {
+        position: fixed;
+        width: 100%;
+        z-index: 100;
+        margin: 0;
+        background: inherit;
+        top: 0;
+        left: 0;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        animation: sticky-header 0.3s;
+    }
+}
+
+@media (min-width: 992px) {
+    .\#main-header.\@sticky .\#main-nav-container {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        position: fixed;
+        width: 100%;
+        z-index: 100;
+        margin: 0;
+        background-color: rgba(var(--main-header-color-background), 0.8);
+        top: 0;
+        left: 0;
+        justify-content: space-between;
+        padding-left: calc(var(--spacer) * 1.5);
+        padding-right: calc(var(--spacer) * 1.5);
+        animation: sticky-header 0.3s;
+        backdrop-filter: saturate(180%) blur(20px);
+    }
+
+    .\#main-header.\@sticky .\#main-nav-toolbar {
+        display: block;
+    }
+}
+
+.\#main-header:not(.\@overlap), .\#main-header.\@overlap.\@sticky, .\#main-header.\@sticky {
+    color: var(--main-header-color-text);
+    background-color: rgba(var(--main-header-color-background), 1);
+}
+
+.\#main-header-inner {
+    padding-top: calc(var(--spacer) * 1.5);
+    padding-left: calc(var(--spacer) * 1.5);
+    padding-right: calc(var(--spacer) * 1.5);
+}
+
+.\#main-header-inner-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.\#main-header-search,
+.\#main-header-toolbar {
+    flex-basis: 30%;
+}
+
+.\#main-header-toolbar {
+    display: flex;
+}
+
+@media (max-width: 991px) {
+    .\#main-header-toolbar {
+        gap: 10px;
+    }
+}
+
+@media (min-width: 992px) {
+    .\#main-header-toolbar {
+        gap: 20px;
+    }
+}
+
+.\#main-header-toolbar.\@end {
+    justify-content: flex-end;
+}
+
+.\#main-header-toolbar-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    height: 100%;
+}
+
+.\#main-header-toolbar-link:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+.\#main-header-toolbar.\@end .\#main-header-toolbar-link {
+    flex-direction: row-reverse;
+}
+
+.\#main-header-toolbar-link-text {
+    text-transform: uppercase;
+    font-weight: var(--font-body-weight-bold);
+    font-size: 0.8em;
+    opacity: 0.8;
+    letter-spacing: 0.5px;
+}
+
+@media (max-width: 991px) {
+    .\#main-header-toolbar-link-text {
+        display: none;
+    }
+}
+
+.\#main-header-toolbar-link-icon {
+    position: relative;
+}
+
+.\#main-header-toolbar-link-icon .\#icon {
+    stroke-width: 2;
+    width: 1.5em;
+    height: 1.5em;
+}
+
+.\#main-header-nav {
+    width: fit-content;
+    margin-left: calc(calc(var(--spacer) * 1.2) * -1);
+    margin-right: calc(calc(var(--spacer) * 1.2) * -1);
+    margin-top: calc(var(--spacer) * 1.5);
+    margin-bottom: 0;
+}
+
+.\#main-header-nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.\#main-header-nav-list > li {
+    display: inline-block;
+}
+
+.\#main-header-nav-list > li:hover > .\#main-header-nav-dropdown {
+    display: block;
+}
+
+.\#main-header-nav-item {
+    padding-left: calc(var(--spacer) * 1.2);
+    padding-right: calc(var(--spacer) * 1.2);
+    padding-top: calc(var(--spacer) * 1.5);
+    padding-bottom: calc(var(--spacer) * 1.5);
+    font-size: calc(var(--font-size-base) * 1.15);
+    font-weight: var(--font-body-weight-bold);
+    letter-spacing: calc(var(--spacer) * 0.05);
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+.\#main-header:not(.\@overlap) .\#main-nav-list > li:hover > .\#main-nav-item {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.\#main-header.\@overlap .\#main-nav-list > li:hover > .\#main-nav-item {
+    background: white;
+    color: rgba(var(--color-text), 1);
+}
+
+.\#main-header-search-popup-stage {
+    display: flex;
+    padding-left: calc(var(--spacer) * 1.5);
+    padding-right: calc(var(--spacer) * 1.5);
+    padding-top: calc(var(--spacer) * 1);
+    padding-bottom: calc(var(--spacer) * 1);
+    background: white;
+    border-radius: calc(var(--spacer) * 3);
+    align-items: center;
+}
+
+.\#main-header-search-popup-input {
+    border: none;
+    background: none;
+    padding: 0 calc(var(--spacer) * 1);
+    font-size: calc(var(--font-size-base) * 1.25);
+    display: block;
+    outline: none !important;
+    flex-grow: 1;
+}
+
+.\#main-header-search-popup-results {
+    width: 94%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: calc(var(--spacer) * 0.5);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.\#main-header-search-popup-close {
+    cursor: pointer;
+}
+
+.\#main-header-search-popup-close .\#icon {
+    stroke-width: 2;
+}
+
+.\#modal-popup-content .\#main-header-nav-list > li, .\#modal-popup-content .\#main-nav-list > li {
+    display: block;
+}

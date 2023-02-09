@@ -1,0 +1,361 @@
+{{ 'collection-grid.css' | asset_url | stylesheet_tag }}
+{{ 'product-card.css' | asset_url | stylesheet_tag }}
+{{ 'form.css' | asset_url | stylesheet_tag }}
+
+
+{%- comment -%}
+{%- assign collection_form_id = 'collectionForm-' | append: section.id -%}
+{%- endcomment -%}
+{%- assign collection_form_id = 'collectionFiltersForm' -%}
+{%- assign collection_sidebar_id = 'collection-sidebar-' | append: section.id  -%}
+{%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+{%- assign reset_filters_link = collection.url | append: '?sort_by=' | append: sort_by -%}
+
+
+{%- if collection.products_count == 0 -%}
+  {%- assign no_products = true -%}
+{%- else -%}
+  {%- assign no_products = false -%}
+{%- endif -%}
+
+{%- if section.settings.product_columns == 5 or section.settings.product_columns == 6 -%}
+  {%- assign product_columns_overflow = true -%}  
+{%- else -%}
+  {%- assign product_columns_overflow = false -%}
+{%- endif -%}
+
+{%- assign enable_filtering = section.settings.enable_filtering -%}
+{%- if collection.products_count > 1000 -%}
+  {%- assign enable_filtering = false -%}
+{%- endif -%}
+
+{%- if enable_filtering and product_columns_overflow -%}
+  {%- assign grid_product_columns = 4 -%}
+{%- else -%}
+  {%- assign grid_product_columns = section.settings.product_columns -%}
+{%- endif -%}
+
+{%- assign product_limit = grid_product_columns | times: section.settings.product_rows -%}
+
+
+
+{%- capture No_products_container -%}
+<div class="#collection-grid-no-products">
+  <div class="#collection-grid-no-products-icon">
+    {% render 'icon', name: 'alert' %}
+  </div>
+  <h2 class="#collection-grid-no-products-heading">{{ 'sections.collection_template.empty' | t }}</h2>
+</div> 
+{%- endcapture -%}
+
+
+
+{% capture Content %}
+{% if collection.all_products_count == 0 %}
+  {{ No_products_container }}
+{% else %}  
+<div class="#collection-grid-wrapper">
+  <collection-grid-spinner class="#collection-grid-spinner" section-id="{{ section.id }}">
+    {% render 'spinner' %}
+  </collection-grid-spinner>
+  <script type="module" src="{{ 'collection-grid-spinner.js' | asset_url }}"></script>
+  <div class="#grid @strict" style="--grid-gap: 0;">
+    {% if enable_filtering %}
+      {% if section.settings.sidebar_color_scheme == section.settings.grid_color_scheme %}
+        {%- assign sidebar_border = true -%}
+      {% endif %}
+      <div class="#column @span:3 @span:mobile:12">
+        {% render 'collection-sidebar',
+          id: collection_sidebar_id,
+          color_scheme: section.settings.sidebar_color_scheme,
+          collection_form_id: collection_form_id, 
+          color_swatches: section.settings.filters_color_swatches, 
+          type: section.settings.filter_by,
+          tag_filters_heading: section.settings.tag_filters_heading,
+          border: sidebar_border,
+          tags: section.settings.tag_filters %}
+      </div>
+    {% endif %}
+    
+    <div class="#column @span:{% if enable_filtering %}9{% else %}12{% endif %} @span:mobile:12">
+      <div class="#collection-grid @color-scheme:{{ section.settings.grid_color_scheme }}" id="main-collection-product-grid" data-id="{{ section.id }}">
+        <div class="{% if section.settings.enable_sticky %}sticky-top{% endif %}">
+        {% if section.settings.show_product_counter or section.settings.enable_sorting %}
+          <div class="#collection-grid-header">
+            {% if section.settings.show_product_counter %}
+              <collection-grid-count class="#collection-grid-product-count" section-id="{{ section.id }}">
+                {%- if collection.products_count == collection.all_products_count -%}
+                    {{ 'sections.collection_template.product_count_simple' | t: count: collection.products_count }}
+                  {%- else -%}
+                    {{ 'sections.collection_template.product_count' | t: product_count: collection.products_count, count: collection.all_products_count }}
+                  {%- endif -%}
+              </collection-grid-count>
+              <script type="module" src="{{ 'collection-grid-count.js' | asset_url }}"></script>  
+            {% endif %}
+            {% if section.settings.enable_sorting %}      
+              <collection-sort class="#collection-grid-sort" section-id="{{ section.id }}">
+                {% unless enable_filtering %}
+                  <form id="{{ collection_form_id }}"></form>
+                {% endunless %}
+                <div class="#form-select">
+                  <select
+                    name="sort_by"
+                    aria-describedby="a11y-refresh-page-message"
+                    form="{{ collection_form_id }}"
+                  >
+                    {%- for option in collection.sort_options -%}
+                      <option value="{{ option.value | escape }}"{% if option.value == sort_by %} selected="selected"{% endif %}>{{ option.name }}</option>
+                    {%- endfor -%}
+                  </select>
+                  {% render 'icon', name: 'chevron-down' %}
+                </div>
+              </collection-sort>
+              <script type="module" src="{{ 'collection-sort.js' | asset_url }}"></script>
+            {% endif %}
+
+          </div>
+        {% endif %}
+        
+        {%- if section.settings.enable_active_filters -%}
+          {% render 'collection-grid-active-filters',
+            filters: collection.filters,
+            display_types: section.settings.active_filters_titles,
+            display_color_swatches: section.settings.active_filters_color_swatches,
+            reset_link: reset_filters_link,
+            filter_type: section.settings.filter_by
+          %}  
+        {%- endif -%}
+        
+
+        <collection-product-grid  id="CollectionProductGrid" section-id="{{ section.id }}">
+          {%- unless no_products -%}
+            {%- paginate collection.products by product_limit -%}
+            <div class="#grid @gap:{{ section.settings.gutter }} @columns:{{ grid_product_columns }} @mobile:columns:2" id="main-collection-product-grid" data-id="{{ section.id }}">
+              {% for product in collection.products %}
+                <div class="#column">
+                  {% render 'product-card',
+                    product: product,
+                    columns: grid_product_columns,
+                    color_scheme: section.settings.grid_color_scheme
+                  %}
+                </div>
+              {% endfor %}
+            </div>
+            {%- if paginate.pages > 1 -%}
+              {% render 'pagination', paginate: paginate, anchor: '' %}
+            {%- endif -%}
+            {%- endpaginate -%}
+          {%- else -%}
+            {{ No_products_container }}
+          {%- endunless -%}
+          
+        </collection-product-grid>
+        <script type="module" src="{{ 'collection-product-grid.js' | asset_url }}"></script>
+        
+      </div>
+      </div>
+    </div>
+  </div>
+  {% if enable_filtering %}
+    <div class="#collection-grid-filter-btn hide-desktop">
+      <modal-trigger class="hide-desktop" section-id="{{ section.id }}" target="#{{ collection_sidebar_id }}" layout="sidebar" hidden-close>
+        {% render 'button',
+          t_text: 'sections.collection_template.filter_button',
+          color: 'default',
+          block: true
+        %}
+      </modal-trigger>
+    </div>
+  {% endif %}
+</div>
+{% endif %}  
+{% endcapture %}
+
+{% render 'section-body',
+  content: Content
+%}
+
+{% schema %}
+{
+  "name": "Products",
+  "class": "spaced-section collection-grid-section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "product_columns",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 3,
+      "label": "Products per row",
+      "info": "Maximum 4 if filtering is enabled"
+    },
+    {
+      "type": "range",
+      "id": "product_rows",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "default": 3,
+      "label": "Rows per page"
+    },
+    {
+      "type": "select",
+      "id": "gutter",
+      "label": "Space between products",
+      "options": [
+      {
+         "value": "sm",
+         "label": "Small"
+      },
+      {
+         "value": "md",
+         "label": "Medium"
+      },
+      {
+         "value": "lg",
+         "label": "Large"
+      },
+      {
+        "value": "xl",
+        "label": "Extra large"
+      }
+      ],
+      "default": "md"
+   },
+   {
+     "type": "checkbox",
+     "id": "show_product_counter",
+     "label": "Show products counter",
+     "default": true
+   },
+    {
+      "type": "header",
+      "content": "Color scheme"
+    },
+    {
+      "type": "select",
+      "id": "grid_color_scheme",
+      "label": "Grid",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "alt",
+          "label": "Alternate"
+        }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "select",
+      "id": "sidebar_color_scheme",
+      "label": "Sidebar",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "alt",
+          "label": "Alternate"
+        }
+      ],
+      "default": "alt"
+    },
+    {
+      "type": "header",
+      "content": "Sorting and filtering"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "default": true,
+      "label": "t:sections.main-collection-product-grid.settings.enable_sorting.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "default": true,
+      "label": "t:sections.main-collection-product-grid.settings.enable_filtering.label",
+      "info": "t:sections.main-collection-product-grid.settings.enable_filtering.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky",
+      "default": true,
+      "label": "Enable sticky filters on large screens"
+    },
+    {
+      "type": "checkbox",
+      "id": "collapse_filters",
+      "default": false,
+      "label": "Collapse filters"
+    },
+    {
+      "type": "select",
+      "id": "filter_by",
+      "options": [
+        {
+          "value": "storefront_filters",
+          "label": "Storefront filtering"
+        },
+        {
+          "value": "tag_filters",
+          "label": "Tag list"
+        },
+        {
+          "value": "tag_group_filters",
+          "label": "Tag group filtering"
+        }
+      ],
+      "label": "Filter method",
+      "default": "storefront_filters"
+    },
+    {
+      "type": "text",
+      "id": "tag_filters_heading",
+      "label": "Filter heading",
+      "info": "Only relevant for \"Tag list option\"",
+      "default": "Filter by"
+    },
+    {
+      "type": "textarea",
+      "id": "tag_filters",
+      "label": "Tag filters list",
+      "info": "Only relevant if \"Tag group filtering\" is enabled above. [Learn More](https://support.milehighthemes.com/hc/en-us/articles/360020145033-How-do-I-setup-group-filtering-on-my-collection-pages-)"
+    },
+    {
+      "type": "checkbox",
+      "id": "filters_color_swatches",
+      "label": "Enable color swatches in filter",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Active filters",
+      "info": "Valid only if filtering is enabled"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_active_filters",
+      "default": true,
+      "label": "Show active filters"
+    },
+    {
+      "type": "checkbox",
+      "id": "active_filters_titles",
+      "default": true,
+      "label": "Display option name for active filters"
+    },
+    {
+      "type": "checkbox",
+      "id": "active_filters_color_swatches",
+      "default": true,
+      "label": "Show color swatches"
+    }
+  ]
+}
+{% endschema %}

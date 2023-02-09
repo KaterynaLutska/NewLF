@@ -1,0 +1,116 @@
+{%- if section.settings.bg_image != blank -%}
+    {%- assign spaced_section = false -%}
+{%- else -%}
+    {%- assign spaced_section = true -%}
+{%- endif -%}
+
+{%- capture Content -%}
+    {% render 'page-header',
+        title: section.settings.title,
+        bg_image: section.settings.bg_image,
+        bg_overlay: section.settings.overlay,
+        text_size: section.settings.text_size,
+        image_size: section.settings.height,
+        color_scheme: section.settings.color_scheme
+    %}
+{%- endcapture -%}
+
+{% render 'section-body',
+    content: Content,
+    spaced: spaced_section,
+    color_scheme: section.settings.color_scheme
+%}
+
+{% schema %}
+{
+  "name": "Page header",
+  "class": "spaced-section spaced-section--full-width",
+  "settings": [
+    {
+        "type": "text",
+        "id": "title",
+        "label": "t:sections.main-list-collections.settings.title.label",
+        "default": "Collections"
+    },
+    {
+        "type": "select",
+        "id": "text_size",
+        "options": [
+          {
+            "value": "lg",
+            "label": "Small"
+          },
+          {
+            "value": "xl",
+            "label": "Medium"
+          },
+          {
+            "value": "xxl",
+            "label": "Large"
+          }
+        ],
+        "default": "xl",
+        "label": "Text size"
+    },
+    {
+        "type": "image_picker",
+        "id": "bg_image",
+        "label": "Background image"
+    },
+    {
+        "type": "select",
+        "id": "height",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small (50%)"
+          },
+          {
+            "value": "medium",
+            "label": "Medium (60%)"
+          },
+          {
+            "value": "large",
+            "label": "Large (70%)"
+          }
+        ],
+        "default": "medium",
+        "label": "Image height"
+      },
+    {
+      "type": "range",
+      "id": "overlay",
+      "label": "Overlay opacity",
+      "unit": "%",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "default": 0
+    },
+    {
+        "type": "select",
+        "id": "color_scheme",
+        "options": [
+          {
+            "value": "default",
+            "label": "Default"
+          },
+          {
+            "value": "alt",
+            "label": "Alternate"
+          },
+          {
+            "value": "accent",
+            "label": "Accent"
+          },
+          {
+            "value": "invert",
+            "label": "Inverted"
+          }
+        ],
+        "default": "invert",
+        "label": "Color scheme"
+      }
+  ]
+}
+{% endschema %}

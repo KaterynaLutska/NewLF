@@ -1,0 +1,55 @@
+{% assign button_tag = button_tag | default: 'button' %}
+{% if link != blank %}
+    {% assign button_tag = 'a' %}
+{% endif %}
+
+{% if t_text != blank %}
+    {% assign text = t_text | t %}
+{% endif %}
+
+{%- assign style = style | default: 'default' -%}
+{%- assign color = color | default: 'default' -%}
+
+{% comment %}
+    @color:{{ color | default: 'primary' }}
+{% endcomment %}
+
+<{{ button_tag }}
+    class="
+        #button
+        {% unless style == 'default' %}@{{ style }}{% endunless %}
+        @color:{{ color }}
+        {% if block %}@block{% endif %}
+        @size:{{ size | default: 'md' }}
+        {{ class }}
+    "
+    {% if attr_name %}name="{{ attr_name }}"{% endif %}
+    {% if disabled %}disabled{% endif %}
+    {% if data_attr %}{{data_attr}}{% endif %}
+    {% if attr_type %}type="{{ attr_type }}"{% endif %}
+    {% if attr_form %}form="{{ attr_form }}"{% endif %}
+    {% if link %}href="{{ link }}"{% endif %}
+    {% if id %}id="{{ id }}"{% endif %}
+    {{ atts }}
+> 
+{%- if with_loading -%}
+    <div class="#button-loading">
+        {% render 'spinner', size: 'xs', color_scheme: 'light' %}
+    </div>
+{%- endif -%}
+<span class="#button-inner">
+    {% if video_icon %}
+        <span class="#button-icon @video">
+            {% render 'icon', name: 'play' %}
+        </span>
+    {% endif %}
+    <span class="#button-text">
+        {{ text }}
+    </span>
+    {% if show_arrow == true %}
+        <span class="#button-icon">
+            {% render 'icon', name: 'chevron-right' %}
+        </span>
+    {% endif %}
+</span>
+</{{ button_tag }}>

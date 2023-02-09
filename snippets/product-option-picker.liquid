@@ -1,0 +1,42 @@
+{% comment %}
+    Props
+        - type
+        - name
+        - values
+        - selected_value
+{% endcomment %}
+
+
+<product-option-picker class="#product-option-picker @align:{{ align }}" value="{{ selected_value }}">
+    <div class="#product-option-picker-header">
+        <span class="#product-option-picker-name">{{ name }}:</span>
+        {%- if type == 'swatch' or type == 'color_swatch' -%}
+            <span class="#product-option-picker-value" data-option-value>{{ selected_value }}</span>
+        {%- endif -%}
+    </div>
+    <div class="#product-option-picker-body">
+        {%- if type == 'dropdown' -%}
+            {% render 'form-select',
+                name: name,
+                values: values,
+                selected_value: selected_value
+            %}
+        {%- else -%}
+            <div class="#form-inline-group">
+                {%- for value in values -%}
+                    {%- if selected_value == value -%}
+                        {%- assign checked = true -%}
+                    {%- else -%}
+                        {%- assign checked = false -%}
+                    {%- endif -%}
+                    {% render 'form-field',
+                        type: type,
+                        name: name,
+                        checked: checked,
+                        value: value
+                    %}
+                {%- endfor -%}
+            </div>  
+        {%- endif -%}
+    </div>
+</product-option-picker>

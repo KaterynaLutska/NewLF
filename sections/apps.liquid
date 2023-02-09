@@ -1,0 +1,29 @@
+{{ 'apps-review.css' | asset_url | stylesheet_tag }}
+
+{%- for block in section.blocks -%}
+    {% capture Content %}{% render block %}{% endcapture %}
+    {% render 'section-body',
+      spaced: true,
+      container: true,
+      content: Content
+    %}
+{%- endfor -%}
+
+{% schema %}
+{
+  "name": "t:sections.apps.name",
+  "tag": "section",
+  "class": "spaced-section",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.apps.presets.name"
+    }
+  ]
+}
+{% endschema %}

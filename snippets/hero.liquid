@@ -1,0 +1,250 @@
+{% comment %}
+    Props
+        - heading
+        - color_schema
+        - size
+        - spaced
+        - icon
+        - btn_size
+        - heading_font
+        - heading_tag
+{% endcomment %}
+
+{%- liquid 
+    assign heading_font = heading_font | default: true
+    assign text_position = text_position | default: 'after'
+    if heading_tag == blank
+        assign heading_tag = 'h3'
+    endif
+-%}
+
+{%- assign btn_size = btn_size | default: size -%}
+
+        {%- capture Hero_content -%}
+        {% if blocks %}
+            {%- assign block_index = 0 -%}
+            {% for block in blocks %}
+                    {% case block.type %}
+                        {% when 'link' %}
+                            {% if block.settings.url != blank %}
+                                <a href="{{ block.settings.url }}" class="#hero-link"></a>
+                            {% endif %}
+                        {% when 'icon' %}
+                          {% unless hide_play_button %}
+                            {% assign block_index = block_index | plus: 1 %}
+                            <div class="#hero-block {% if reveal_animation %}reveal-animate{% endif %}" {% if reveal_animation %}style="--reveal-index: {{ block_index }}"{% endif %} {{ block.shopify_attributes }}>
+                                {%- capture icon -%}
+                                    <div class="#hero-icon">
+                                        {% render 'icon', name: icon %}
+                                    </div>
+                                {%- endcapture -%}
+
+                                {% if icon_popup %}
+                                    <modal-trigger target="{{ icon_popup }}" section-id="{{ section.id }}">
+                                        {{ icon }}
+                                    </modal-trigger>
+                                {% else %}
+                                    {{ icon }}    
+                                {% endif %}
+                            </div>
+                          {% endunless %}
+                        {% when 'heading' %}
+                          {% unless hide_heading %}
+                            {%- if block.settings.heading != blank or heading != blank -%}
+                                {% if heading != blank %}
+                                    {%- assign block_heading = heading -%}
+                                {% else %}
+                                    {%- assign block_heading = block.settings.heading -%}
+                                {% endif %}
+                                {% assign block_index = block_index | plus: 1 %}
+                                <div class="#hero-block {% if reveal_animation %}reveal-animate{% endif %}" {% if reveal_animation %}style="--reveal-index: {{ block_index }}"{% endif %} {{ block.shopify_attributes }}>
+                                    <{{ heading_tag }} class="#hero-heading {% if heading_font %}heading-font{% endif %}">{{ block_heading }}</{{ heading_tag }}>
+                                </div>
+                            {%- endif -%}
+                          {% endunless %}
+                        {% when 'text' %}
+                          {% unless hide_text %}
+                            {%- if block.settings.text != blank or text != blank -%}
+                                {% assign block_index = block_index | plus: 1 %}
+                                {% if text != blank %}
+                                    {%- assign block_text = text -%}
+                                {% else %}
+                                    {%- assign block_text = block.settings.text -%}
+                                {% endif %}
+                                <div class="#hero-block {% if reveal_animation %}reveal-animate{% endif %}" {% if reveal_animation %}style="--reveal-index: {{ block_index }}"{% endif %} {{ block.shopify_attributes }}>
+                                    <div class="#hero-text">{{ block_text }}</div>
+                                </div>
+                            {%- endif -%}
+                          {% endunless %}
+                        {% when 'buttons' %}
+                          {% unless hide_buttons %}
+                            {% if block.settings.button != blank or block.settings.secondary_button != blank %}
+                                {% assign block_index = block_index | plus: 1 %}
+                                <div class="#hero-block @spaced-block {% if reveal_animation %}reveal-animate{% endif %}" {% if reveal_animation %}style="--reveal-index: {{ block_index }}"{% endif %} {{ block.shopify_attributes }}>
+                                    <div class="#button-group @align:{{ align }}">
+                                    {% if block.settings.button != blank %}
+                                        {%- if button_link == blank -%}
+                                            {%- assign button_link = block.settings.button_link -%}
+                                        {%- endif -%}
+                                        {% capture button %}
+                                            {% render 'button',
+                                                text: block.settings.button,
+                                                link: button_link,
+                                                style: block.settings.button_style,
+                                                color: color_scheme,
+                                                show_arrow: block.settings.button_show_arrow,
+                                                video_icon: block.settings.button_popup,
+                                                size: btn_size,
+                                                atts: button_atts
+                                            %}
+                                        {% endcapture %}
+                                        
+                                        {% if block.settings.button_popup %}
+                                            <modal-trigger class="#button-wrapper" target="{{ icon_popup }}" section-id="{{ section.id }}">
+                                                {{ button }}
+                                            </modal-trigger>
+                                        {% else %}    
+                                            {{ button }}
+                                        {% endif %}
+                                    {% endif %}
+                                    {% if block.settings.secondary_button != blank %}
+                                        {% capture secondary_button %}
+                                            {% render 'button',
+                                                text: block.settings.secondary_button,
+                                                link: block.settings.secondary_button_link,
+                                                style: block.settings.secondary_button_style,
+                                                color: color_scheme,
+                                                show_arrow: block.settings.secondary_button_show_arrow,
+                                                video_icon: block.settings.secondary_button_popup,
+                                                size: btn_size
+                                            %}
+                                        {% endcapture %}
+                                        {% if block.settings.secondary_button_popup %}
+                                            <modal-trigger class="#button-wrapper" target="{{ icon_popup }}" section-id="{{ section.id }}">
+                                                {{ secondary_button }}
+                                            </modal-trigger>
+                                        {% else %}    
+                                            {{ secondary_button }}
+                                        {% endif %}
+                                    {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                          {% endunless %}
+                        {% when 'social' %}
+                            <div class="#hero-block @spaced-block {% if reveal_animation %}reveal-animate{% endif %}" {% if reveal_animation %}style="--reveal-index: {{ block_index }}"{% endif %} {{ block.shopify_attributes }}>
+                                <div class="#hero-social">
+                                    {% render 'social-profiles', show_titles: false %}
+                                </div>
+                            </div>    
+                        {% when 'newsletter_form' %}
+                            {% assign block_index = block_index | plus: 1 %}  
+                            <div class="#hero-block @spaced-block {% if reveal_animation %}reveal-animate{% endif %}" {% if reveal_animation %}style="--reveal-index: {{ block_index }}"{% endif %} {{ block.shopify_attributes }}>
+                                {% assign newsletter_form_id = 'NewsletterForm-' | append: section.id %}    
+                                {% form 'customer', class: 'newsletter-form', id: newsletter_form_id %}
+                                    <input type="hidden" name="contact[tags]" value="newsletter"> 
+                                    {%- if form.posted_successfully? -%}
+                                        <div class="#hero-newsletter-msg @type:success" id="Newsletter-success--{{ section.id }}" tabindex="-1" autofocus>
+                                            {% render 'icon', name: 'check' %}
+                                            {{ 'newsletter.success' | t }}
+                                        </div>
+                                    {%- endif -%}
+                                    {%- if form.errors -%}
+                                        <div class="#hero-newsletter-msg @type:error" id="Newsletter-error--{{ section.id }}">
+                                            {% render 'icon', name: 'alert' %}
+                                            {{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}
+                                        </div>
+                                    {%- endif -%}   
+                                    <div class="#hero-newsletter">
+                                        <input 
+                                            class="#hero-newsletter-input" 
+                                            placeholder="{% if block.settings.custom_placeholder_text != blank %}{{ block.settings.custom_placeholder_text }}{% else %}{{ 'newsletter.label' | t }}{% endif %}"
+                                            id="NewsletterForm--{{ section.id }}"
+                                            type="email"
+                                            name="contact[email]"
+                                            value="{{ form.email | escape }}"
+                                            aria-required="true"
+                                            autocorrect="off"
+                                            autocapitalize="off"
+                                            autocomplete="email"
+                                            {% if form.errors %}
+                                            autofocus
+                                            aria-invalid="true"
+                                            aria-describedby="Newsletter-error--{{ section.id }}"
+                                            {% elsif form.posted_successfully? %}
+                                            aria-describedby="Newsletter-success--{{ section.id }}"
+                                            {% endif %}
+                                            placeholder="{{ 'newsletter.label' | t }}"
+                                            required
+                                        >
+                                        {%- if block.settings.button_custom_text != blank -%}
+                                            {%- assign btn_text = block.settings.button_custom_text -%}
+                                        {%- else -%}
+                                            {%- assign btn_text = 'newsletter.button_label' | t -%}
+                                        {%- endif -%}
+                                        {% render 'button',
+                                            color: color_scheme,
+                                            text: btn_text,
+                                            show_arrow: block.settings.button_show_arrow,
+                                            class: 'hide-mobile'
+                                        %}
+                                    </div>
+                                {% endform %}
+                            </div>
+                    {% endcase %}
+            {% endfor %}
+        {% else %}
+            {%- capture Text_block -%}
+                {% if text != blank %}
+                    <div class="#hero-block">
+                        <div class="#hero-text">{{ text }}</div>
+                    </div>
+                {% endif %}             
+            {%- endcapture -%}
+            {%- if text_position == 'before' -%}
+                {{ Text_block }}
+            {%- endif -%}
+            {% if heading != blank %}
+                <div class="#hero-block">
+                    <{{ heading_tag }} class="#hero-heading {% if heading_font %}heading-font{% endif %}">{{ heading }}</{{ heading_tag }}>
+                </div>
+            {% endif %}
+            {%- if text_position == 'after' -%}
+                {{ Text_block }}
+            {%- endif -%}
+            {% if button or secondary_button %}
+                <div class="#hero-block @spaced-block">
+                    <div class="#button-group @align:{{ align }}">
+                        {% if button != blank %}
+                            {% render 'button',
+                                text: button,
+                                link: button_link,
+                                style: button_style,
+                                color: color_scheme,
+                                size: btn_size,
+                                show_arrow: button_show_arrow
+                            %}    
+                        {% endif %}
+                        {% if secondary_button != blank %}
+                            {% render 'button',
+                                text: secondary_button,
+                                link: secondary_button_link,
+                                style: secondary_button_style,
+                                color: color_scheme,
+                                size: btn_size,
+                                show_arrow: secondary_button_show_arrow
+                            %}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+        {%- endcapture -%}
+  
+{% if Hero_content != blank %}
+    <div class="#hero @color-scheme:{{ color_scheme }} @size:{{ size | default: 'md' }} @spaced:{{ spaced | default: 'md' }} @align:{{ align | default: 'left' }} {% if spacer != blank %}@spacer:{{ spacer }}{% endif %} {% if background %}@background{% endif %} {% if padded %}@padded{% endif %}">
+        {{ Hero_content }}
+    </div>
+{% endif %}
+
+

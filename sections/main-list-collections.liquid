@@ -1,0 +1,239 @@
+{{ 'collection-card.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  case section.settings.sort
+    when 'products_high' or 'products_low'
+      assign collections = collections | sort: 'all_products_count'
+    when 'date' or 'date_reversed'
+      assign collections = collections | sort: 'published_at'
+  endcase
+
+  if section.settings.sort == 'products_high' or section.settings.sort == 'date_reversed' or section.settings.sort == 'alphabetical_reversed'
+    assign collections = collections | reverse
+  endif
+-%}
+
+{%- capture Content -%}
+  <div class="#grid @gap:{{ section.settings.gutter }} @columns:{{ section.settings.columns }} @mobile:columns:1">
+    {%- if section.settings.collections_display == 'all' -%}
+      {%- liquid
+        case section.settings.sort
+          when 'products_high' or 'products_low'
+            assign collections = collections | sort: 'all_products_count'
+          when 'date' or 'date_reversed'
+            assign collections = collections | sort: 'published_at'
+        endcase
+      
+        if section.settings.sort == 'products_high' or section.settings.sort == 'date_reversed' or section.settings.sort == 'alphabetical_reversed'
+          assign collections = collections | reverse
+        endif
+      -%}
+      {%- for collection in collections -%}
+        <div class="#column reveal-animate" style="--reveal-index: {{ forloop.index }}">
+            {% render 'collection-card',
+              collection: collection,
+              image_size: section.settings.image_size,
+              columns: section.settings.columns,
+              align: section.settings.text_align
+            %}
+        </div>
+      {%- endfor -%}
+    {%- else -%}
+      {% for block in section.blocks %}
+        <div class="#column reveal-animate" style="--reveal-index: {{ forloop.index }}">
+          {% render 'collection-card',
+            collection: block.settings.collection,
+            image_size: section.settings.image_size,
+            columns: section.settings.columns,
+            custom_image: block.settings.image,
+            align: section.settings.text_align
+          %}
+      </div>
+      {% endfor %}
+    {%- endif -%}
+  </div>
+{%- endcapture -%}
+
+{% render 'section-body',
+  content: Content,
+  spaced: true,
+  container: true
+  color_scheme: section.settings.color_scheme
+%}
+
+{% schema %}
+{
+  "name": "Collection list",
+  "class": "spaced-section",
+  "settings": [
+    {
+      "type": "radio",
+      "id": "collections_display",
+      "label": "Collections to show",
+      "options": [
+        {
+          "value": "all",
+          "label": "All"
+        },
+        {
+          "value": "selected",
+          "label": "Selected"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sort",
+      "options": [
+        {
+          "value": "alphabetical",
+          "label": "t:sections.main-list-collections.settings.sort.options__1.label"
+        },
+        {
+          "value": "alphabetical_reversed",
+          "label": "t:sections.main-list-collections.settings.sort.options__2.label"
+        },
+        {
+          "value": "date_reversed",
+          "label": "t:sections.main-list-collections.settings.sort.options__3.label"
+        },
+        {
+          "value": "date",
+          "label": "t:sections.main-list-collections.settings.sort.options__4.label"
+        },
+        {
+          "value": "products_high",
+          "label": "t:sections.main-list-collections.settings.sort.options__5.label"
+        },
+        {
+          "value": "products_low",
+          "label": "t:sections.main-list-collections.settings.sort.options__6.label"
+        }
+      ],
+      "default": "alphabetical",
+      "label": "t:sections.main-list-collections.settings.sort.label",
+      "info": "Sorting only applies when 'All' is selected"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "alt",
+          "label": "Alternate"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "invert",
+          "label": "Inverted"
+        }
+      ],
+      "default": "alt",
+      "label": "Color scheme"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Columns",
+      "min": 3,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "gutter",
+      "label": "Space between",
+      "options": [
+      {
+         "value": "sm",
+         "label": "Small"
+      },
+      {
+         "value": "md",
+         "label": "Medium"
+      },
+      {
+         "value": "lg",
+         "label": "Large"
+      },
+      {
+        "value": "xl",
+        "label": "Extra large"
+      }
+      ],
+      "default": "xl"
+   },
+   {
+    "type": "select",
+    "id": "text_align",
+    "label": "Text alignment",
+    "options": [
+      {
+        "value": "left",
+        "label": "Left"
+      },
+      {
+        "value": "center",
+        "label": "Center"
+      },
+      {
+        "value": "right",
+        "label": "Right"
+      }
+    ],
+    "default": "center"
+  },
+    {
+      "type": "select",
+      "id": "image_size",
+      "options": [
+        {
+          "value": "circle",
+          "label": "Circle"
+        },
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "landscape",
+          "label": "Landscape"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait"
+        }
+      ],
+      "default": "portrait",
+      "label": "Image style",
+      "info": "t:sections.collection-list.settings.image_ratio.info"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Custom image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,128 @@
+<link rel="stylesheet" href="{{ 'product-card.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'product-card.css' | asset_url | stylesheet_tag }}</noscript>
+
+<product-recommendations data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit=4">
+
+  {% capture Content %}
+    {% if recommendations.performed and recommendations.products_count > 0 %}
+
+    {% if recommendations.products_count < section.settings.products_to_show %}
+      {%- assign columns = recommendations.products_count -%}
+    {% else %}
+      {%- assign columns = section.settings.products_to_show -%}
+    {% endif %}
+
+      <div class="#grid @container @mobile-overlap @columns:4 @gap:{{ section.settings.gutter }}">
+        {% for product in recommendations.products %}
+          {%- if product.metafields.inventory.ShappifyHidden == 'true' -%}{%- continue -%}{%- endif -%}
+          <div class="#column reveal-animate" style="--reveal-index: {{ forloop.index }}">
+            {% render 'product-card',
+              product: product,
+              color_scheme: section.settings.color_scheme
+            %}
+          </div>
+        {% endfor %}
+      </div>
+
+    {% endif %}
+  {% endcapture %}
+
+
+  {% render 'section-body',
+    content: Content,
+    spaced: true,
+    title: section.settings.title,
+    subtitle: section.settings.subtitle,
+    color_scheme: section.settings.color_scheme
+  %}
+
+</product-recommendations>
+
+<script type="module" src="{{ 'product-recommendations.js' | asset_url }}"></script>
+
+
+{% schema %}
+{
+  "name": "t:sections.product-recommendations.name",
+  "tag": "section",
+  "class": "spaced-section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:sections.product-recommendations.settings.paragraph__1.content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "default": "You may also like",
+      "label": "t:sections.featured-collection.settings.title.label"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subheading"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "alt",
+          "label": "Alternate"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "invert",
+          "label": "Inverted"
+        }
+      ],
+      "default": "default",
+      "label": "Color scheme"
+    },
+    {
+      "type": "select",
+      "id": "gutter",
+      "label": "Space between products",
+      "options": [
+      {
+         "value": "none",
+         "label": "None"
+      },
+      {
+         "value": "sm",
+         "label": "Small"
+      },
+      {
+         "value": "md",
+         "label": "Medium"
+      },
+      {
+         "value": "lg",
+         "label": "Large"
+      },
+      {
+        "value": "xl",
+        "label": "Extra large"
+     }
+      ],
+      "default": "md"
+   },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 3,
+      "max": 6,
+      "step": 1,
+      "default": 5,
+      "label": "Number of products to show"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,178 @@
+{{ 'main-navigation.css' | asset_url | stylesheet_tag }}
+
+{%- capture Navigation -%}
+    <main-nav class="#main-nav @text-size:{{ text_size }}">
+        <ul class="#main-nav-menu">
+            {% for block in blocks %}
+                {% case block.type %}
+                    {% when 'menu' %}
+                        {% for nav_item in block.settings.menu.links %}
+                            {%- liquid
+                                if nav_item.levels > 0
+                                    assign drop = 'drop-' | append: block.id | append: forloop.index
+                                else
+                                    assign drop = false
+                                endif  
+                            -%}
+                            <li class="#main-nav-item @root {% if drop %}@dropdown{% endif %}" {{ block.shopify_attributes }}>
+                                <a class="#main-nav-link @root" href="{{ nav_item.url }}" {% if drop %}data-dropdown="{{ drop }}" data-offset-drop{% endif %}>
+                                    {{ nav_item.title | escape }}
+                                    {% if drop %}
+                                        {% render 'icon', name: 'chevron-down' %}
+                                    {% endif %}
+                                </a>
+                                {% if drop %}
+                                    {%- assign parent_index = forloop.index -%}
+                                    <div class="#main-nav-dropdown @root" data-dropby="{{ drop }}">
+                                        <ul class="#main-nav-submenu">
+                                            {% for sub_nav_item in nav_item.links %}
+                                                {%- liquid
+                                                    if sub_nav_item.levels > 0
+                                                        assign sub_drop = 'sub-drop-' | append: block.id | append: parent_index | append: forloop.index
+                                                    else
+                                                        assign sub_drop = false
+                                                    endif  
+                                                -%}
+                                                <li class="#main-nav-item {% if sub_drop %}@dropdown{% endif %}">
+                                                    <a class="#main-nav-link @sub" href="{{ sub_nav_item.url }}" {% if sub_drop %}data-dropdown="{{ sub_drop }}"{% endif %}>
+                                                        {{ sub_nav_item.title | escape }}
+                                                        {% if sub_drop %}
+                                                            {% render 'icon', name: 'chevron-down' %}
+                                                        {% endif %}
+                                                    </a>
+                                                    {% if sub_drop %}
+                                                        <div class="#main-nav-dropdown @sub" data-dropby="{{ sub_drop }}">
+                                                            <ul class="#main-nav-submenu">
+                                                                {% for sub2_nav_item in sub_nav_item.links %}
+                                                                    <li class="#main-nav-item">
+                                                                        <a class="#main-nav-link @sub" href="{{ sub2_nav_item.url }}">{{ sub2_nav_item.title | escape }}</a>
+                                                                    </li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                        </div>
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                            </li>
+                        {% endfor %} 
+                    {% when 'megamenu' %}
+                        {%- assign mega_drop = 'megaDrop-' | append: block.id -%}    
+                        <li class="#main-nav-item @root @dropdown-mega" {{ block.shopify_attributes }}>
+                            <a class="#main-nav-link @root" href="{{ block.settings.link | default: '#' }}" data-dropdown="{{ mega_drop }}" data-dropdown-mega>{{ block.settings.text }}{% render 'icon', name: 'chevron-down' %}</a>
+                            <div class="#main-nav-dropdown @mega" data-dropby="{{ mega_drop }}">
+                                <div class="#main-nav-megamenu-wrapper">
+                                    <div class="#row @gutter:200">
+                                        {% for mega_nav_item in block.settings.menu.links %}
+                                            <div class="#col">
+                                                <h5 class="#main-nav-megamenu-heading">
+                                                    <a class="#main-nav-megamenu-heading-link" href="{{ mega_nav_item.url }}">{{ mega_nav_item.title | escape }}</a>
+                                                </h5>
+                                                {% if mega_nav_item.levels > 0 %}
+                                                    <ul class="#main-nav-megamenu">
+                                                        {% for mega_nav_menu_item in mega_nav_item.links %}
+                                                            <li>
+                                                                <a href="{{ mega_nav_menu_item.url }}">{{ mega_nav_menu_item.title | escape }}</a>
+                                                            </li>
+                                                        {% endfor %}     
+                                                    </ul>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                        {% if block.settings.first_image_show or block.settings.second_image_show %}
+                                            <link rel="stylesheet" href="{{ 'gallery-card.css' | asset_url }}" media="print" onload="this.media='all'">
+                                            <noscript>{{ 'gallery-card.css' | asset_url | stylesheet_tag }}</noscript>
+                                        {% endif %}
+                                        {% if block.settings.first_image_show %}
+                                            <div class="#col">
+                                                {% render 'gallery-card',
+                                                    text_spaced: 'sm',
+                                                    link: block.settings.first_image_url,
+                                                    image: block.settings.first_image,
+                                                    image_size: '16x9',
+                                                    title: block.settings.first_image_heading,
+                                                    subtitle: block.settings.first_image_subheading,
+                                                    text_size: 'xxs',
+                                                    text_align: 'center'
+                                                %}
+                                            </div>
+                                        {% endif %}
+                                        {% if block.settings.second_image_show %}
+                                            <div class="#col">
+                                                {% render 'gallery-card',
+                                                    text_spaced: 'sm',
+                                                    link: block.settings.second_image_url,
+                                                    image: block.settings.second_image,
+                                                    image_size: '16x9',
+                                                    title: block.settings.second_image_heading,
+                                                    subtitle: block.settings.second_image_subheading,
+                                                    text_size: 'xxs',
+                                                    text_align: 'center'
+                                                %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    {% when 'link' %}
+                        <li class="#main-nav-item @root" {{ block.shopify_attributes }}>
+                            <a class="#main-nav-link @root" href="{{ block.settings.link }}">{{ block.settings.text }}</a>
+                        </li>        
+                {% endcase %}
+            {% endfor %}
+        </ul>
+    </main-nav>
+{%- endcapture -%}
+
+<div class="#main-nav-container">
+    <div class="#main-nav-toolbar">
+        {%- unless section.settings.search_type == 'none' -%}
+          {%- capture search_link -%}
+            <a href="{{ routes.search_url }}" class="strip-link">
+              {% render 'icon', name: 'search' %}
+            </a>
+          {%- endcapture -%}
+          {%- if section.settings.search_type == 'link' -%}
+            {{ search_link }}
+          {%- endif -%}
+          {%- if section.settings.search_type == 'popup' -%}
+            {%- assign search_id = section.id | append: '-search' -%}
+            <link rel="stylesheet" href="{{ 'search-popup.css' | asset_url }}" media="print" onload="this.media='all'; this.onload = null">
+            <modal-trigger section-id="{{ section.id }}" target="#{{ search_id }}" layout="search-bar" hidden-close> 
+              {{ search_link }}
+            </modal-trigger>
+            <template id="{{ search_id }}">
+              {% render 'search-popup' %}
+            </template>
+            {%- if settings.predictive_search_enable -%}
+              <script type="module" src="{{ 'predictive-search-input.js' | asset_url }}"></script> 
+            {%- endif -%}  
+          {%- endif -%}
+        {%- endunless -%}
+    </div>
+    <div class="#main-nav-wrapper hide-mobile" id="{{ id }}">
+        {{ Navigation }}
+    </div>
+    <div class="#main-nav-toolbar">
+        {%- capture Cart_link -%}
+          <a href="{{ routes.cart_url }}" class="#main-nav-toolbar-link strip-link">
+            {% unless section.settings.cart_counter_display == 'none' %}
+                <cart-counter class="#cart-counter {% if section.settings.cart_counter_display == 'dot' %}@dot{% endif %}" style="--cart-counter-bg-color: {{ section.settings.cart_counter_bg_color }}; --cart-counter-text-color: {{ section.settings.cart_counter_text_color }}" {% if cart.item_count == 0 %}empty{% endif %} section-id="{{ section.id }}" cart-url="{{ routes.cart_url }}">{{ cart.item_count }}</cart-counter>
+            {% endunless %}
+            {% render 'icon', name: 'cart' %}
+          </a>
+        {%- endcapture -%}
+        {%- if settings.cart_type == 'drawer' and request.page_type != 'cart' -%}
+          <modal-trigger section-id="{{ section.id }}" target="CART">
+            {{ Cart_link }}
+          </modal-trigger> 
+        {%- else -%}
+          {{ Cart_link }}
+        {%- endif -%}
+    </div>
+</div>
+
+<script type="module" src="{{ 'main-navigation.js' | asset_url }}"></script>

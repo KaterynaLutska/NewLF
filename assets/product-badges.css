@@ -1,0 +1,17 @@
+.\#product-badges {
+    display: flex;
+}
+
+.\#product-badge {
+    font-weight: var(--font-body-weight-bold);
+    text-transform: uppercase;
+    font-size: calc(var(--font-size-base) * 0.8);
+    color: white;
+    background: #333333;
+    padding: 0.25rem 0.6rem;
+    border-radius: 1rem;
+}
+
+.\#product-badge + .\#product-badge {
+    margin-left: calc(var(--spacer) * 0.3);
+}

@@ -1,0 +1,138 @@
+{%- if filter_type == 'storefront_filters'  -%}
+    <link rel="stylesheet" href="{{ 'active-filter.css' | asset_url }}" media="print" onload="this.media='all'">
+    <noscript>{{ 'active-filter.css' | asset_url | stylesheet_tag }}</noscript>
+{%- else -%}
+    <link rel="stylesheet" href="{{ 'active-tag-filter.css' | asset_url }}" media="print" onload="this.media='all'">
+    <noscript>{{ 'active-tag-filter.css' | asset_url | stylesheet_tag }}</noscript>
+{%- endif -%}
+
+{%- assign active_filters = 0 -%}
+{%- assign color_option = settings.color_swatches_options | split: ',' | handleize -%}
+
+{%- capture Storefront_filters -%}
+<collection-active-filters class="#collection-grid-active-filters" section-id="{{ section.id }}">
+    
+    {%- for filter in filters -%}
+      {%- for value in filter.active_values -%}
+        {% assign active_filters = active_filters | plus: 1 %}
+        <active-filter class="#active-filter" section-id="{{ section.id }}" url="{{ value.url_to_remove }}">
+          <a href="{{ value.url_to_remove }}"
+            class="#active-filter-link"
+          >
+            {% if display_types %}
+              <span class="#active-filter-type">
+                  {{ filter.label }}:
+              </span>    
+            {% endif %}
+            {%- if display_color_swatches -%}
+              {%- assign label_handle = filter.label | handleize -%}
+              {%- if color_option contains label_handle -%}
+                  <span class="#active-filter-swatch">
+                      <span class="#active-filter-swatch-display" style="{%- render 'swatch-color-style', value: value.label -%}"></span>
+                  </span>
+              {%- endif -%}
+            {%- endif -%}
+            <span class="#active-filter-value">
+              {{ value.label | escape }}
+            </span>
+            {% render 'icon', name: 'x' %}
+          </a>
+        </active-filter>
+      {%- endfor -%}
+      {%- if filter.type == 'price_range' -%}
+          {%- if filter.min_value.value and filter.min_value.value != 0 -%}
+              {%- assign use_min = true -%}
+              {%- assign min = filter.min_value.value -%}
+          {%- else -%}
+              {%- assign min = 0 -%}    
+          {%- endif -%}
+          {%- if filter.max_value.value and filter.max_value.value != filter.range_max -%}
+              {%- assign use_max = true -%}
+              {%- assign max = filter.max_value.value -%}
+           {%- else -%}
+              {%- assign max = filter.range_max -%}
+          {%- endif -%}
+          {%- if use_min or use_max -%}
+              {% assign active_filters = active_filters | plus: 1 %}
+              <active-filter
+                  class="#active-filter"
+                  section-id="{{ section.id }}"
+                  url="{{ filter.url_to_remove }}"
+                  price
+              >
+              <a href="{{ filter.url_to_remove }}" class="#active-filter-link">
+                  {%- if display_types -%}
+                      <span class="#active-filter-type">
+                          {{ filter.label }}:
+                      </span>    
+                  {%- endif -%}
+                  <span class="#active-filter-value">
+                      {{ min | money }}&nbsp; &#8212; &nbsp;{{ max | money }} 
+                  </span>
+                  {% render 'icon', name: 'x' %}
+              </a>  
+              </active-filter>   
+          {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- if active_filters > 1 -%}  
+        <active-filter
+          class="#active-filter"
+          section-id="{{ section.id }}"
+          url="{{ reset_link }}"
+          price
+        >
+           <a class="#active-filter-reset" href="{{ reset_link }}">{{ 'sections.collection_template.clear_all' | t }}</a>   
+        </active-filter>
+    {%- endif -%}
+    <script type="module" src="{{ 'active-filter.js' | asset_url }}"></script>
+</collection-active-filters>
+<script type="module" src="{{ 'collection-active-filters.js' | asset_url }}"></script>
+{%- endcapture -%}
+
+
+{%- capture Tag_filters -%}
+    <collection-active-filters class="#collection-grid-active-filters" section-id="{{ section.id }}">
+        {%- for tag in current_tags -%}
+        {%- if filter_type == 'tag_group_filters' -%}
+            {%- assign tag_split = tag | split: '_' -%}
+            {%- assign tag_label = tag_split[0] -%}
+            {%- assign tag_value = tag_split[1] -%}
+        {%- else -%}
+            {%- assign tag_value = tag -%}
+        {%- endif -%}
+        
+        <active-tag-filter class="#active-tag-filter" section-id="{{ section.id }}">
+            {{ tag | link_to_remove_tag: tag }}
+            {%- if display_types and tag_label != blank -%}
+                <span class="#active-tag-filter-type">{{ tag_label }}:</span>
+            {%- endif -%}
+            {%- if display_color_swatches -%}
+              {%- assign label_handle = tag_label | handleize -%}
+              {%- if color_option contains label_handle -%}
+                  <span class="#active-tag-filter-swatch">
+                      <span class="#active-tag-filter-swatch-display" style="{%- render 'swatch-color-style', value: tag_value -%}"></span>
+                  </span>
+              {%- endif -%}
+            {%- endif -%}
+            <span class="#active-tag-filter-value">{{ tag_value }}</span>
+            {% render 'icon', name: 'x' %}
+          </active-tag-filter>
+        {%- endfor -%}
+        {%- if current_tags.size > 0 -%}
+            <active-tag-filter class="#active-tag-filter @reset" section-id="{{ section.id }}">
+                <a href="{{ reset_link }}"></a>
+                <span class="#active-tag-filter-value">{{ 'sections.collection_template.clear_all' | t }}</span>   
+            </active-tag-filter>
+        {%- endif -%}
+        <script type="module" src="{{ 'active-tag-filter.js' | asset_url }}"></script>
+    </collection-active-filters>
+    <script type="module" src="{{ 'collection-active-filters.js' | asset_url }}"></script>
+{%- endcapture -%}
+
+
+{%- if filter_type == 'storefront_filters' -%}
+    {{ Storefront_filters }}
+{%- else -%}
+    {{ Tag_filters }}
+{%- endif -%}

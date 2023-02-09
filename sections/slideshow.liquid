@@ -1,0 +1,387 @@
+{%- capture Slides -%}
+  {%- for block in section.blocks  -%}
+    {%- capture placeholder_index -%}{%- cycle 1, 2 -%}{%- endcapture -%}
+      {%- assign position = block.settings.text_position | split: '-' -%}
+      {%- assign text_y = position[0] -%}
+      {%- assign text_x = position[1] -%}
+
+    <div 
+      class="swiper-slide" 
+      {% if request.design_mode %}
+        data-slide-num="{{ forloop.index0 }}"
+      {% endif %} 
+      {{ block.shopify_attributes }}
+    >
+      {%- capture Hero_Text -%}
+        {%- render 'hero',
+          heading: block.settings.heading,
+          align: text_x,
+          text: block.settings.text,
+          button: block.settings.button,
+          button_link: block.settings.button_link,
+          button_style: block.settings.button_style,
+          button_color: block.settings.button_color,
+          button_show_arrow: block.settings.button_show_arrow,
+          secondary_button: block.settings.secondary_button,
+          secondary_button_link: block.settings.secondary_button_link,
+          secondary_button_style: block.settings.secondary_button_style,
+          secondary_button_color: block.settings.secondary_button_color,
+          secondary_button_show_arrow: block.settings.secondary_button_show_arrow,
+          color_scheme: block.settings.color_scheme
+        -%}
+      {%- endcapture -%}
+
+      {%- capture Caption -%}
+        {% render 'floating-content',
+          content: Hero_Text,
+          x: text_x,
+          y: text_y,
+          padded: true,
+          absolute: true
+        %}
+      {%- endcapture -%}
+      
+      {%- render 'media',
+        image: block.settings.image,
+        mobile_image: block.settings.mobile_image,
+        size: section.settings.image_size,
+        mobile_size: section.settings.mobile_size,
+        overlay: block.settings.image_overlay,
+        content: Caption,
+        color_scheme: block.settings.color_scheme,
+        placeholder: 'lifestyle',
+        placeholder_index: placeholder_index
+      -%}
+    </div>
+  
+  {%- endfor -%} 
+{%- endcapture -%}
+
+{%- capture Content -%}
+  <div data-main-header-overlap>
+    {%- render 'slider',
+      slides: Slides,
+      navigation_type: section.settings.navigation_type,
+      is_autoplay: section.settings.is_autoplay,
+      autoplay_delay: section.settings.autoplay_delay,
+      color_scheme: 'invert',
+      nav_size: '24px'
+    -%}
+  </div>
+{%- endcapture -%}
+
+{%- render 'section-body',
+  content: Content
+-%}
+
+{% schema %}
+  {
+    "name": "Slideshow",
+    "tag":"section",
+    "max_blocks":12,
+    "settings": [
+    {
+     "type": "header",
+     "content": "Image"
+    },
+    {
+      "type": "select",
+      "id": "image_size",
+      "label": "Size",
+      "options": [
+        {
+          "value": "full",
+          "label": "Full height"
+        },
+        {
+          "value": "large",
+          "label": "Large (70%)"
+        },
+        {
+          "value": "medium",
+          "label": "Medium (60%)"
+        },
+        {
+          "value": "small",
+          "label": "Small (50%)"
+        },
+        {
+          "value": "16x9",
+          "label": "Widescreen (16x9)"
+        },
+        {
+          "value": "21x9",
+          "label": "Ultrawide (21x9)"
+        },
+        {
+          "value": "original",
+          "label": "Original image size"
+        }
+      ],
+      "default": "16x9"
+    },
+    {
+      "type": "select",
+      "id": "mobile_size",
+      "options": [
+        {
+          "value": "full",
+          "label": "Full height"
+        },
+        {
+          "value": "large",
+          "label": "Large (70%)"
+        },
+        {
+          "value": "medium",
+          "label": "Medium (60%)"
+        },
+        {
+          "value": "small",
+          "label": "Small (50%)"
+        },
+        {
+          "value": "9x16",
+          "label": "Instgram story (9x16)"
+        },
+        {
+          "value": "4x5",
+          "label": "Facebook feed (4x5)"
+        },
+        {
+          "value": "original",
+          "label": "Original image size"
+        }
+      ],
+      "default": "9x16",
+      "label": "Mobile size"
+    },
+    {
+       "type": "select",
+       "id": "navigation_type",
+       "options": [
+          { "value": "none", "label": "None"},
+          { "value": "pagination", "label": "Bullets"},
+          { "value": "buttons", "label": "Arrows"},
+          { "value": "pagination_buttons", "label": "Bullets and arrows"}
+       ],
+       "label": "Slide navigation",
+       "default": "pagination"
+    },
+    {
+       "type": "checkbox",
+       "id": "is_autoplay",
+       "default": true,
+       "label": "Enable autoplay"
+    },
+    {
+        "type":      "range",
+        "id":        "autoplay_delay",
+        "min":       3,
+        "max":        5,
+        "step":       1,
+        "label":     "Change slides every",
+        "default":   3,
+        "unit": "sec"
+    }
+
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "mobile_image",
+          "label": "Mobile image (optional)"
+        },
+        {
+          "type": "range",
+          "id": "image_overlay",
+          "label": "Overlay opacity",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 40
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Talk about your brand",
+          "label": "Heading"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>",
+          "label": "Description"
+        },
+        {
+          "type": "select",
+          "id": "color_scheme",
+          "options": [
+            {
+              "value": "default",
+              "label": "Default"
+            },
+            {
+              "value": "invert",
+              "label": "Inverted"
+            }
+          ],
+          "default": "invert",
+          "label": "Color scheme"
+        },
+        {
+          "type": "select",
+          "id": "text_position",
+          "label": "Alignment",
+          "options": [
+            {
+              "value": "top-left",
+              "label": "Top left"
+            },
+            {
+              "value": "top-center",
+              "label": "Top center"
+            },
+            {
+              "value": "top-right",
+              "label": "Top right"
+            },
+            {
+              "value": "center-left",
+              "label": "Center left"
+            },
+            {
+              "value": "center-center",
+              "label": "Center"
+            },
+            {
+              "value": "center-right",
+              "label": "Center right"
+            },
+            {
+              "value": "bottom-left",
+              "label": "Bottom left"
+            },
+            {
+              "value": "bottom-center",
+              "label": "Bottom center"
+            },
+            {
+              "value": "bottom-right",
+              "label": "Bottom right"
+            }
+          ],
+          "default": "center-center"
+        },
+        {
+          "type": "header",
+          "content": "Primary button"
+        },
+        {
+          "type": "text",
+          "id": "button",
+          "label": "Text"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Link"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Style",
+          "options": [
+             {
+                "value": "default",
+                "label": "Default"
+             },
+             {
+                "value": "ghost",
+                "label": "Outline"
+             },
+             {
+                "value": "link",
+                "label": "Link"
+             }
+          ],
+          "default": "default"
+        },
+        {
+           "type": "checkbox",
+           "id": "button_show_arrow",
+           "label": "Show arrow",
+           "default": true
+        },
+        {
+          "type": "header",
+          "content": "Secondary button"
+        },
+        {
+          "type": "text",
+          "id": "secondary_button",
+          "label": "Text"
+        },
+        {
+          "type": "url",
+          "id": "secondary_button_link",
+          "label": "Link"
+        },
+        {
+          "type": "select",
+          "id": "secondary_button_style",
+          "label": "Style",
+          "options": [
+             {
+                "value": "default",
+                "label": "Default"
+             },
+             {
+                "value": "ghost",
+                "label": "Outline"
+             },
+             {
+                "value": "link",
+                "label": "Link"
+             }
+          ],
+          "default": "default"
+        },
+        {
+          "type": "checkbox",
+          "id": "secondary_button_show_arrow",
+          "label": "Show arrow",
+          "default": true
+       }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Slideshow gallery",
+      "category": "Image",
+      "blocks": [
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

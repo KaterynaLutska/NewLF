@@ -1,0 +1,461 @@
+{%liquid 
+   assign main_nav_id = section.id | append: '-mainNav'
+%}
+
+{{ 'main-header.css' | asset_url | stylesheet_tag }}
+
+{% unless section.settings.cart_counter_display == 'none' %}
+  <link rel="stylesheet" href="{{ 'cart-counter.css' | asset_url }}" media="print" onload="this.media='all'">
+  <noscript>{{ 'cart-counter.css' | asset_url | stylesheet_tag }}</noscript>
+{% endunless %}
+
+
+{%- assign image_size = section.settings.logo_width | append: 'x' -%}
+{% assign logo_width = section.settings.logo_width | append: 'px' %}
+
+{% if section.settings.show_icons_text %}
+  {% assign toolbar_text_class = 'mobile-visually-hidden' %}
+{% else %}
+  {% assign toolbar_text_class = 'visually-hidden' %}
+{% endif %}
+
+{%- if section.settings.enable_sticky_header -%}
+    <link rel="stylesheet" href="{{ 'main-header-sticky.css' | asset_url }}" media="print" onload="this.media='all'; this.onload = null">
+    <noscript>{{ 'main-header-sticky.css' | asset_url | stylesheet_tag }}</noscript>
+    <main-header-sticky class="#main-header-sticky" section-id="{{ section.id }}"></main-header-sticky>
+    <script src="{{ 'main-header-sticky.js' | asset_url }}" type="module"></script>
+{%- endif -%}
+
+{% if section.settings.enable_overlap %}
+  {% assign overlap_color_brightness = section.settings.overlap_text_color | color_brightness %}
+  {% if overlap_color_brightness > 127.5 %}
+    {% assign overlap_color = '@overlap:dark' %}
+  {% else %}
+    {% assign overlap_color = '@overlap:light' %}
+  {% endif %}  
+{% endif %}
+{% if section.settings.overlap_users == 'homepage' and request.page_type == 'index' %}
+  {%- assign home_overlap = true -%}
+{% else %}
+  {%- assign home_overlap = false -%}
+{% endif %} 
+<main-header 
+    {% if section.settings.enable_overlap %}{% if section.settings.overlap_users == 'all' or home_overlap %}overlap{% endif %}{% endif %}
+    id="MainHeader" 
+    class="#main-header {{ header_overlap }} block @text-size:{{ section.settings.text_size }} {{ overlap_color }}" 
+    style="--main-header-color-background: {% render 'rgb-color', color: section.settings.bg_color %}; --main-header-color-text: {{ section.settings.text_color }}; --main-header-color-text-overlap: {{ section.settings.overlap_text_color }}; --main-header-color-dropdown-text: {{ section.settings.color_dropdown_text }}; --main-header-color-dropdown-background: {{ section.settings.color_dropdown_bg }};"
+    section-id="{{ section.id }}"
+  >
+  
+  <div class="#main-header-inner">
+    <div class="#main-header-inner-container">
+      <div class="#main-header-toolbar @start">
+        {%- unless section.settings.search_type == 'none' -%}
+          {%- capture search_link -%}
+            <a href="{{ routes.search_url }}" class="#main-header-toolbar-link">
+              <span class="#main-header-toolbar-link-icon">
+                {% render 'icon', name: 'search' %}
+              </span>
+              <span class="#main-header-toolbar-link-text {{ toolbar_text_class }}">
+                {{ 'general.search.search' | t }}
+              </span>
+            </a>
+          {%- endcapture -%}
+          {%- if section.settings.search_type == 'link' -%}
+            {{ search_link }}
+          {%- endif -%}
+          {%- if section.settings.search_type == 'popup' -%}
+            {%- assign search_id = section.id | append: '-search' -%}
+            <link rel="stylesheet" href="{{ 'search-popup.css' | asset_url }}" media="print" onload="this.media='all'; this.onload = null">
+            <modal-trigger section-id="{{ section.id }}" target="#{{ search_id }}" layout="search-bar" hidden-close> 
+              {{ search_link }}
+            </modal-trigger>
+            <template id="{{ search_id }}">
+              {% render 'search-popup' %}
+            </template>
+            {%- if settings.predictive_search_enable -%}
+              <script type="module" src="{{ 'predictive-search-input.js' | asset_url }}"></script> 
+            {%- endif -%}  
+          {%- endif -%}
+        {%- endunless -%}
+
+        <modal-trigger class="hide-desktop" section-id="{{ section.id }}" target="#{{ main_nav_id }}" layout="sidebar" hidden-close>
+          {% render 'icon', name: 'menu' %}
+        </modal-trigger>
+      </div>
+      <a class="#main-header-logo {% if section.settings.logo != blank %}@img{% endif %} {% if section.settings.logo != blank and section.settings.overlap_logo != blank %}@switch-overlap{% endif %} strip-link flex-center" href="{{ routes.root_url }}" data-logo style="--logo-width: {{ logo_width }}">
+        {% if section.settings.logo != blank %}
+          <div class="#main-header-logo-image">
+            {% render 'media',
+              image: section.settings.logo,
+              image_resolution: image_size
+            %}
+          </div>
+          {% if section.settings.overlap_logo != blank %}
+            <div class="#main-header-logo-image-overlap">
+              {% render 'media',
+                image: section.settings.overlap_logo,
+                image_resolution: image_size
+              %}
+            </div>
+          {% endif %}
+        {% else %}
+          <span class="#main-header-logo-text heading-font h2">{{ shop.name }}</span>
+        {% endif %}
+      </a>
+      <div class="#main-header-toolbar @end">
+        {%- if shop.customer_accounts_enabled -%}
+          <a href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}" class="#main-header-toolbar-link">
+            <span class="#main-header-toolbar-link-icon">
+              {% render 'icon', name: 'user' %}
+            </span>
+            <span class="#main-header-toolbar-link-text {{ toolbar_text_class }}">
+              {%- liquid
+                if customer
+                  echo 'customer.account_fallback' | t
+                else
+                  echo 'customer.log_in' | t
+                endif
+              -%}
+            </span>
+          </a>
+        {%- endif -%}
+        {%- capture Cart_link -%}
+          <a href="{{ routes.cart_url }}" class="#main-header-toolbar-link">
+            <span class="#main-header-toolbar-link-icon">
+              {% unless section.settings.cart_counter_display == 'none' %}
+                <cart-counter 
+                  class="#cart-counter {% if section.settings.cart_counter_display == 'dot' %}@dot {% endif %}" 
+                  style="--cart-counter-bg-color: {{ section.settings.cart_counter_bg_color }}; --cart-counter-text-color: {{ section.settings.cart_counter_text_color }}" 
+                  {% if cart.item_count == 0 %}empty {% endif %}
+                  section-id="{{ section.id }}"
+                  cart-url="{{ routes.cart_url }}"
+                >
+                  <span class="cart_count">{% render 'bold-options-hybrid-cart-item-count' %}</span>
+                </cart-counter>
+                
+              {% endunless %}
+              {% render 'icon', name: 'cart' %}
+            </span>
+            <span class="#main-header-toolbar-link-text {{ toolbar_text_class }}">
+              {{ 'templates.cart.cart' | t }}
+            </span>
+          </a>
+        {%- endcapture -%}
+        {%- if settings.cart_type == 'drawer' and request.page_type != 'cart' -%}
+          <modal-trigger section-id="{{ section.id }}" target="CART">
+            {{ Cart_link }}
+          </modal-trigger> 
+        {%- else -%}
+          {{ Cart_link }}
+        {%- endif -%}
+      </div>
+    </div>
+    {% render 'main-navigation', blocks: section.blocks, id: main_nav_id, text_size: section.settings.text_size %}
+    </div>
+</main-header>
+
+{% if request.design_mode %}
+  <script>
+    function setHeaderOverlap() {
+      const header = document.querySelector('main-header').setOverlap();
+    }     
+    document.addEventListener("shopify:section:load", setHeaderOverlap);
+    document.addEventListener("shopify:section:reorder", setHeaderOverlap);
+    document.addEventListener("shopify:section:unload", () => {
+      setTimeout(setHeaderOverlap, 100);
+    });
+  </script>
+{% endif %}
+<script type="module" src="{{ 'main-header.js' | asset_url }}"></script>
+
+{% if section.settings.cart_counter_display != 'none' %}
+  <script type="module" src="{{ 'cart-counter.js' | asset_url }}"></script> 
+{% endif %}
+
+{% schema %}
+{
+  "name": "t:sections.header.name",
+  "class": "shopify-section--no-animation",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 20,
+      "max": 250,
+      "step": 10,
+      "default": 100,
+      "unit": "t:sections.header.settings.logo_width.unit",
+      "label": "Logo width"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default": "#1A1B18"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_icons_text",
+      "label": "Show icons text",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky_header",
+      "default": true,
+      "label": "t:sections.header.settings.enable_sticky_header.label"
+    },
+    {
+      "type": "select",
+      "id": "text_size",
+      "label": "Text size",
+      "options": [
+        {
+          "value": "sm",
+          "label": "Small"
+        },
+        {
+          "value": "md",
+          "label": "Medium"
+        },
+        {
+          "value": "lg",
+          "label": "Large"
+        }
+      ],
+      "default": "md"
+    },
+    {
+      "type": "select",
+      "id": "search_type",
+      "label": "Search type",
+      "options": [
+        {
+          "value": "popup",
+          "label": "Popup"
+        },
+        {
+          "value": "link",
+          "label": "Link"
+        },
+        {
+          "value": "none",
+          "label": "Do not display"
+        }
+      ],
+      "default": "popup"
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "color",
+      "id": "color_dropdown_bg",
+      "label": "Dropdown background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "color_dropdown_text",
+      "label": "Dropdown text",
+      "default": "#1A1B18"
+    },
+    {
+      "type": "header",
+      "content": "Header overlap"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_overlap",
+      "label": "Overlap header content",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "overlap_users",
+      "label": "Enable overlap on",
+      "options": [
+        {
+          "value": "all",
+          "label": "All pages"
+        },
+        {
+          "value": "homepage",
+          "label": "Only homepage"
+        }
+      ],
+      "default": "all"
+    },
+    {
+      "type": "image_picker",
+      "id": "overlap_logo",
+      "label": "Alternate logo (optional)"
+    },
+    {
+      "type": "color",
+      "id": "overlap_text_color",
+      "label": "Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Cart dot"
+    },
+    {
+      "type": "select",
+      "id": "cart_counter_display",
+      "options": [
+        {
+          "value": "counter",
+          "label": "Counter"
+        },
+        {
+          "value": "dot",
+          "label": "Only dot"
+        },
+        {
+          "value": "none",
+          "label": "None"
+        }
+      ],
+      "label": "Display",
+      "default": "counter"
+    },
+    {
+      "type": "color",
+      "id": "cart_counter_bg_color",
+      "label": "Background",
+      "default": "#DC3545"
+    },
+    {
+      "type": "color",
+      "id": "cart_counter_text_color",
+      "label": "Text",
+      "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu",
+      "settings": [
+        {
+          "type": "link_list",
+          "id": "menu",
+          "default": "main-menu",
+          "label": "t:sections.header.settings.menu.label"
+        }
+      ]
+    },
+    {
+      "type": "megamenu",
+      "name": "Mega menu",
+      "settings": [
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Shop"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "First image"
+        },
+        {
+          "type": "checkbox",
+          "id": "first_image_show",
+          "label": "Show first image",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "first_image",
+          "label": "First image"
+        },
+        {
+          "type": "url",
+          "id": "first_image_url",
+          "label": "First image link"
+        },
+        {
+          "type": "text",
+          "id": "first_image_heading",
+          "label": "First image heading",
+          "default": "Image heading"
+        },
+        {
+          "type": "text",
+          "id": "first_image_subheading",
+          "label": "First image subheading",
+          "default": "Image subheading"
+        },
+        {
+          "type": "header",
+          "content": "Second image"
+        },
+        {
+          "type": "checkbox",
+          "id": "second_image_show",
+          "label": "Show second image",
+          "default": true
+        },
+        {
+          "type": "image_picker",
+          "id": "second_image",
+          "label": "Second image"
+        },
+        {
+          "type": "url",
+          "id": "second_image_url",
+          "label": "Second image link"
+        },
+        {
+          "type": "text",
+          "id": "second_image_heading",
+          "label": "Second image heading",
+          "default": "Image heading"
+        },
+        {
+          "type": "text",
+          "id": "second_image_subheading",
+          "label": "Second image subheading",
+          "default": "Image subheading"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "menu",
+        "settings": {
+          "menu": "main-menu"
+        }
+      }
+    ]
+  }
+}
+{% endschema %}

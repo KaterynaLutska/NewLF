@@ -1,0 +1,158 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | img_url: '32x32' }}">
+    {%- endif -%}
+
+    {%- unless settings.type_header_font.system? and settings.type_body_font.system? -%}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {%- endunless -%}
+
+    <title>{{ page_title }}</title>
+    
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    {% render 'meta-tags' %}
+    <script src="{{ 'core.js' | asset_url }}" defer="defer"></script>
+    {{ content_for_header }}
+    {%- render 'bold-options-hybrid' -%}
+{%- render 'bold-common' -%}
+{% render 'sc-includes' %}
+{% if template == 'product' and product.metafields.inventory.ShappifyHidden or product.type contains '_HIDDEN_' %}<meta name='robots' content='noindex'>{% endif %}
+
+    {% render 'css-vars' %}
+
+    {{ 'core.css' | asset_url | stylesheet_tag }}
+    {{ 'button.css' | asset_url | stylesheet_tag }}
+    {{ 'grid.css' | asset_url | stylesheet_tag }}
+    {{ 'media.css' | asset_url | stylesheet_tag }}
+    {{ 'hero.css' | asset_url | stylesheet_tag }}
+    {{ 'price.css' | asset_url | stylesheet_tag }}
+
+    <link rel="stylesheet" href="{{ 'spinner.css' | asset_url }}" media="print" onload="this.media='all'">
+    <noscript>{{ 'spinner.css' | asset_url | stylesheet_tag }}</noscript>
+    {% if settings.animation_section_reveal %}
+      <link rel="stylesheet" href="{{ 'animation-section-reveal.css' | asset_url }}" media="print" onload="this.media='all'">
+    {% endif %}
+
+    {%- unless settings.type_body_font.system? -%}
+      <link rel="preload" as="font" href="{{ settings.type_body_font | font_url }}" type="font/woff2" crossorigin>
+    {%- endunless -%}
+    {%- unless settings.type_header_font.system? -%}
+      <link rel="preload" as="font" href="{{ settings.type_header_font | font_url }}" type="font/woff2" crossorigin>
+    {%- endunless -%}
+
+    <script>document.documentElement.className = document.documentElement.className.replace('no-js', 'js');</script>
+  </head>
+
+  <body class="preload">
+    {% render 'icons-spirte' %}
+    {% section 'announcement-bar' %}
+    {% section 'main-header' %}
+    {% section 'main-newsletter-popup' %}
+
+    <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% section 'main-footer' %}
+    
+    <script>
+      window.routes = {
+        cart: '{{ routes.cart }}',
+        cart_add_url: '{{ routes.cart_add_url }}',
+        cart_change_url: '{{ routes.cart_change_url }}',
+        cart_update_url: '{{ routes.cart_update_url }}'
+      }
+      window.theme = {
+        i18n: {
+          addToCart: {{ 'products.product.add_to_cart' | t | json }},
+          soldOut: {{ 'products.product.sold_out' | t | json }},
+          unavailable: {{ 'products.product.unavailable' | t | json }},
+          subtotal: {{ 'sections.cart.subtotal' | t | json }},
+          loading: {{ 'accessibility.loading' | t | json }},
+        },
+        scripts: {
+          Plyr: 'https://cdn.plyr.io/3.6.8/plyr.js',
+          Swiper: 'https://unpkg.com/swiper@7/swiper-bundle.min.js'
+        },
+        styles: {
+          Swiper: 'https://unpkg.com/swiper@7/swiper-bundle.min.css'
+        },
+        modules: {
+          utils: "{{ 'utils.js' | asset_url }}",
+          swiper: "{{ 'swiper-module.js' | asset_url }}",
+          sellingPlanUtil: "{{ 'selling-plan-util.js' | asset_url }}",
+          baseComponent: "{{ 'base-component.js' | asset_url }}"
+        },
+        routes: {
+          predictiveSearch: "{{ routes.predictive_search_url }}"
+        }
+      };
+    </script>
+
+    <script>
+      window.addEventListener('load', (event) => {
+        document.querySelector('body').classList.remove('preload');
+      });
+    </script>
+    
+    {% render 'posted-popup' %}
+    {% render 'modal-popup' %}
+
+    {% if settings.animation_section_reveal %}
+      <script type="module" src="{{ 'animation-section-reveal.js' | asset_url }}"></script>
+      {% if request.design_mode %}
+        <script>
+          document.addEventListener('shopify:section:load', ({ target }) => {
+            target.classList.add('shopify-section--reveal');
+          })
+        </script>
+      {% endif %}
+    {% endif %}
+
+    {% if request.design_mode %}
+      <script type="module" src="{{ 'search-grid.js' | asset_url }}"></script>
+      <script type="module" src="{{ 'search-results-count.js' | asset_url }}"></script>
+      <script type="module" src="{{ 'video-bg.js' | asset_url }}"></script>
+      <script type="module" src="{{ 'hero-video.js' | asset_url }}"></script>
+      <script type="module" src="{{ 'video-player.js' | asset_url }}"></script>
+      <script type="module" src="{{ 'column-slider.js' | asset_url }}"></script>
+      <script type="module" src="{{ 'slide-show.js' | asset_url }}"></script>
+      <script type="module" src="{{ 'slideshow-thumbnails.js' | asset_url }}"></script> 
+      <script type="module" src="{{ 'announcement-bar.js' | asset_url }}"></script>
+      <script type="module" src="{{ 'product-variant-selector.js' | asset_url }}"></script>
+      <script type="module" src="{{ 'product-qty.js' | asset_url }}"></script>
+      <script type="module" src="{{ 'product-stock-alert.js' | asset_url }}"></script>
+      <script type="module" src="{{ 'product-form.js' | asset_url }}"></script>
+      <script type="module" src="{{ 'product-price.js' | asset_url }}"></script>
+      <script type="module" src="{{ 'pickup-availability.js' | asset_url }}"></script>
+      <script type="module" src="{{ 'product-description-expand.js' | asset_url }}"></script>         
+      <script type="module" src="{{ 'google-map.js' | asset_url }}"></script>
+      <script type="module" src="{{ 'cart-counter.js' | asset_url }}"></script>
+      <script type="module" src="{{ 'currency-form.js' | asset_url }}"></script>
+      <script type="module" src="{{ 'localization-form.js' | asset_url }}"></script>
+      <script type="module" src="{{ 'newsletter-popup.js' | asset_url }}"></script>
+      {% if request.page_type == 'collection' %}
+        <script type="module" src="{{ 'price-slider.js' | asset_url }}"></script>
+        <script type="module" src="{{ 'collection-filters-tag.js' | asset_url }}"></script>
+        <script type="module" src="{{ 'collection-filters-form.js' | asset_url }}"></script>
+        <script type="module" src="{{ 'collection-grid-count.js' | asset_url }}"></script>
+        <script type="module" src="{{ 'collection-sort.js' | asset_url }}"></script>
+      {% endif %}
+
+    {% endif %}
+
+    <script type="module" src="{{ 'dynamic-icon.js' | asset_url }}"></script>
+  </body>
+</html>

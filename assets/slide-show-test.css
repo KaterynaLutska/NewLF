@@ -1,0 +1,60 @@
+.\#slideshow-test.\@thumbs\:left, .\#slideshow-test.\@thumbs\:right {
+    display: flex;
+}
+
+.\#slideshow-test.\@thumbs\:left {
+    flex-direction: row-reverse;
+}
+
+.\#slideshow-test-container {
+    flex: 1 1 auto;
+    width: 100%;
+}
+
+.\#slideshow-test-thumbnails {
+    width: var(--thumb-size, 60px);
+    position: relative;
+    margin: 20px;
+    display: block;
+}
+
+.\#slideshow-test-thumbnails.\@position\:bottom {
+    width: 100%;
+    height: var(--thumb-size, 60px);
+}
+
+.\#slideshow-test-thumbnails-item {
+    opacity: 0.33;
+}
+
+.\#slideshow-test-thumbnails-item.\!active {
+    opacity: 1;
+}
+
+.\#slideshow-test-thumbnails.\@position\:bottom .\#slideshow-test-thumbnails-item {
+    width: var(--thumb-size, 60px);
+    flex-shrink: 0;
+}
+
+.\#slideshow-test-thumbnails-scroller {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    scrollbar-width: none;
+}
+
+.\#slideshow-test-thumbnails-scroller::-webkit-scrollbar {
+    display: none;
+}
+
+.\#slideshow-test-thumbnails.\@position\:bottom .\#slideshow-test-thumbnails-scroller {
+    overflow-x: auto;
+    flex-direction: row;
+}

@@ -1,0 +1,198 @@
+.\#product-meta {
+    height: 100%;
+    position: relative;
+}
+
+.\#product-meta.\@color-scheme\:alt {
+    background-color: rgba(var(--color-alt-background), 1);
+}
+
+@media (min-width: 992px) {
+    .\#product-meta.\@gallery-padded\:left .\#product-meta-inner {
+        padding-left: 3.5rem;
+        padding-right: 3.5rem;
+        padding-left: 0;
+    }
+}
+
+@media (min-width: 992px) {
+    .\#product-meta.\@gallery-padded\:right .\#product-meta-inner {
+        padding-left: 3.5rem;
+        padding-right: 3.5rem;
+        padding-right: 0;
+    }
+}
+
+.\#product-meta.\@align\:center {
+    text-align: center;
+}
+
+@media (min-width: 992px) {
+    .\#product-meta.\@align\:center .\#product-meta-block.\@type\:buy_buttons {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+.\#product-meta-inner {
+    padding: 3rem 3.5rem;
+}
+
+.\#product-meta-block-heading {
+    margin-bottom: 0.3rem;
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+.\#product-meta-block:not(:first-child) {
+    margin-top: 1.75rem;
+}
+
+.\#product-meta-block:not(:first-child).\@attach {
+    margin-top: -1.3125rem;
+}
+
+.\#product-meta-block:not(:last-child) {
+    margin-bottom: 1.75rem;
+}
+
+.\#product-meta-block.\@type\:title .\#hero {
+    width: 100%;
+}
+
+@media (min-width: 992px) {
+    .\#product-meta-block.\@type\:buy_buttons {
+        max-width: 450px;
+    }
+}
+
+.\#product-meta-block.\@type\:collapsible_tab + .\#product-meta-block.\@type\:collapsible_tab {
+    margin-top: -1.75rem;
+}
+
+.\#product-meta-block.\@type\:collapsible_tab + .\#product-meta-block.\@type\:collapsible_tab .\#product-meta-collapse:before {
+    display: none;
+}
+
+.\#product-meta-spacer {
+    height: 1px;
+}
+
+.\#product-meta-separator {
+    opacity: 0.15;
+}
+
+.\#product-meta-custom-image {
+    position: relative;
+}
+
+.\#product-meta-description {
+    font-size: calc(var(--font-size-base) * 1.05);
+    line-height: 1.4;
+}
+
+.\#product-meta-description > p {
+    margin-bottom: 0.5rem;
+}
+
+.\#product-meta-description > p:last-child {
+    margin-bottom: 0;
+}
+
+.\#product-meta-text.\@weight\:bold {
+    font-weight: var(--font-body-weight-bold);
+}
+
+.\#product-meta-text.\@uppercase {
+    text-transform: uppercase;
+}
+
+.\#product-meta-text.\@style\:body {
+    font-size: calc(var(--font-size-base) * 1.15);
+}
+
+.\#product-meta-text.\@style\:subtitle {
+    font-size: calc(var(--font-size-base) * 0.9);
+    opacity: 0.7;
+}
+
+.\#product-meta-text.\@style\:subtitle + .\#product-meta-title {
+    padding-top: calc(var(--spacer) * 0.875);
+}
+
+.\#product-meta-qty .\#form-input {
+    max-width: 7em;
+}
+
+.\#product-meta-collapse {
+    position: relative;
+}
+
+.\#product-meta-collapse.\@align\:center .\#product-meta-collapse-heading-inner {
+    justify-content: center;
+}
+
+.\#product-meta-collapse:before, .\#product-meta-collapse:after {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 100%;
+    left: 0;
+    background: currentColor;
+    height: 1px;
+    opacity: 0.25;
+}
+
+.\#product-meta-collapse:before {
+    top: 0;
+}
+
+.\#product-meta-collapse:after {
+    bottom: 0;
+}
+
+.\#product-meta-collapse-item {
+    padding: 1px 0;
+}
+
+.\#product-meta-collapse-item[open] .\#product-meta-collapse-heading {
+    opacity: 1;
+}
+
+.\#product-meta-collapse-item[open] .\#product-meta-collapse-heading-indicator .\#icon {
+    transform: rotate(180deg);
+}
+
+.\#product-meta-collapse-body {
+    margin-bottom: calc(var(--spacer) * 1);
+    text-align: left;
+}
+
+.\#product-meta-collapse-heading {
+    opacity: 0.64;
+    cursor: pointer;
+    list-style: none;
+    text-transform: uppercase;
+    font-weight: var(--font-body-weight-bold);
+    font-size: calc(var(--font-size-base) * 0.95);
+    padding-top: calc(var(--spacer) * 0.75);
+    padding-bottom: calc(var(--spacer) * 0.75);
+}
+
+.\#product-meta-collapse-heading::marker, .\#product-meta-collapse-heading::-webkit-details-marker {
+    display: none;
+}
+
+.\#product-meta-collapse-heading-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.\#product-meta-collapse-heading-indicator .\#icon {
+    flex-shrink: 1;
+    margin-left: calc(var(--spacer) * 0.5);
+    stroke-width: 3;
+    width: calc(var(--spacer) * 1.2);
+    height: calc(var(--spacer) * 1.2);
+}

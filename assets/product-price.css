@@ -1,0 +1,49 @@
+.\#product-price {
+    font-size: 1.7rem;
+    display: block;
+}
+
+.\#product-price .\#price {
+    gap: 0.7em;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.\#product-price .\#price-item.\@on-sale {
+    font-size: 1.4em;
+}
+
+.\#product-price .\#price-item.\@save .\#price-item-value {
+    display: flex;
+    align-items: baseline;
+    gap: 0.05em;
+}
+
+.\#product-price .\#price-item.\@save .\#price-pct {
+    opacity: 0.64;
+    font-size: 0.7em;
+    position: relative;
+    bottom: 1px;
+}
+
+.\#product-price .\#price .\#unit-price {
+    margin-top: 0.2rem;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.\#product-price.\@size\:lg {
+    font-size: 2.25rem;
+}
+
+.\#product-price.\@size\:sm {
+    font-size: 1.2rem;
+}
+
+.\#product-price.\@weight\:bold .\#price-item.\@regular {
+    font-weight: var(--font-body-weight-bold);
+}
+
+.\#product-price.\@align\:center .\#price {
+    justify-content: center;
+}

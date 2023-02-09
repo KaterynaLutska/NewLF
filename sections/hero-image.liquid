@@ -1,0 +1,369 @@
+{%- assign position = section.settings.text_position | split: '-' -%}
+{%- assign text_y = position[0] -%}
+{%- assign text_x = position[1] -%}
+
+{% capture Hero_Text %}
+    {% render 'hero',
+        blocks: section.blocks,
+        color_scheme: section.settings.color_scheme,
+        align: text_x,
+        spaced: 'lg',
+        size: section.settings.text_size,
+        reveal_animation: true
+    %}
+{% endcapture %}
+
+{% capture Caption %}
+    {% render 'floating-content',
+        content: Hero_Text,
+        x: text_x,
+        y: text_y,
+        padded: true,
+        absolute: true
+    %}
+{% endcapture %}
+
+{%- capture Content -%}
+  <div data-main-header-overlap>
+    {% render 'media',
+        image: section.settings.image,
+        mobile_image: section.settings.mobile_image,
+        size: section.settings.image_size,
+        mobile_size: section.settings.mobile_size,
+        content: Caption,
+        color_scheme: section.settings.color_scheme,
+        overlay: section.settings.overlay,
+        placeholder: 'lifestyle',
+        reveal_zoom: true
+    %}
+  </div>
+{%- endcapture -%}
+
+{% render 'section-body',
+  content: Content
+%}
+
+{% schema %}
+{
+  "name": "Hero image",
+  "tag": "section",
+  "class": "spaced-section spaced-section--full-width",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image"
+    },
+    {
+      "type": "select",
+      "id": "image_size",
+      "label": "Size",
+      "options": [
+        {
+          "value": "full",
+          "label": "Full height"
+        },
+        {
+          "value": "large",
+          "label": "Large (70%)"
+        },
+        {
+          "value": "medium",
+          "label": "Medium (60%)"
+        },
+        {
+          "value": "small",
+          "label": "Small (50%)"
+        },
+        {
+          "value": "16x9",
+          "label": "Widescreen (16x9)"
+        },
+        {
+          "value": "21x9",
+          "label": "Ultrawide (21x9)"
+        },
+        {
+          "value": "original",
+          "label": "Original image size"
+        }
+      ],
+      "default": "16x9"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile image (optional)"
+    },
+    {
+      "type": "select",
+      "id": "mobile_size",
+      "options": [
+        {
+          "value": "full",
+          "label": "Full height"
+        },
+        {
+          "value": "large",
+          "label": "Large (70%)"
+        },
+        {
+          "value": "medium",
+          "label": "Medium (60%)"
+        },
+        {
+          "value": "small",
+          "label": "Small (50%)"
+        },
+        {
+          "value": "9x16",
+          "label": "Instgram story (9x16)"
+        },
+        {
+          "value": "4x5",
+          "label": "Facebook feed (4x5)"
+        },
+        {
+          "value": "original",
+          "label": "Original image size"
+        }
+      ],
+      "default": "9x16",
+      "label": "Mobile image size"
+    },
+    {
+      "type": "range",
+      "id": "overlay",
+      "label": "Overlay opacity",
+      "unit": "%",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "select",
+      "id": "text_size",
+      "label": "Size",
+      "options": [
+        {
+          "value": "sm",
+          "label": "Small"
+        },
+        {
+          "value": "md",
+          "label": "Medium"
+        },
+        {
+          "value": "lg",
+          "label": "Large"
+        },
+        {
+          "value": "xl",
+          "label": "Extra large"
+        }
+      ],
+      "default": "md"
+    },
+    {
+      "type": "select",
+      "id": "text_position",
+      "label": "Alignment",
+      "options": [
+        {
+          "value": "top-left",
+          "label": "Top left"
+        },
+        {
+          "value": "top-center",
+          "label": "Top center"
+        },
+        {
+          "value": "top-right",
+          "label": "Top right"
+        },
+        {
+          "value": "center-left",
+          "label": "Center left"
+        },
+        {
+          "value": "center-center",
+          "label": "Center"
+        },
+        {
+          "value": "center-right",
+          "label": "Center right"
+        },
+        {
+          "value": "bottom-left",
+          "label": "Bottom left"
+        },
+        {
+          "value": "bottom-center",
+          "label": "Bottom center"
+        },
+        {
+          "value": "bottom-right",
+          "label": "Bottom right"
+        }
+      ],
+      "default": "center-center"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "invert",
+          "label": "Inverted"
+        }
+      ],
+      "default": "invert",
+      "label": "Color scheme"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "t:sections.image-banner.blocks.heading.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "default": "Image banner",
+          "label": "t:sections.image-banner.blocks.heading.settings.heading.label"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "t:sections.image-banner.blocks.text.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "default": "<p>Give customers details about the banner image(s) or content on the template.</p>",
+          "label": "t:sections.image-banner.blocks.text.settings.text.label"
+        }
+      ]
+    },
+    {
+      "type": "buttons",
+      "name": "Buttons",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Primary button"
+        },
+        {
+          "type": "text",
+          "id": "button",
+          "label": "Primary button label"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Link"
+        },
+        {
+          "type": "select",
+          "id": "button_style",
+          "label": "Button style",
+          "options": [
+             {
+                "value": "default",
+                "label": "Default"
+             },
+             {
+                "value": "ghost",
+                "label": "Outline"
+             },
+             {
+                "value": "link",
+                "label": "Link"
+             }
+          ],
+          "default": "default"
+        },
+        {
+           "type": "checkbox",
+           "id": "button_show_arrow",
+           "label": "Show arrow",
+           "default": true
+        },
+        {
+          "type": "header",
+          "content": "Secondary button"
+        },
+        {
+          "type": "text",
+          "id": "secondary_button",
+          "label": "Secondary button label"
+        },
+        {
+          "type": "url",
+          "id": "secondary_button_link",
+          "label": "Link"
+        },
+        {
+          "type": "select",
+          "id": "secondary_button_style",
+          "label": "Button style",
+          "options": [
+             {
+                "value": "default",
+                "label": "Default"
+             },
+             {
+                "value": "ghost",
+                "label": "Outline"
+             },
+             {
+                "value": "link",
+                "label": "Link"
+             }
+          ],
+          "default": "default"
+        },
+        {
+          "type": "checkbox",
+          "id": "secondary_button_show_arrow",
+          "label": "Show arrow",
+          "default": true
+       }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero image",
+      "blocks": [
+        {
+          "type": "heading"
+        },
+        {
+          "type": "text"
+        },
+        {
+          "type": "buttons"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

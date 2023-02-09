@@ -1,0 +1,37 @@
+{%- liquid
+    if filter.min_value.value
+        assign min_abs_value = filter.min_value.value
+    else
+        assign min_abs_value = 0
+    endif
+    
+    if filter.max_value.value
+        assign max_abs_value = filter.max_value.value
+    else
+        assign max_abs_value = filter.range_max
+    endif
+    
+    assign max_value = max_abs_value | money_without_currency | replace: ',', ''
+    assign min_value = min_abs_value | money_without_currency | replace: ',', ''
+-%}
+
+<link rel="stylesheet" href="{{ 'price-slider.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'price-slider.css' | asset_url | stylesheet_tag }}</noscript>
+
+<price-slider class="#price-slider" min="0" max="{{ filter.range_max | money_without_currency | replace: ',', '' }}" current-min="{{ min_value }}" current-max="{{ max_value }}" section-id="{{ section.id }}">
+    <input type="hidden" name="{{ filter.min_value.param_name }}" value="{{ min_value | escape }}" data-input-min>
+    <input type="hidden" name="{{ filter.max_value.param_name }}" value="{{ max_value | escape }}" data-input-max>
+    <div class="#price-slider-values">
+        <div class="#price-slider-min" data-min data-default-value="{{ 0 | money_without_trailing_zeros }}">
+            {{ min_abs_value | money_without_trailing_zeros }}
+        </div>
+        <div class="#price-slider-max" data-max data-default-value="{{ filter.range_max | money_without_trailing_zeros }}">
+            {{ max_abs_value | money_without_trailing_zeros }}
+        </div>  
+    </div>
+
+    <div class="#price-slider-base" data-slider>
+
+    </div>
+</price-slider>
+<script type="module" src="{{ 'price-slider.js' | asset_url }}"></script>

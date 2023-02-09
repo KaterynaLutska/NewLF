@@ -1,0 +1,120 @@
+@media (max-width: 991px) {
+    .\#product-gallery {
+        --swiper-navigation-size: 20px;
+    }
+
+    .\#product-gallery .swiper-button-prev,
+.\#product-gallery .swiper-button-next {
+        bottom: 10px;
+        top: auto;
+        z-index: 11;
+    }
+}
+
+.\#product-gallery-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    position: relative;
+}
+
+.\#product-gallery-item video-player {
+    flex-grow: 1;
+}
+
+.\#product-gallery-item-3dmodel {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.\#product-gallery-item-3dmodel:hover .\#product-gallery-zoom-msg {
+    opacity: 1;
+}
+
+.\#product-gallery-item-modal-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    cursor: zoom-in;
+}
+
+@media (min-width: 992px) {
+    .\#product-gallery.\@padded {
+        padding: 3.5rem;
+    }
+
+    .\#product-gallery.\@padded .\#slideshow-thumbnails.\@position\:left {
+        margin-top: 0;
+        margin-left: 0;
+        margin-bottom: 0;
+    }
+
+    .\#product-gallery.\@padded .\#slideshow-thumbnails.\@position\:right {
+        margin-top: 0;
+        margin-right: 0;
+        margin-bottom: 0;
+    }
+
+    .\#product-gallery.\@padded .\#slideshow-thumbnails.\@position\:bottom {
+        margin-bottom: 0;
+    }
+}
+
+.\#product-gallery .\#slideshow[zoomed] .swiper-slide {
+    cursor: grab;
+}
+
+.\#product-gallery .\#slideshow[zoomed] .\#product-gallery-zoom-msg {
+    opacity: 0 !important;
+}
+
+.\#product-gallery-zoom-msg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    gap: 0.5rem;
+    z-index: 1;
+    bottom: 2rem;
+    color: rgba(var(--color-text), 1);
+    background: rgba(var(--color-background), 0.6);
+    padding: 0.7rem 1.25rem;
+    border-radius: 2rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: 0.3s;
+    width: fit-content;
+    backdrop-filter: blur(5px);
+}
+
+.\#product-gallery-zoom-msg > span {
+    flex-shrink: 0;
+}
+
+@media (max-width: 991px) {
+    .\#product-gallery-zoom-msg {
+        display: none;
+    }
+}
+
+.\#product-gallery-zoom-msg .\#icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+}
+
+.\#product-gallery:hover .\#slideshow[data-slide-media-type=image] .\#product-gallery-zoom-msg {
+    opacity: 1;
+}
+
+model-viewer {
+    width: 100%;
+    height: 100%;
+}

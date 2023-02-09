@@ -1,0 +1,172 @@
+<link rel="stylesheet" href="{{ 'predictive-search.css' | asset_url }}" media="print" onload="this.media='all'; this.onload = null">
+<noscript>{{ 'predictive-search.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+    unless settings.product_card_aspect_ratio == 'original'
+      assign aspect_ratio = settings.product_card_aspect_ratio
+    endunless
+    unless settings.product_card_image_appearance == 'fit_size'
+      assign position = settings.product_card_image_appearance
+    endunless
+    assign _cn = '#predictive-search'   
+-%}
+
+  
+{%- if predictive_search.performed -%}
+  {%- liquid
+    assign has_results = false
+    for type in predictive_search.types
+        assign resource_type = type | append: 's'
+        if predictive_search.resources[resource_type].size > 0
+            assign has_results = true    
+            break
+        endif
+    endfor
+  -%}
+  <div class="{{ _cn }}">
+    {%- if has_results == false -%}
+        <div class="{{ _cn }}-no-results">
+            <div class="{{ _cn }}-no-results-icon">
+                {% render 'icon', name: 'search' %}
+            </div>
+            <div class="{{ _cn }}-no-results-msg">{{ 'templates.search.no_results' | t: terms: predictive_search.terms }}</div>
+        </div>  
+    {%- else -%}
+    <div class="{{ _cn }}-results">
+        {%- if predictive_search.resources.collections.size > 0  -%}
+            <link rel="stylesheet" href="{{ 'collection-card.css' | asset_url }}" media="print" onload="this.media='all'">
+            <noscript>{{ 'collection-card.css' | asset_url | stylesheet_tag }}</noscript>
+            <div class="{{ _cn }}-resource @spaced">
+                <h5 class="{{ _cn }}-resource-heading">Collections</h5>
+                <div class="{{ _cn }}-collections-list">
+                    {%- if settings.predictive_search_collection_image -%}
+                    <div class="#grid @columns:6 @mobile:columns:3">
+                        {%- for collection in predictive_search.resources.collections -%}
+                            {% render 'collection-card',
+                                collection: collection,
+                                image_source: 'collection',
+                                image_resolution: 50,
+                                image_size: 'circle'
+                            %}
+                        {%- endfor -%}
+                    </div>
+                {%- else -%}
+                <div class="#grid @auto-columns" style="--grid-gap: 0.7rem">
+                {%- for collection in predictive_search.resources.collections -%}
+                        <div>
+                            {% render 'button',
+                                text: collection.title,
+                                link: collection.url,
+                                color: 'dark'
+                            %}
+                        </div>
+                    {%- endfor -%}
+                </div>
+                {%- endif -%}
+                </div>
+            </div>
+        {%- endif -%}
+        {% if predictive_search.resources.products.size > 0  %}
+            <div class="{{ _cn }}-resource">
+                <ul class="{{ _cn }}-products-list">
+                    {% for product in predictive_search.resources.products %}
+                      {%- if product.metafields.inventory.ShappifyHidden == 'true' -%}{%- continue -%}{%- endif -%}
+                        <li class="{{ _cn }}-product">
+                            <a href="{{ product.url }}" class="stretched-link"></a>
+                            <div class="{{ _cn }}-product-inner" style="--reveal-delay: {{ forloop.index0 | times: 2 | times: 0.1 }}s">
+                                <div class="{{ _cn }}-product-image">
+                                    {% render 'media',
+                                        image: product.featured_image,
+                                        image_resolution: 100,
+                                        aspect_ratio: aspect_ratio,
+                                        position: position
+                                    %}
+                                </div>
+                                <div class="{{ _cn }}-product-info">
+                                    {%- if settings.predictive_search_enable_swatches -%}
+                                    {%- assign color_option = settings.color_swatches_options | split: ',' | handleize -%}
+                                        {%- for product_option in product.options_with_values -%}
+                                            {%- assign option_name_handle = product_option.name | handleize -%}
+                                            {%- if color_option contains option_name_handle -%}
+                                                    <div class="{{ _cn }}-product-swatches">
+                                                        <div class="#grid @auto-columns" style="--grid-gap: 0.3rem">
+                                                            {%- for color_value in product_option.values -%}
+                                                                <div class="{{ _cn }}-product-color-swatch" style="{%- render 'swatch-color-style', value: color_value -%}">
+                                                                </div>
+                                                            {%- endfor -%}
+                                                        </div>
+                                                    </div>
+                                                {% break %}
+                                            {%- endif -%}
+                                        {%- endfor -%}
+                                    {%- endif -%}
+                                    <h5 class="{{ _cn }}-product-title">{{ product.title }}</h5>
+                                    {% if settings.predictive_search_product_price %}
+                                        <div class="{{ _cn }}-product-price">
+                                            {% render 'price', product: product %}
+                                        </div>                                                        
+                                    {% endif %}
+                                </div>
+                                <div class="{{ _cn }}-product-badges">
+                                    {% if settings.predictive_search_enable_badges %}
+                                        {% render 'product-badges', product: product %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}        
+                </ul>
+            </div>
+        {% endif %}
+        {%- if predictive_search.resources.pages.size > 0 -%}
+            <div class="{{ _cn }}-resource @spaced">
+                <h5 class="{{ _cn }}-resource-heading">Pages</h5>
+                <ul class="{{ _cn }}-pages-list">
+                    {%- for page in predictive_search.resources.pages -%}
+                        <li class="{{ _cn }}-page">
+                            <a href="{{ page.url }}" class="stretched-link"></a>
+                            <h5 class="{{ _cn }}-page-heading">{{ page.title }}</h5>
+                            {%- if settings.predictive_search_page_exerpt -%}
+                                <div class="{{ _cn }}-page-exerpt">{{ page.content | strip_html | truncate: 100 }}</div>
+                            {%- endif -%}
+                        </li>  
+                    {%- endfor -%}
+                </ul>
+            </div>
+        {%- endif -%}
+        {%- if predictive_search.resources.articles.size > 0 -%}
+            <div class="{{ _cn }}-resource @spaced">
+                <h5 class="{{ _cn }}-resource-heading">Articles</h5>
+                <div class="#grid @columns:2 @mobile:columns:1">
+                    {%- for article in predictive_search.resources.articles -%}
+                        <div class="{{ _cn }}-article">
+                            <a href="{{ article.url }}" class="stretched-link"></a>
+                            <div class="{{ _cn }}-article-image">
+                                {% render 'media',
+                                    image: article.image,
+                                    aspect_ratio: '1x1',
+                                    image_resolution: 100
+                                %}
+                            </div>
+                            <div class="{{ _cn }}-article-info">
+                                {%- if settings.predictive_search_blog_author or settings.predictive_search_blog_date -%}
+                                    <div class="{{ _cn }}-article-meta">
+                                        {%- if settings.predictive_search_blog_date -%}
+                                            <span class="{{ _cn }}-article-meta-item">{{ article.published_at | date: format: 'abbreviated_date' }}</span>
+                                        {%- endif -%}
+                                        {%- if settings.predictive_search_blog_author -%}
+                                            <span class="{{ _cn }}-article-meta-item">{{ article.author }}</span>
+                                        {%- endif -%}
+                                    </div>
+                                {%- endif -%}
+                                <h5 class="{{ _cn }}-article-title">{{ article.title }}</h5>
+                            </div>
+                        </div>
+                    {%- endfor -%}
+                </div>
+            </div>
+        {%- endif -%}
+    </div>
+    {%- endif -%}
+  </div>
+{%- endif -%}

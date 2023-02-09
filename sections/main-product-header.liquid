@@ -1,0 +1,111 @@
+{%- capture Content -%}
+    {% render 'page-header',
+        title: product.title,
+        subtitle: section.settings.subtitle,
+        bg_image: section.settings.bg_image,
+        bg_overlay: section.settings.overlay,
+        text_size: section.settings.text_size,
+        image_size: section.settings.height,
+        color_scheme: section.settings.color_scheme,
+        force_bg: true
+    %}
+{%- endcapture -%}
+
+{% render 'section-body',
+    content: Content,
+    spaced: false,
+    color_scheme: section.settings.color_scheme
+%}
+
+{% schema %}
+{
+  "name": "Product header",
+  "class": "spaced-section spaced-section--full-width",
+  "settings": [
+    {
+        "type": "text",
+        "id": "subtitle",
+        "label": "Text"
+    },
+    {
+        "type": "select",
+        "id": "text_size",
+        "options": [
+          {
+            "value": "lg",
+            "label": "Small"
+          },
+          {
+            "value": "xl",
+            "label": "Medium"
+          },
+          {
+            "value": "xxl",
+            "label": "Large"
+          }
+        ],
+        "default": "xl",
+        "label": "Text size"
+    },
+    {
+        "type": "image_picker",
+        "id": "bg_image",
+        "label": "Background image"
+    },
+    {
+        "type": "select",
+        "id": "height",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "medium",
+            "label": "Medium"
+          },
+          {
+            "value": "large",
+            "label": "Large"
+          }
+        ],
+        "default": "medium",
+        "label": "Image height"
+      },
+    {
+      "type": "range",
+      "id": "overlay",
+      "label": "Overlay opacity",
+      "unit": "%",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "default": 0
+    },
+    {
+        "type": "select",
+        "id": "color_scheme",
+        "options": [
+          {
+            "value": "default",
+            "label": "Default"
+          },
+          {
+            "value": "alt",
+            "label": "Alternate"
+          },
+          {
+            "value": "accent",
+            "label": "Accent"
+          },
+          {
+            "value": "invert",
+            "label": "Inverted"
+          }
+        ],
+        "default": "invert",
+        "label": "Color scheme"
+      }
+  ]
+}
+{% endschema %}

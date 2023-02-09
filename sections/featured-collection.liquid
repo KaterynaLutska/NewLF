@@ -1,0 +1,155 @@
+{{ 'product-card.css' | asset_url | stylesheet_tag }}
+
+{%- assign products_limit = section.settings.columns | times: section.settings.rows -%}
+
+{% capture Content %}
+  <div class="#grid @gap:{{ section.settings.gutter }} {% if section.settings.swipe_on_mobile %}@mobile-overlap{% else %}@mobile:columns:1{% endif %} @container @columns:{{ section.settings.columns }}">
+    {%- if section.settings.collection.title == blank -%}
+      {%- for i in (1..products_limit) -%}
+        {%- capture placeholder_index -%}{%- cycle 1, 2, 3, 4, 5, 6 -%}{%- endcapture -%}
+        <div class="#column reveal-animate" style="--reveal-index: {{ forloop.index }}">
+          {% render 'product-card',
+            placeholder_index: placeholder_index,
+            product: false
+          %}
+        </div>
+      {%- endfor -%}
+    {%- else -%}
+      {% for product in section.settings.collection.products limit: products_limit %}
+        <div class="#column reveal-animate" style="--reveal-index: {{ forloop.index }}">
+          {% render 'product-card',
+            product: product,
+            columns: section.settings.columns,
+            color_scheme: section.settings.color_scheme
+          %}
+        </div>
+      {% endfor %}
+    {%- endif -%}
+  </div>
+{% endcapture %}
+
+
+{% if section.settings.section_button != blank %}
+  {%- assign section_button = section.settings.section_button -%}
+{% endif %}
+
+
+{% render 'section-body',
+  content: Content,
+  spaced: true,
+  container: false,
+  title: section.settings.title,
+  subtitle: section.settings.subtitle,
+  button: section_button,
+  button_link: section.settings.collection.url,
+  color_scheme: section.settings.color_scheme
+%}
+
+{% schema %}
+{
+  "name": "t:sections.featured-collection.name",
+  "tag": "section",
+  "class": "spaced-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "default": "Featured collection",
+      "label": "t:sections.featured-collection.settings.title.label"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subheading"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "t:sections.featured-collection.settings.collection.label"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "alt",
+          "label": "Alternate"
+        },
+        {
+          "value": "accent",
+          "label": "Accent"
+        },
+        {
+          "value": "invert",
+          "label": "Inverted"
+        }
+      ],
+      "default": "default",
+      "label": "Color scheme"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "min": 3,
+      "max": 6,
+      "step": 1,
+      "default": 5,
+      "label": "Columns"
+    },
+    {
+      "type": "range",
+      "id": "rows",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1,
+      "label": "Rows"
+    },
+    {
+      "type": "select",
+      "id": "gutter",
+      "label": "Space between",
+      "options": [
+      {
+         "value": "sm",
+         "label": "Small"
+      },
+      {
+         "value": "md",
+         "label": "Medium"
+      },
+      {
+         "value": "lg",
+         "label": "Large"
+      }
+      ],
+      "default": "md"
+   },
+    {
+      "type": "checkbox",
+      "id": "swipe_on_mobile",
+      "default": true,
+      "label": "Enable carousel on mobile",
+      "info": "Note: swipe functionality not active in theme editor"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "section_button",
+      "label": "Text"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.featured-collection.presets.name"
+    }
+  ]
+}
+{% endschema %}

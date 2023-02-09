@@ -1,0 +1,270 @@
+{{ 'collection-sidebar.css' | asset_url | stylesheet_tag }}
+
+
+{%- assign settings_color_option_names = settings.color_swatches_options | split: ',' | handleize -%}
+
+{%- capture Storefront_filters -%}
+
+{%- if section.settings.collapse_filters -%}
+    {% assign filter_status = '' %}
+{%- else -%}
+    {% assign filter_status = 'open' %}
+{%- endif -%}
+
+<collection-filters-form section-id="{{ section.id }}">
+    <form id="{{ collection_form_id }}">
+    {%- for filter in collection.filters -%}
+        
+            <details class="#collection-filter" {{ filter_status }}>
+                <summary class="#collection-filter-label">
+                    <span>
+                        {{ filter.label | escape }}
+                        {% render 'icon', name: 'chevron-down' %}
+                    </span>
+            </summary>
+            <div class="#collection-filter-contents" {% unless filter.type == 'price_range' %}data-contents="{{ forloop.index }}"{% endunless %}>
+                {% case filter.type %}
+                    {% when 'list' %}
+                    {%- assign filter_label_handle = filter.label | handleize -%}
+                    {%- if settings_color_option_names contains filter_label_handle and color_swatches -%}
+                        <div class="#form-inline-group">
+                            {%- for value in filter.values -%}
+                                {%- assign input_id = 'Filter-' | append: filter.label | escape | append: forloop.index  -%}
+                                {%- if value.count == 0 and value.active == false -%}
+                                    {%- assign disabled = true -%}
+                                {%- else -%}
+                                    {%- assign disabled = false -%}
+                                {%- endif -%}
+                                {% render 'form-field',
+                                    type: 'color_swatch',
+                                    id: input_id,
+                                    name: value.param_name,
+                                    value: value.value,
+                                    as: 'checkbox',
+                                    checked: value.active,
+                                    disabled: disabled
+                                %}
+                            {%- endfor -%}
+                        </div>
+                    {%- else -%}
+                        <ul class="#collection-filter-list" role="list">
+                            {%- for value in filter.values -%}
+                                <li>
+                                    <label class="#form-checkbox" for="Filter-{{ filter.label | escape }}-{{ forloop.index }}">
+                                        <input 
+                                            type="checkbox"
+                                            class="visually-hidden"
+                                            name="{{ value.param_name }}"
+                                            value="{{ value.value | escape }}"
+                                            id="Filter-{{ filter.label | escape }}-{{ forloop.index }}"
+                                            {% if value.active %}checked{% endif %}
+                                            {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                                        >
+                                        <div class="#form-checkbox-icon">
+                                            {% render 'icon', name: 'check' %}
+                                        </div>
+                                        <span class="#form-checkbox-label">{{ value.label | escape }}</span> 
+                                        <span class="#collection-filter-counter">{{ value.count }}</span>
+                                    </label>
+                                </li>
+                            {%- endfor -%}
+                        </ul>
+                    {%- endif -%}
+                        
+                    {% when 'price_range' %}
+                        {% render 'price-slider', filter: filter %}
+                        <noscript>
+                            <div class="#row">
+                                <div class="#col">
+                                    <label class="#form-label" for="Filter-{{ filter.label | escape }}-GTE">{{ 'sections.collection_template.from' | t }}</label>
+                                    <div class="#form-input-group">
+                                        <span class="#form-input-group-text">{{ cart.currency.symbol }}</span>
+                                        <input
+                                            type="number"
+                                            class="#form-input"
+                                            name="{{ filter.min_value.param_name }}"
+                                            id="Filter-{{ filter.label | escape }}-GTE"
+                                            value="{%- if filter.min_value.value -%}{%- render 'money-to-number', value: filter.min_value.value -%}{%- else -%}0{%- endif -%}"
+                                            min="0"
+                                            max="{%- render 'money-to-number', value: filter.range_max -%}"
+                                        >   
+                                    </div>
+                                </div>
+                                <div class="#col">
+                                    {%- if filter.max_value.value -%}
+                                        {%- assign max_value = filter.max_value.value -%}
+                                    {%- else -%}
+                                        {%- assign max_value = filter.range_max -%}
+                                    {%- endif -%}
+                                    <label class="#form-label" for="Filter-{{ filter.label | escape }}-LTE">{{ 'sections.collection_template.to' | t }}</label>
+                                    <div class="#form-input-group">
+                                        <span class="#form-input-group-text">{{ cart.currency.symbol }}</span>
+                                        <input
+                                            type="number"
+                                            class="#form-input"
+                                            name="{{ filter.max_value.param_name }}"
+                                            id="Filter-{{ filter.label | escape }}-LTE"
+                                            value="{%- render 'money-to-number', value: max_value -%}"
+                                            min="0"
+                                            max="{%- render 'money-to-number', value: filter.range_max -%}"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </noscript>
+                    {% endcase %}
+                </div>
+            </details>
+        {%- endfor -%}
+        <noscript>
+            {% render 'button',
+                text: 'submit'
+            %}
+        </noscript>
+    </form>
+</collection-filters-form>
+<script type="module" src="{{ 'collection-filters-form.js' | asset_url }}"></script>
+{%- endcapture -%}
+
+{%- capture Tag_filters -%}
+    {%- assign tag_filters = tags | split: ',' -%}
+    <collection-filters-tag-wrapper section-id="{{ section.id }}">
+        <h5 class="#collection-filter-list-title">
+            {{ tag_filters_heading }}
+        </h5>
+        <ul class="#collection-filter-list" role="list">
+            {%- for tag in collection.all_tags -%}
+                {% assign check_tag = tag | split: '__' %}
+                {%- if check_tag[0] != blank -%}
+                    {%- if current_tags contains tag -%}
+                        {%- assign checked = true -%}
+                    {%- else -%}
+                        {%- assign checked = false -%}
+                    {%- endif -%}
+                    {%- assign input_id = 'Filter-' | append: tag | handleize | append: forloop.index  -%}
+                    <li>
+                        <collection-filters-tag class="#collection-filters-tag" section-id="{{ section.id }}">
+                            <div class="#collection-filters-tag-link" data-link>
+                                {% if checked %}
+                                    {{ tag | link_to_remove_tag: tag }}
+                                {% else %}
+                                    {{ tag | link_to_add_tag: tag }}
+                                {% endif %}
+                            </div>
+                            <label class="#form-checkbox" for="{{ input_id }}">
+                                <input 
+                                    type="checkbox"
+                                    class="visually-hidden"
+                                    value="{{ tag | escape }}"
+                                    id="{{ input_id }}"
+                                    {% if checked %}checked{% endif %}
+                                >
+                                <div class="#form-checkbox-icon">
+                                    {% render 'icon', name: 'check' %}
+                                </div>
+                                <span class="#form-checkbox-label">{{ tag }}</span>
+                            </label>
+                        </collection-filters-tag>
+                    </li>
+                {%- endif -%}
+            {%- endfor -%}
+        </ul>
+    </collection-filters-tag-wrapper>
+    <script type="module" src="{{ 'collection-filters-tag.js' | asset_url }}"></script>
+{%- endcapture -%}
+
+{%- capture Tag_groups -%}
+    {%- assign tag_filters = tags | split: ',' -%}
+    <collection-filters-tag-wrapper section-id="{{ section.id }}">
+        {% for tag_group in tag_filters %}
+            {%- assign tag_group_handle = tag_group | handleize -%}
+            {%- if settings_color_option_names contains tag_group_handle and color_swatches -%}
+                {%- assign use_swatches = true -%}
+            {%- else -%}
+                {%- assign use_swatches = false -%}
+            {%- endif -%}
+            {%- capture filters_list -%}
+                {%- for collection_tag in collection.all_tags -%}
+                    {%- assign collection_tag_split = collection_tag | split: '_' -%}
+                    {%- assign collection_tag_group = collection_tag_split[0] -%}
+                    {%- assign collection_tag_value = collection_tag_split[1] -%}
+                    {%- if current_tags contains collection_tag -%}
+                        {%- assign checked = true -%}
+                    {%- else -%}
+                        {%- assign checked = false -%}
+                    {%- endif -%}
+                    {%- if collection_tag_group == tag_group -%}
+                        {%- assign input_id = 'Filter-' | append: collection_tag | handleize | append: forloop.index  -%}
+                        <li>
+                            <collection-filters-tag class="#collection-filters-tag" section-id="{{ section.id }}">
+                                <div class="#collection-filters-tag-link" data-link>
+                                    {% if checked %}
+                                        {{ collection_tag | link_to_remove_tag: collection_tag }}
+                                    {% else %}
+                                        {{ collection_tag | link_to_add_tag: collection_tag }}
+                                    {% endif %}
+                                </div>
+                                {%- if use_swatches -%}
+                                    {% render 'form-field',
+                                        type: 'color_swatch',
+                                        id: input_id,
+                                        name: collection_tag_group,
+                                        value: collection_tag_value,
+                                        as: 'checkbox',
+                                        checked: checked
+                                    %}
+                                {%- else -%}
+                                    <label class="#form-checkbox" for="{{ input_id }}">
+                                        <input 
+                                            type="checkbox"
+                                            class="visually-hidden"
+                                            value="{{ collection_tag | escape }}"
+                                            id="{{ input_id }}"
+                                            {% if checked %}checked{% endif %}
+                                        >
+                                        <div class="#form-checkbox-icon">
+                                            {% render 'icon', name: 'check' %}
+                                        </div>
+                                        <span class="#form-checkbox-label">{{ collection_tag_value }}</span>
+                                    </label>
+                                {%- endif -%}
+                            </collection-filters-tag>
+                        </li>
+                    {%- endif -%}
+                {%- endfor -%}
+            {%- endcapture -%}
+            {%- if filters_list != blank -%}
+            <details class="#collection-filter" {{ filter_status }}>
+                <summary class="#collection-filter-label">
+                    <span>
+                        {{ tag_group }}
+                        {% render 'icon', name: 'chevron-down' %}
+                    </span>
+                </summary>
+                <div class="#collection-filter-contents">
+                    <ul class="#collection-filter-list {% if use_swatches %}@swatches{% endif %}" role="list">
+                        {{ filters_list }}
+                    </ul>
+                </div>
+            </details>
+            {%- endif -%}
+        {% endfor %}
+    </collection-filters-tag-wrapper>
+    <script type="module" src="{{ 'collection-filters-tag.js' | asset_url }}"></script>
+{%- endcapture -%}
+
+<div class="#collection-sidebar-wrapper hide-mobile" id="{{ id }}">
+    <div class="#collection-sidebar @color-scheme:{{ color_scheme }} {% if border %}@bordered{% endif %}">
+        <div class="{% if section.settings.enable_sticky %}sticky-top{% endif %}">
+        {%- case type -%}
+            {%- when 'storefront_filters' -%}
+                {{ Storefront_filters }}
+            {%- when 'tag_filters' -%}
+                {{ Tag_filters }}
+            {%- when 'tag_group_filters' -%}
+                {{ Tag_groups }}
+        {%- endcase -%}
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,78 @@
+.\#rte h1, .\#rte h2, .\#rte h3, .\#rte h4, .\#rte h5, .\#rte h6 {
+    font-weight: var(--font-body-weight-bold);
+}
+
+.\#rte h1 + p, .\#rte h2 + p, .\#rte h3 + p, .\#rte h4 + p, .\#rte h5 + p, .\#rte h6 + p {
+    margin-top: 1em;
+}
+
+.\#rte h1 {
+    font-size: 2em;
+}
+
+.\#rte h2 {
+    font-size: 1.5em;
+}
+
+.\#rte h3 {
+    font-size: 1.17em;
+}
+
+.\#rte h4 {
+    font-size: 1em;
+}
+
+.\#rte h5 {
+    font-size: 0.83em;
+}
+
+.\#rte h6 {
+    font-size: 0.67em;
+}
+
+.\#rte p + p {
+    margin-top: 1em;
+}
+
+.\#rte img {
+    max-width: 100%;
+}
+
+.\#rte dl, .\#rte ol, .\#rte ul {
+    padding-left: 2em;
+    margin-bottom: 1em;
+}
+
+.\#rte.\@text-size\:lg {
+    font-size: 1.25rem;
+}
+
+.\#rte.\@text-size\:sm {
+    font-size: 0.85rem;
+}
+
+.\#rte.\@width\:normal {
+    width: min(100%, 1020px);
+    margin: 0 auto;
+}
+
+.\#rte.\@width\:narrow {
+    width: min(100%, 800px);
+    margin: 0 auto;
+}
+
+.\#rte table > :not(caption) > * > * {
+    padding: 0.5rem;
+    border-bottom: 1px solid rgba(var(--color-border), 1);
+    border-right: 1px solid rgba(var(--color-border), 1);
+}
+
+.\#rte table {
+    border-top: 1px solid rgba(var(--color-border), 1);
+    border-left: 1px solid rgba(var(--color-border), 1);
+}
+
+.\#rte iframe {
+    width: 100%;
+    height: auto;
+}

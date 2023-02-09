@@ -1,0 +1,55 @@
+{% comment %}
+    Props
+        - type
+        - id
+        - size
+        - name
+        - input_atts
+        - value
+        - as
+        - disabled
+{% endcomment %}
+
+{%- unless id != blank -%}
+    {%- assign id = section.id | append: '-swatch-' | append: name | handleize | append: value | handleize -%}
+{%- endunless -%}
+
+{% case type %}
+    {% when 'color_swatch' %}
+    {%- assign as = as | default: 'radio' -%}
+    <div class="#form-field" data-swatch-field>
+        <label class="#form-color-swatch" for="{{ id }}">
+            <input
+                type="{{ as }}"
+                name="{{ name }}"
+                class="visually-hidden"
+                id="{{ id }}"
+                value="{{ value | escape }}"
+                {% if checked %}checked{% endif %}
+                {% if disabled %}disabled{% endif %}
+                {{ input_atts }}
+            >
+            <div class="#form-color-swatch-inner">
+                <div class="#form-color-swatch-display" style="{%- render 'swatch-color-style', value: value -%}"></div>
+            </div>
+        </label>
+    </div>
+    {% when 'swatch' %}
+    {%- assign as = as | default: 'radio' -%}
+    <div class="#form-field" data-swatch-field>
+        <label class="#form-swatch" for="{{ id }}">
+            <input
+                type="{{ as }}"
+                name="{{ name }}"
+                class="visually-hidden"
+                id="{{ id }}"
+                value="{{ value | escape }}"
+                {% if checked %}checked{% endif %}
+                {{ input_atts }}
+            >
+            <div class="#form-swatch-inner">{{ value }}</div>
+        </label>
+    </div>
+    {% when 'custom-select' %}
+{% endcase %}
+

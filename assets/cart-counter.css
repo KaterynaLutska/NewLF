@@ -1,0 +1,33 @@
+.\#cart-counter {
+    --text-color: var(--cart-counter-text-color, white);
+    --bg-color: var(--cart-counter-bg-color, red);
+    position: absolute;
+    height: 1.25rem;
+    min-width: 1.25rem;
+    padding-left: 3px;
+    padding-right: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-color);
+    color: var(--text-color);
+    border-radius: 1.25rem;
+    font-weight: var(--font-body-weight-bold);
+    font-size: 0.7rem;
+    right: -0.4375rem;
+    top: -0.4375rem;
+}
+
+.\#cart-counter[empty] {
+    display: none;
+}
+
+.\#cart-counter.\@dot {
+    width: 0.875rem;
+    height: 0.875rem;
+    min-width: auto;
+    font-size: 0;
+    border-radius: 50%;
+    right: -0.1875rem;
+    top: -0.1875rem;
+}

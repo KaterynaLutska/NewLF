@@ -1,0 +1,131 @@
+.\#column-slider {
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.\#column-slider-grid {
+    position: relative;
+    z-index: 2;
+}
+
+.\#column-slider-grid,
+.\#column-slider-grid > .\#grid,
+.\#column-slider-grid > .\#grid > .\#column {
+    height: 100%;
+}
+
+.\#column-slider-grid .\#floating-content {
+    padding: calc(var(--spacer) * 3.5) calc(var(--spacer) * 3.5) !important;
+}
+
+.\#column-slider-grid > .\#grid > .\#column:not(:last-child) {
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.\#column-slider-images {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.7s, transform linear 6s, filter linear 1s;
+    transform: scale(1.15) translateZ(0);
+    filter: grayscale(1);
+}
+
+.\#column-slider-images.\@active {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+    filter: grayscale(0);
+}
+
+.\#column-slider-caption {
+    width: 100%;
+    color: white;
+}
+
+.\#column-slider-title {
+    font-size: calc(var(--font-size-base) * 2);
+    text-transform: uppercase;
+    margin-bottom: calc(var(--spacer) * 1);
+}
+
+.\#column-slider-text {
+    font-size: calc(var(--font-size-base) * 1.25);
+    margin-bottom: 0;
+    opacity: 0.9;
+}
+
+.\#column-slider-grid-item {
+    position: relative;
+    height: 100%;
+}
+
+.\#column-slider-grid-item .\#hero {
+    opacity: 0.8;
+    transition: 0.3s;
+}
+
+.\#column-slider-grid-item:hover .\#hero {
+    opacity: 1;
+    transform: translateY(-20px);
+}
+
+.\#column-slider-mobile-grid-item {
+    position: relative;
+    height: 100%;
+}
+
+.\#column-slider-mobile {
+    position: relative;
+    display: block;
+}
+
+.\#column-slider-mobile-wrapper {
+    display: flex;
+    position: relative;
+    overflow: scroll;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+}
+
+.\#column-slider-mobile-item {
+    flex-grow: 1;
+    flex-shrink: 0;
+    width: 100vw;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+}
+
+.\#column-slider-mobile-item .\#floating-content {
+    padding-bottom: 4rem !important;
+}
+
+.\#column-slider-mobile-nav {
+    position: absolute;
+    z-index: 3;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.\#column-slider-mobile-nav-item {
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    display: block;
+    opacity: 0.5;
+    transition: 0.3s;
+}
+
+.\#column-slider-mobile-nav-item.active {
+    opacity: 1;
+}

@@ -1,0 +1,10 @@
+{% comment %}
+    Accepts:
+    - name: {String}
+{% endcomment %}
+
+{%- if name != blank -%}
+<svg class="#icon">
+    <use href="#svg-icon-{{ name }}"></use>
+</svg>
+{%- endif -%}

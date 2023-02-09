@@ -1,0 +1,115 @@
+{%- liquid
+  unless settings.product_card_aspect_ratio == 'original'
+    assign aspect_ratio = settings.product_card_aspect_ratio
+  endunless
+  unless settings.product_card_image_appearance == 'fit_size'
+    assign position = settings.product_card_image_appearance
+  endunless
+  if product
+    assign product_title = product.title
+  else
+    assign product_title = 'onboarding.product_title' | t
+  endif
+-%}
+
+{% if settings.product_card_display_alt_image and product %}
+    {% if product.images[1] != blank %}
+      {%- assign alt_image = product.images[1] -%}
+    {% else %}
+      {%- assign alt_image = blank -%}
+    {% endif %}
+  {% endif %}
+
+<div class="#product-card {% if alt_image != blank %}@hover-alt{% endif %} {% if settings.product_card_out_of_stock_fade and product.available == false %}@fade{% endif %} @align:{{ settings.product_card_text_align }}">
+  <div class="#product-card-badges">
+    {% render 'product-badges', product: product %}
+  </div>
+  <div class="#product-card-media {% if settings.product_card_image_padding %}@padded{% endif %}">
+    <div class="#product-card-media-front">
+      {% render 'media',
+        image: product.featured_image,
+        aspect_ratio: aspect_ratio,
+        position: position,
+        resolution: 300,
+        placeholder: 'product',
+        placeholder_index: placeholder_index,
+        image_resolution_div: columns
+      %}
+    </div>
+    {% if alt_image != blank %}
+      <div class="#product-card-media-alt">
+        {% render 'media',
+          image: alt_image,
+          aspect_ratio: aspect_ratio,
+          position: position,
+          image_resolution_div: columns,
+          resolution: 300
+        %}
+      </div>      
+    {% endif %}
+  </div>
+  
+  {% if product %}
+    <a class="stretched-link" href="{{ product.url }}"></a>
+  {% endif %}
+  <div class="#product-card-info">
+    {% if settings.product_card_show_reviews and product.metafields.reviews.rating_count > 0 %}
+      {% liquid
+        assign rating_value = product.metafields.reviews.rating.value
+        assign rating_value = rating_value | strip | plus: 0
+        assign rating_floor = rating_value | floor
+        assign rating_remainder = rating_value | minus: rating_floor
+      %}
+      <div class="#product-card-reviews">
+        <div class="#product-card-reviews-stars">
+          {%- for i in (1..rating_floor) -%}
+            {% render 'icon', name: 'star' %}
+          {%- endfor -%}
+          {% if rating_remainder > 0.15 %}
+              {% if rating_remainder <= 0.6 %}
+                  {% render 'icon', name: 'half-star' %}
+              {% else %}
+                  {% render 'icon', name: 'star' %}
+              {% endif %}
+          {% endif %}
+        </div>
+        {% if settings.product_card_review_counter %}
+          <div class="#product-card-reviews-counter">
+            {{ product.metafields.reviews.rating_count }}
+          </div>
+        {% endif %} 
+      </div>
+    {% endif %}
+    {% if product and settings.product_card_show_vendor %}
+      <div class="#product-card-vendor">{{ product.vendor }}</div>
+    {% endif %}
+    <h5 class="#product-card-title">
+      {{ product_title }}
+    </h5>
+    <div class="#product-card-price">
+      {% render 'price', product: product %}
+    </div>
+  
+  {%- if settings.product_card_display_color_swatches and product -%}
+    {%- assign color_option = settings.color_swatches_options | split: ',' | handleize -%}
+    {%- for product_option in product.options_with_values -%}
+      {%- assign option_name_handle = product_option.name | handleize -%}
+        {%- if color_option contains option_name_handle  -%}
+          <div class="#product-card-color-options">
+            {%- for color_value in product_option.values -%}
+              {%- for variant in product.variants -%}
+                {%- if variant.options contains color_value-%}
+                  {%- assign match_variant = variant -%}
+                  {%- break -%}
+                {%- endif -%}
+              {%- endfor -%}
+              <a href="{{ match_variant.url }}" class="#product-card-color-options-item" style="{%- render 'swatch-color-style', value: color_value -%}">
+              </a>
+            {%- endfor -%}
+          </div>   
+        {%- break -%}
+        {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+</div>
+</div>

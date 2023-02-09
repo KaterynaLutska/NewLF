@@ -1,0 +1,193 @@
+<link rel="stylesheet" href="{{ 'testimonial-card.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'testimonial-card.css' | asset_url | stylesheet_tag }}</noscript>
+
+{% if section.settings.color_scheme == 'default' %}
+  {%- assign card_bordered = true -%}
+{% endif %}
+
+
+
+{%- capture Content -%}
+  <div class="#grid @gap:{{ section.settings.gutter }} %mobile:overlap @container @columns:{{ section.settings.columns }}">
+      {% for block in section.blocks %}
+        
+        <div class="#column reveal-animate" style="--reveal-index: {{ forloop.index }}" {{ block.shopify_attributes }}>
+          {% render 'testimonial-card',
+            author_image: block.settings.author_image,
+            text: block.settings.text,
+            author_name: block.settings.author_name,
+            author_subheading: block.settings.author_subheading,
+            product: block.settings.product,
+            show_stars: section.settings.show_stars,
+            bordered: card_bordered
+          %}
+        </div>
+    {% endfor %}
+  </div>
+{%- endcapture -%}
+
+{% if section.settings.section_button != blank and section.settings.section_button_link != blank %}
+  {%- assign section_button = section.settings.section_button -%}
+{% endif %}
+
+
+{% render 'section-body',
+  content: Content,
+  spaced: true,
+  container: false,
+  title: section.settings.title,
+  color_scheme: section.settings.color_scheme,
+  subtitle: section.settings.subtitle,
+  button: section_button,
+  button_link: section.settings.section_button_link
+%}
+
+{% schema %}
+{
+  "name":"Testimonials",
+  "tag":"section",
+  "max_blocks":12,
+  "settings":[
+      {
+         "type": "text",
+         "id": "title",
+         "default": "Testimonials",
+         "label": "Heading"
+      },
+      {
+         "type": "text",
+         "id": "subtitle",
+         "label": "Subheading"
+       },
+       {
+        "type": "select",
+        "id": "color_scheme",
+        "options": [
+          {
+            "value": "default",
+            "label": "Default"
+          },
+          {
+            "value": "alt",
+            "label": "Alternate"
+          },
+          {
+            "value": "accent",
+            "label": "Accent"
+          },
+          {
+            "value": "invert",
+            "label": "Inverted"
+          }
+        ],
+        "default": "default",
+        "label": "Color scheme"
+      },
+     {
+        "type":"range",
+        "id":"columns",
+        "label":"Columns",
+        "min":3,
+        "max":5,
+        "step":1,
+        "default":4
+     },
+     {
+      "type": "select",
+      "id": "gutter",
+      "label": "Space between",
+      "options": [
+      {
+         "value": "sm",
+         "label": "Small"
+      },
+      {
+         "value": "md",
+         "label": "Medium"
+      },
+      {
+         "value": "lg",
+         "label": "Large"
+      }
+      ],
+      "default": "md"
+   },
+     {
+        "type": "checkbox",
+        "id": "show_stars",
+        "label": "Show stars"
+     },
+     {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "section_button",
+      "label": "Text"
+    },
+    {
+      "type": "url",
+      "id": "section_button_link",
+      "label": "Link"
+    }
+  ],
+  "blocks":[
+     {
+        "type":"testimonial",
+        "name":"Testimonial",
+        "settings":[
+           {
+              "type":"image_picker",
+              "id":"author_image",
+              "label":"Author image"
+           },
+           {
+              "type":"text",
+              "id":"author_name",
+              "label":"Author name",
+              "default":"Author"
+           },
+           {
+            "type": "text",
+            "id": "author_subheading",
+            "label": "Subheading"
+           },
+           {
+              "type":"textarea",
+              "id":"text",
+              "label":"Text",
+              "default":"Review or testimonial text"
+           },
+           {
+              "type": "product",
+              "id": "product",
+              "label": "Product (optional)"
+           }
+        ]
+     }
+  ],
+  "presets":[
+     {
+          "name":"Testimonials",
+          "settings": {
+            "color_scheme": "alt"
+          },
+          "blocks":[
+           {
+                "type":"testimonial"
+           },
+           {
+                "type":"testimonial"
+           },
+           {
+                "type":"testimonial"
+           },
+           {
+               "type":"testimonial"
+           }
+        ]
+     }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,135 @@
+{{ 'customer.css' | asset_url | stylesheet_tag }}
+{{ 'form.css' | asset_url | stylesheet_tag }}
+
+<div class="#customer-form">
+  <div id="recover" tabindex="-1">
+    <div class="#customer-form-header">
+      <h1 class="#customer-form-heading @sm">{{ 'customer.recover_password.title' | t }}</h1>
+      <p class="#customer-form-subheading">{{ 'customer.recover_password.subtext' | t }}</p>
+    </div>
+    {%- form 'recover_customer_password' -%}
+      {% assign recover_success = form.posted_successfully? %}
+      {%- if form.errors -%}
+        <div class="#form-alert @error" tabindex="-1" autofocus>
+          {% render 'icon', name: 'alert' %}
+          <div class="#form-alert-body">
+            <div class="#form-alert-content">
+              {{ form.errors.messages['form'] }}
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+      <div class="#form-field">
+        <label class="#form-label" for="RecoverEmail">
+          {{ 'customer.login_page.email' | t }}
+        </label>  
+        <input type="email"
+          class="#form-input"
+          value=""
+          name="email"
+          id="RecoverEmail"
+          autocorrect="off"
+          autocapitalize="off"
+          {% if form.errors %}
+            aria-invalid="true"
+            aria-describedby="RecoverEmail-email-error"
+            autofocus
+          {% endif %}
+          placeholder="{{ 'customer.login_page.email' | t }}"
+        >
+      </div>
+      <div class="#form-field">
+        {% render 'button',
+          block: true,
+          color: 'default',
+          t_text: 'customer.login_page.submit'
+        %}
+      </div>
+      <div class="#customer-form-footer">
+        <a class="#customer-form-footer-link" href="#login">{{ 'customer.login_page.cancel' | t }}</a>
+      </div>
+    {%- endform -%}
+  </div>
+  <div id="login" tabindex="-1">
+    <div class="#customer-form-header">
+      <h1 class="#customer-form-heading">{{ 'customer.login_page.title' | t }}</h1>
+    </div>
+    {%- form 'customer_login', novalidate: 'novalidate' -%}
+      {%- if form.errors -%}
+      <div class="#form-alert @error" tabindex="-1" autofocus>
+        {% render 'icon', name: 'alert' %}
+        <div class="#form-alert-body">
+          <h4 class="#form-alert-heading">
+            <span class="visually-hidden">{{ 'accessibility.error' | t }} </span>
+            {{ 'templates.contact.form.error_heading' | t }}
+          </h4>
+          <div class="#form-alert-content">
+            {{ form.errors | default_errors }}
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+      <div class="#form-field">
+        <label class="#form-label" for="CustomerEmail">{{ 'customer.login_page.email' | t }}</label>
+        <input
+          class="#form-input"
+          type="email"
+          name="customer[email]"
+          id="CustomerEmail"
+          autocomplete="email"
+          autocorrect="off"
+          autocapitalize="off"
+          required
+          {% if form.errors contains 'form' %}
+            aria-invalid="true"
+          {% endif %}
+        >
+      </div>
+      {% if form.password_needed %}
+        <div class="#form-field">
+          <label class="#form-label" for="CustomerPassword">{{ 'customer.login_page.password' | t }}</label>
+          <input 
+            class="#form-input" 
+            type="password" 
+            id="CustomerPassword"
+            name="customer[password]"
+            value=""
+            autocomplete="current-password"
+            required
+            {% if form.errors contains 'form' %}
+              aria-invalid="true"
+            {% endif %}>
+          <div class="#form-field-text">
+            <a href="#recover">{{ 'customer.login_page.forgot_password' | t }}</a>
+          </div>
+        </div>
+      {% endif %}
+      <div class="#form-field">
+        {% render 'button',
+          t_text: 'customer.login_page.sign_in',
+          block: true,
+          color: 'default'
+        %}
+      </div>
+    {%- endform -%}
+    <div class="#customer-form-footer">
+      <a class="#customer-form-footer-link" href="{{ routes.account_register_url }}">{{ 'customer.login_page.create_account' | t }}</a>
+    </div>
+  </div>
+
+  {%- if shop.checkout.guest_login -%}
+    <div class="#customer-form-guest">
+      <div class="#customer-form-header">
+        <h1 class="#customer-form-heading @sm">{{ 'customer.login_page.guest_title' | t }}</h1>
+      </div>
+      {%- form 'guest_login' -%}
+        {% render 'button',
+          block: true,
+          t_text: 'customer.login_page.guest_continue',
+          color: 'default'
+        %}
+      {%- endform -%}
+    </div>
+  {%- endif -%}
+
+</div>

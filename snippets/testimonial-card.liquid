@@ -1,0 +1,38 @@
+<div class="#testimonial-card {% if bordered %}@bordered{% endif %} hide-loading">
+    <div class="#testimonial-card-header">
+        {% if show_stars %}
+            <div class="#testimonial-card-stars">
+                {%- for i in (1..5) -%}
+                    {% render 'icon', name: 'star' %}
+                {%- endfor -%}
+            </div>
+        {% endif %}
+        {% if author_image != blank %}
+            <div class="#testimonial-card-author-image">
+                {% render 'media',
+                    image: author_image,
+                    aspect_ratio: '1x1',
+                    rounded: true,
+                    image_resolution: 100
+                %} 
+            </div>
+        {% endif %}
+        <h5 class="#testimonial-card-author-name">{{ author_name }}</h5>
+        {% if author_subheading != blank %}
+            <p class="#testimonial-card-author-subheading">{{ author_subheading }}</p>
+        {% endif %}
+    </div>
+    <p class="#testimonial-card-text">{{ text }}</p>
+    {% if product != blank %}
+        <div class="#testimonial-card-product">
+            <a class="stretched-link" href="{{ product.url }}"></a>
+            <div class="#testimonial-card-product-image">
+                {% render 'media',
+                    image: product.featured_image,
+                    image_resolution: 50
+                %}
+            </div>
+            <h5 class="#testimonial-card-product-title">{{ product.title }}</h5>
+        </div>    
+    {% endif %}
+</div>

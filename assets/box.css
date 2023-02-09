@@ -1,0 +1,19 @@
+.\#box {
+    padding: calc(var(--spacer) * 2) calc(var(--spacer) * 2.5);
+}
+
+.\#box.\@color-scheme\:default {
+    background-color: rgba(var(--color-background), 1);
+}
+
+.\#box.\@color-scheme\:alt {
+    background-color: rgba(var(--color-alt-background), 1);
+}
+
+.\#box.\@color-scheme\:accent {
+    background-color: rgba(var(--color-accent), 1);
+}
+
+.\#box.\@color-scheme\:invert {
+    background-color: rgba(var(--color-text), 1);
+}

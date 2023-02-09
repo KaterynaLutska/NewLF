@@ -1,0 +1,26 @@
+{% assign select_id = section.id | append: 'CurrencySelector' %}
+
+<currency-selector>
+  {% form 'currency' %}
+  <input data-currency-input type="hidden" name="currency" value="{{ cart.currency.iso_code | escape }}">
+  <div class="#form-field">
+    <label for="{{ select_id }}" class="#form-label">{{ 'localization.currency_label' | t }}</label>
+    <div class="#form-select">
+      <select name="currency">
+        {% for currency in shop.enabled_currencies %}
+          {% if currency == cart.currency %}
+            <option selected="true">{{currency.iso_code}}</option>
+          {% else %}
+            <option>{{currency.iso_code}}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+      {% render 'icon', name: 'chevron-down' %}
+    </div>
+  </div>
+  <noscript>
+    <button type="submit">{{ 'customer.login_page.submit' | t }}</button>
+  </noscript>
+{% endform %}
+</currency-selector>
+<script type="module" src="{{ 'currency-form.js' | asset_url }}"></script> 

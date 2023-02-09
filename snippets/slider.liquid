@@ -1,0 +1,92 @@
+{% comment %}
+  Props:
+    slides
+    thumbs
+    navigation_type:  {String} ('none', 'pagination', 'buttons', 'pagination_buttons')
+    initial_slide: index
+    color_scheme: {String}
+    nav_size: {String}(css unit)
+{% endcomment %}
+
+{{ 'slideshow.css' | asset_url | stylesheet_tag }}
+
+{%- assign cn = '#slideshow' -%}
+
+{% if thumbs_position == 'none' %}
+  {%- assign thumbs = blank -%}
+{% endif %}
+
+{% if thumbs == blank %}
+  {%- assign thumbs_position = blank -%}
+{% endif %}
+
+
+{%- case color_scheme -%}
+  {%- when 'default' -%}
+    {% assign swiper_color = 'text' %}
+  {%- when 'invert' -%}
+    {% assign swiper_color = 'background' %}
+  {%- when 'accent' -%}
+    {% assign swiper_color = 'accent' %}
+{%- endcase -%}
+
+
+
+{%- capture Thumbnails -%}
+  {%- if thumbs != blank -%}
+  <link rel="stylesheet" href="{{ 'slideshow-thumbnails.css' | asset_url }}" media="print" onload="this.media='all'">
+  <noscript>{{ 'slideshow-thumbnails.css' | asset_url | stylesheet_tag }}</noscript>
+    <slideshow-thumbnails class="{{ cn }}-thumbnails @position:{{ thumbs_position }} {{ thumbs_class }} hide-loading" section-id="{{ section.id }}" {% if block.settings.thumbnails_position == 'bottom' %}horizontal{% endif %}>
+      <div class="{{ cn }}-thumbnails-scroller">
+        {{ thumbs }}
+      </div>
+    </slideshow-thumbnails>
+    <script type="module" src="{{ 'slideshow-thumbnails.js' | asset_url }}"></script>
+  {%- endif -%}
+{%- endcapture -%}
+
+<slide-show 
+  {% if initial_slide != blank %}initial-slide="{{ initial_slide }}"{% endif %} 
+  navigation-type="{{ navigation_type }}"
+  section-id="{{ section.id }}"
+  class="#slideshow {% if thumbs_position != blank %}@thumbs:{{ thumbs_position }}{% endif %}"
+  {% if id != blank %}id="{{ id }}"{% endif %}
+  {% if thumbs != blank %}thumbnails {% endif %}
+  {% if sync != blank %}sync-slider="{{ sync }}"{% endif %}
+  {% if zoom %}zoom {% endif %}
+  {% if is_autoplay %}use-autoplay {% endif %}
+  autoplay-delay="{{ autoplay_delay }}"
+  {% if desktop_swipe_disable %}desktop-no-swipe {% endif %}
+  {% if observe_slide_type %}observe-slide-type{% endif %}
+  style="--swiper-theme-color: rgb(var(--color-{{ swiper_color | default: 'text' }})); {% if nav_size != blank %}--swiper-navigation-size: {{ nav_size }}{% endif %}"
+> 
+  <div data-slider-container class="{{ cn }}-container swiper">
+    <div class="swiper-wrapper">
+      {{ slides }}
+    </div>
+    {%- if navigation_type == "buttons" or navigation_type == "pagination_buttons" -%}
+      <div data-slider-button-prev class="swiper-button-prev {{ navigation_class }}"></div>
+      <div data-slider-button-next class="swiper-button-next {{ navigation_class }}"></div>
+    {%- endif -%}
+    {%- if navigation_type == "pagination" or navigation_type == "pagination_buttons" -%}
+      <div class="swiper-pagination {{ pagination_class }}" data-slider-pagination></div>
+    {%- endif -%}
+    {{ after }}
+  </div>
+  {{ Thumbnails }}
+</slide-show>
+
+<script type="module" src="{{ 'slide-show.js' | asset_url }}"></script>
+
+{% if request.design_mode %}
+  <script type="text/javascript">
+    document.addEventListener("shopify:block:select", (e) => {
+      const slideNum = e.target.dataset.slideNum;
+      if (slideNum) e.target.closest('slide-show').slideTo(slideNum)
+    });
+    document.addEventListener("shopify:block:deselect", (e) => {
+      const slideNum = e.target.dataset.slideNum;
+      if (slideNum) e.target.closest('slide-show').swiper.autoplay.start()
+    });
+  </script>
+{% endif %}

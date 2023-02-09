@@ -1,0 +1,1 @@
+{"sections":{"main-cart":{"type":"main-cart","blocks":{"subtotal":{"type":"subtotal","settings":{}},"buttons":{"type":"buttons","settings":{}},"notes":{"type":"notes","settings":{}},"tax_notes":{"type":"tax_shipping_note","settings":{}}},"block_order":["subtotal","tax_notes","notes","buttons"],"settings":{}}},"order":["main-cart"]}

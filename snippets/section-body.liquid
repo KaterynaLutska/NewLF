@@ -1,0 +1,64 @@
+{% comment %}
+    Props
+        - title
+        - subtitle
+        - content
+        - container
+        - spaced
+        - hidden
+        - bg
+{% endcomment %}
+
+
+{%- capture Section_button -%}
+    {% if button != blank %}
+        <div class="#section-button" style="--section-button-align: {{ settings.g_section_align }}">
+            {% render 'button',
+                text: button,
+                color: color_scheme,
+                style: settings.g_section_button_style,
+                link: button_link,
+                show_arrow: settings.g_section_button_arrow,
+                size: settings.g_section_button_size
+            %}
+        </div>
+    {% endif %}
+{%- endcapture -%}
+
+<div 
+    class="
+        #section 
+        {% if spaced == true %}@spaced{% endif %}
+        @color-scheme:{{ color_scheme | default: 'default' }}
+    "
+    {% if hidden %}hidden{% endif %}
+>
+    {% if title != blank or subtitle != blank %}
+        <div class="#section-header {% if settings.g_section_align == 'left' and settings.g_section_button_position == 'before' %}@side-button{% endif %}">
+            {% render 'hero',
+                heading: title,
+                text: subtitle,
+                size: settings.g_section_heading_size,
+                align: settings.g_section_align,
+                color_scheme: 'inherit',
+                spaced: 'sm',
+                text_position: settings.g_section_subheading_position
+            %}
+            {% if settings.g_section_button_position == 'before' %}
+                {{ Section_button }}
+            {% endif %}
+        </div>
+    {% endif %}
+    <div class="#section-body">
+        {% if container == true %}
+            <div class="#container">
+        {% endif %}
+            {{ content }}
+        {% if container == true %}
+            </div>
+        {% endif %}
+    </div>
+    {% if settings.g_section_button_position == 'after' %}
+        {{ Section_button }}
+    {% endif %}
+</div>

@@ -1,0 +1,57 @@
+<link rel="stylesheet" href="{{ 'social-share.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'social-share.css' | asset_url | stylesheet_tag }}</noscript>
+
+<div class="#social-share-wrapper {% if centered %}@centered{% endif %}">
+
+{% if heading != blank %}
+    <h5 class="#social-share-heading">{{ heading }}</h5>
+{% endif %}
+
+<ul class="#social-share">
+
+    {%- if settings.share_facebook -%}
+      <li class="#social-share-item">
+        <a
+          class="#social-share-link"
+          href="//www.facebook.com/sharer.php?u={{ shop.url | append: share_permalink }}"
+          target="_blank"
+        >
+          {% render 'icon', name: 'facebook' %}
+          <span class="#social-share-title">{{ 'general.social.titles.facebook' | t }}</span>
+          <span class="visually-hidden visually-hidden--inline">{{ 'general.social.alt_text.share_on_facebook' | t }}</span>
+          <span class="visually-hidden visually-hidden--inline">{{ 'accessibility.link_messages.new_window' | t }}</span>
+      </a>
+      </li>
+    {%- endif -%}
+  
+    {%- if settings.share_twitter -%}
+      <li class="#social-share-item">
+        <a
+          class="#social-share-link"
+          href="//twitter.com/share?text={{ share_title | url_param_escape }}&amp;url={{ shop.url | append: share_permalink }}"
+          target="_blank"
+        >
+         {% render 'icon', name: 'twitter' %}
+          <span class="#social-share-title">{{ 'general.social.titles.twitter' | t }}</span>
+          <span class="visually-hidden visually-hidden--inline">{{ 'general.social.alt_text.share_on_twitter' | t }}</span>  
+          <span class="visually-hidden visually-hidden--inline">{{ 'accessibility.link_messages.new_window' | t }}</span>
+        </a>
+      </li>
+    {%- endif -%}
+  
+    {%- if settings.share_pinterest -%}
+      <li class="#social-share-item">
+        <a
+          class="#social-share-link"
+          href="//pinterest.com/pin/create/button/?url={{ shop.url | append: share_permalink }}}&amp;media={{ share_image | img_url: '1024x1024' }}&amp;description={{ share_title | url_param_escape }}"
+          target="_blank"
+        >
+        {% render 'icon', name: 'pinterest' %}
+          <span class="#social-share-title">{{ 'general.social.titles.pinterest' | t }}</span>
+          <span class="visually-hidden visually-hidden--inline">{{ 'general.social.alt_text.share_on_pinterest' | t }}</span>
+          <span class="visually-hidden visually-hidden--inline">{{ 'accessibility.link_messages.new_window' | t }}</span>
+        </a>
+      </li>
+    {%- endif -%}
+  </ul>
+</div>

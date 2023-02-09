@@ -1,0 +1,24 @@
+.\#product-option-picker {
+    display: block;
+}
+
+.\#product-option-picker-header {
+    margin-bottom: 0.5rem;
+}
+
+.\#product-option-picker-value {
+    font-weight: var(--font-body-weight-bold);
+    margin-left: 0.2rem;
+}
+
+.\#product-option-picker-name {
+    opacity: 0.8;
+}
+
+.\#product-option-picker + .\#product-option-picker {
+    margin-top: 1rem;
+}
+
+.\#product-option-picker.\@align\:center .\#form-inline-group {
+    justify-content: center;
+}
